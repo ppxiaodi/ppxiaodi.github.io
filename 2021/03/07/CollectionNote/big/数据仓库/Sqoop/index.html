@@ -1,0 +1,226 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>Sqoop | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="尚硅谷大数据技术之Sqoop (作者：尚硅谷大数据研发部) 版本：V2.0 第3章 Sqoop安装 安装Sqoop的前提是已经具备Java和Hadoop的环境。 ¶3.1 下载并解压    下载地址：[http:&#x2F;&#x2F;mirrors.hust.edu.cn&#x2F;apache&#x2F;sqoop&#x2F;1.4.6&#x2F;]{.underline} 2) 上传安装包sqoop-1.4.6.bin__hadoop-2.0.4-a">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Sqoop">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Sqoop/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="尚硅谷大数据技术之Sqoop (作者：尚硅谷大数据研发部) 版本：V2.0 第3章 Sqoop安装 安装Sqoop的前提是已经具备Java和Hadoop的环境。 ¶3.1 下载并解压    下载地址：[http:&#x2F;&#x2F;mirrors.hust.edu.cn&#x2F;apache&#x2F;sqoop&#x2F;1.4.6&#x2F;]{.underline} 2) 上传安装包sqoop-1.4.6.bin__hadoop-2.0.4-a">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:53.430Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="电商数仓">
+<meta name="twitter:card" content="summary"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">第3章 Sqoop安装</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E4%B8%8B%E8%BD%BD%E5%B9%B6%E8%A7%A3%E5%8E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">3.1 下载并解压</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.</span> <span class="toc-text">3.2 修改配置文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E6%8B%B7%E8%B4%9DJDBC%E9%A9%B1%E5%8A%A8"><span class="toc-number">1.3.</span> <span class="toc-text">3.3 拷贝JDBC驱动</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-%E9%AA%8C%E8%AF%81Sqoop"><span class="toc-number">1.4.</span> <span class="toc-text">3.4 验证Sqoop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-5-%E6%B5%8B%E8%AF%95Sqoop%E6%98%AF%E5%90%A6%E8%83%BD%E5%A4%9F%E6%88%90%E5%8A%9F%E8%BF%9E%E6%8E%A5%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.5.</span> <span class="toc-text">3.5 测试Sqoop是否能够成功连接数据库</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">第4章 Sqoop的简单使用案例</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-1-%E5%AF%BC%E5%85%A5%E6%95%B0%E6%8D%AE"><span class="toc-number">2.1.</span> <span class="toc-text">4.1 导入数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-1-RDBMS%E5%88%B0HDFS"><span class="toc-number">2.1.1.</span> <span class="toc-text">4.1.1 RDBMS到HDFS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-2-RDBMS%E5%88%B0Hive"><span class="toc-number">2.1.2.</span> <span class="toc-text">4.1.2 RDBMS到Hive</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-3-RDBMS%E5%88%B0Hbase"><span class="toc-number">2.1.3.</span> <span class="toc-text">4.1.3 RDBMS到Hbase</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2%E3%80%81%E5%AF%BC%E5%87%BA%E6%95%B0%E6%8D%AE"><span class="toc-number">2.2.</span> <span class="toc-text">4.2、导出数据</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-1-HIVE-HDFS%E5%88%B0RDBMS"><span class="toc-number">2.2.1.</span> <span class="toc-text">4.2.1 HIVE&#x2F;HDFS到RDBMS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-%E8%84%9A%E6%9C%AC%E6%89%93%E5%8C%85"><span class="toc-number">2.3.</span> <span class="toc-text">4.3 脚本打包</span></a></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Sqoop/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Sqoop</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2021-03-07 00:00:00" itemprop="dateCreated datePublished" datetime="2021-03-07T00:00:00+08:00">2021-03-07</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:53" itemprop="dateModified" datetime="2021-07-11T16:54:53+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">大数据</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E7%94%B5%E5%95%86%E6%95%B0%E4%BB%93/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">电商数仓</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">大数据</span></a><a class="tag-item" href="/tags/%E7%94%B5%E5%95%86%E6%95%B0%E4%BB%93/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">电商数仓</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><p>尚硅谷大数据技术之Sqoop</p>
+<p>(作者：尚硅谷大数据研发部)</p>
+<p>版本：V2.0</p>
+<h1>第3章 Sqoop安装</h1>
+<p>安装Sqoop的前提是已经具备Java和Hadoop的环境。</p>
+<h2 id="3-1-下载并解压"><a class="header-anchor" href="#3-1-下载并解压">¶</a>3.1 下载并解压</h2>
+<ol>
+<li></li>
+</ol>
+<p>下载地址：<a target="_blank" rel="noopener" href="http://mirrors.hust.edu.cn/apache/sqoop/1.4.6/">[http://mirrors.hust.edu.cn/apache/sqoop/1.4.6/]{.underline}</a></p>
+<p>2) 上传安装包sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz到虚拟机中</p>
+<p>3) 解压sqoop安装包到指定目录，如：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ tar -zxf sqoop-1.4.6.bin__hadoop-2.0.4-alpha.tar.gz -C &#x2F;opt&#x2F;module&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="3-2-修改配置文件"><a class="header-anchor" href="#3-2-修改配置文件">¶</a>3.2 修改配置文件</h2>
+<p>Sqoop的配置文件与大多数大数据框架类似，在sqoop根目录下的conf目录中。</p>
+<p><strong>1) 重命名配置文件</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ mv sqoop-env-template.sh sqoop-env.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>2) 修改配置文件</strong></p>
+<p><a target="_blank" rel="noopener" href="http://sqoop-env.sh">sqoop-env.sh</a></p>
+<pre class="line-numbers language-none"><code class="language-none">export HADOOP_COMMON_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2
+export HADOOP_MAPRED_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2
+export HIVE_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;hive
+export ZOOKEEPER_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;zookeeper-3.4.10
+export ZOOCFGDIR&#x3D;&#x2F;opt&#x2F;module&#x2F;zookeeper-3.4.10
+export HBASE_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;hbase<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="3-3-拷贝JDBC驱动"><a class="header-anchor" href="#3-3-拷贝JDBC驱动">¶</a>3.3 拷贝JDBC驱动</h2>
+<p>拷贝jdbc驱动到sqoop的lib目录下，如：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ cp mysql-connector-java-5.1.27-bin.jar &#x2F;opt&#x2F;module&#x2F;sqoop-1.4.6.bin__hadoop-2.0.4-alpha&#x2F;lib&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="3-4-验证Sqoop"><a class="header-anchor" href="#3-4-验证Sqoop">¶</a>3.4 验证Sqoop</h2>
+<p>我们可以通过某一个command来验证sqoop配置是否正确：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop help<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>出现一些Warning警告（警告信息已省略），并伴随着帮助命令的输出：</p>
+<pre class="line-numbers language-none"><code class="language-none">Available commands:
+  codegen            Generate code to interact with database records
+  create-hive-table     Import a table definition into Hive
+  eval               Evaluate a SQL statement and display the results
+  export             Export an HDFS directory to a database table
+  help               List available commands
+  import             Import a table from a database to HDFS
+  import-all-tables     Import tables from a database to HDFS
+  import-mainframe    Import datasets from a mainframe server to HDFS
+  job                Work with saved jobs
+  list-databases        List available databases on a server
+  list-tables           List available tables in a database
+  merge              Merge results of incremental imports
+  metastore           Run a standalone Sqoop metastore
+  version            Display version information<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="3-5-测试Sqoop是否能够成功连接数据库"><a class="header-anchor" href="#3-5-测试Sqoop是否能够成功连接数据库">¶</a>3.5 测试Sqoop是否能够成功连接数据库</h2>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop list-databases --connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F; --username root --password 000000<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>出现如下输出：</p>
+<pre class="line-numbers language-none"><code class="language-none">information_schema
+metastore
+mysql
+oozie
+performance_schema<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1>第4章 Sqoop的简单使用案例</h1>
+<h2 id="4-1-导入数据"><a class="header-anchor" href="#4-1-导入数据">¶</a>4.1 导入数据</h2>
+<p>在Sqoop中，&quot;导入&quot;概念指：从非大数据集群（RDBMS）向大数据集群（HDFS，HIVE，HBASE）中传输数据，叫做：导入，即使用import关键字。</p>
+<h3 id="4-1-1-RDBMS到HDFS"><a class="header-anchor" href="#4-1-1-RDBMS到HDFS">¶</a>4.1.1 RDBMS到HDFS</h3>
+<p>1) 确定Mysql服务开启正常</p>
+<p>2) 在Mysql中新建一张表并插入一些数据</p>
+<pre class="line-numbers language-none"><code class="language-none">$ mysql -uroot -p000000
+mysql&gt; create database company;
+mysql&gt; create table company.staff(id int(4) primary key not null auto_increment, name varchar(255), sex varchar(255));
+mysql&gt; insert into company.staff(name, sex) values(&#39;Thomas&#39;, &#39;Male&#39;);
+mysql&gt; insert into company.staff(name, sex) values(&#39;Catalina&#39;, &#39;FeMale&#39;);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3) 导入数据</p>
+<p><strong>（1）全部导入</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop import \
+--connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company \
+--username root \
+--password 000000 \
+--table staff \
+--target-dir &#x2F;user&#x2F;company \
+--delete-target-dir \
+--num-mappers 1 \
+--fields-terminated-by &quot;\t&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>（2）查询导入</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop import \
+--connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company \
+--username root \
+--password 000000 \
+--target-dir &#x2F;user&#x2F;company \
+--delete-target-dir \
+--num-mappers 1 \
+--fields-terminated-by &quot;\t&quot; \
+--query &#39;select name,sex from staff where id &lt;&#x3D;1 and $CONDITIONS;&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示：must contain ‘$CONDITIONS’ in WHERE clause.</p>
+<p>如果query后使用的是双引号，则$CONDITIONS前必须加转移符，防止shell识别为自己的变量。</p>
+<p><strong>（3）导入指定列</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop import \
+--connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company \
+--username root \
+--password 000000 \
+--target-dir &#x2F;user&#x2F;company \
+--delete-target-dir \
+--num-mappers 1 \
+--fields-terminated-by &quot;\t&quot; \
+--columns id,sex \
+--table staff<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示：columns中如果涉及到多列，用逗号分隔，分隔时不要添加空格</p>
+<p><strong>（4）使用sqoop关键字筛选查询导入数据</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop import \
+--connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company \
+--username root \
+--password 000000 \
+--target-dir &#x2F;user&#x2F;company \
+--delete-target-dir \
+--num-mappers 1 \
+--fields-terminated-by &quot;\t&quot; \
+--table staff \
+--where &quot;id&#x3D;1&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-1-2-RDBMS到Hive"><a class="header-anchor" href="#4-1-2-RDBMS到Hive">¶</a>4.1.2 RDBMS到Hive</h3>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop import \
+--connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company \
+--username root \
+--password 000000 \
+--table staff \
+--num-mappers 1 \
+--hive-import \
+--fields-terminated-by &quot;\t&quot; \
+--hive-overwrite \
+--hive-table staff_hive<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示：该过程分为两步，第一步将数据导入到HDFS，第二步将导入到HDFS的数据迁移到Hive仓库，第一步默认的临时目录是/user/atguigu/表名</p>
+<h3 id="4-1-3-RDBMS到Hbase"><a class="header-anchor" href="#4-1-3-RDBMS到Hbase">¶</a>4.1.3 RDBMS到Hbase</h3>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop import \
+--connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company \
+--username root \
+--password 000000 \
+--table company \
+--columns &quot;id,name,sex&quot; \
+--column-family &quot;info&quot; \
+--hbase-create-table \
+--hbase-row-key &quot;id&quot; \
+--hbase-table &quot;hbase_company&quot; \
+--num-mappers 1 \
+--split-by id<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示：sqoop1.4.6只支持HBase1.0.1之前的版本的自动创建HBase表的功能</p>
+<p>解决方案：手动创建HBase表</p>
+<pre class="line-numbers language-none"><code class="language-none">hbase&gt; create &#39;hbase_company,&#39;info&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>(5) 在HBase中scan这张表得到如下内容</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">hbase&gt; scan ‘hbase_company’<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="4-2、导出数据"><a class="header-anchor" href="#4-2、导出数据">¶</a>4.2、导出数据</h2>
+<p>在Sqoop中，&quot;导出&quot;概念指：从大数据集群（HDFS，HIVE，HBASE）向非大数据集群（RDBMS）中传输数据，叫做：导出，即使用export关键字。</p>
+<h3 id="4-2-1-HIVE-HDFS到RDBMS"><a class="header-anchor" href="#4-2-1-HIVE-HDFS到RDBMS">¶</a>4.2.1 HIVE/HDFS到RDBMS</h3>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop export \
+--connect jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company \
+--username root \
+--password 000000 \
+--table staff \
+--num-mappers 1 \
+--export-dir &#x2F;user&#x2F;hive&#x2F;warehouse&#x2F;staff_hive \
+--input-fields-terminated-by &quot;\t&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>提示：Mysql中如果表不存在，不会自动创建</p>
+<h2 id="4-3-脚本打包"><a class="header-anchor" href="#4-3-脚本打包">¶</a>4.3 脚本打包</h2>
+<p>使用opt格式的文件打包sqoop命令，然后执行</p>
+<p><strong>1) 创建一个.opt文件</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ mkdir opt
+$ touch opt&#x2F;job_HDFS2RDBMS.opt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><strong>2) 编写sqoop脚本</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ vi opt&#x2F;job_HDFS2RDBMS.opt
+
+export
+--connect
+jdbc:mysql:&#x2F;&#x2F;hadoop102:3306&#x2F;company
+--username
+root
+--password
+000000
+--table
+staff
+--num-mappers
+1
+--export-dir
+&#x2F;user&#x2F;hive&#x2F;warehouse&#x2F;staff_hive
+--input-fields-terminated-by
+&quot;\t&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>3) 执行该脚本</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">$ bin&#x2F;sqoop --options-file opt&#x2F;job_HDFS2RDBMS.opt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Sqoop/" title="Sqoop">https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Sqoop/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hive/" rel="prev" title="Hive"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">Hive</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Kafka/" rel="next" title="Kafka"><span class="post-nav-text">Kafka</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>

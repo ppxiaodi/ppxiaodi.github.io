@@ -1,0 +1,2258 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>round函数百分比显示并加百分号 | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="本文由 简悦 SimpRead 转码， 原文地址 www.cnblogs.com  ¶锁 锁是计算机协调多个进程或线程并发访问某一资源的机制。在数据库中，除传统的计算资源（如 CPU、RAM、I&#x2F;O 等）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显">
+<meta property="og:type" content="article">
+<meta property="og:title" content="round函数百分比显示并加百分号">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2021/03/29/CollectionNote/java/mysql/mysql%E9%94%81%E5%92%8C%E4%BA%8B%E5%8A%A1/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="本文由 简悦 SimpRead 转码， 原文地址 www.cnblogs.com  ¶锁 锁是计算机协调多个进程或线程并发访问某一资源的机制。在数据库中，除传统的计算资源（如 CPU、RAM、I&#x2F;O 等）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-03-28T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:53.951Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="mysql">
+<meta name="twitter:card" content="summary"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%81"><span class="toc-number">1.</span> <span class="toc-text">锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL-%E8%BF%99-3-%E7%A7%8D%E9%94%81%E7%9A%84%E7%89%B9%E6%80%A7%E5%8F%AF%E5%A4%A7%E8%87%B4%E5%BD%92%E7%BA%B3%E5%A6%82%E4%B8%8B%E3%80%82"><span class="toc-number">2.</span> <span class="toc-text">MySQL 这 3 种锁的特性可大致归纳如下。</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MyISAM-%E8%A1%A8%E9%94%81%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number"></span> <span class="toc-text">MyISAM 表锁的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9F%A5%E8%AF%A2%E8%A1%A8%E7%BA%A7%E9%94%81%E4%BA%89%E7%94%A8%E6%83%85%E5%86%B5"><span class="toc-number">1.</span> <span class="toc-text">查询表级锁争用情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MySQL-%E8%A1%A8%E7%BA%A7%E9%94%81%E7%9A%84%E9%94%81%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.</span> <span class="toc-text">MySQL 表级锁的锁模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-1-MySQL-%E4%B8%AD%E7%9A%84%E8%A1%A8%E9%94%81%E5%85%BC%E5%AE%B9%E6%80%A7"><span class="toc-number">2.1.</span> <span class="toc-text">表 20-1             MySQL 中的表锁兼容性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-2-MyISAM-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E5%86%99%E9%98%BB%E5%A1%9E%E8%AF%BB%E4%BE%8B%E5%AD%90"><span class="toc-number">2.2.</span> <span class="toc-text">表 20-2          MyISAM 存储引擎的写阻塞读例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%8A%A0%E8%A1%A8%E9%94%81"><span class="toc-number">3.</span> <span class="toc-text">如何加表锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-3-MyISAM-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E8%AF%BB%E9%98%BB%E5%A1%9E%E5%86%99%E4%BE%8B%E5%AD%90"><span class="toc-number">3.1.</span> <span class="toc-text">表 20-3      MyISAM 存储引擎的读阻塞写例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E6%8F%92%E5%85%A5%EF%BC%88Concurrent-Inserts%EF%BC%89"><span class="toc-number">4.</span> <span class="toc-text">并发插入（Concurrent Inserts）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-4-MyISAM-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E8%AF%BB%E5%86%99%EF%BC%88INSERT%EF%BC%89%E5%B9%B6%E5%8F%91%E4%BE%8B%E5%AD%90"><span class="toc-number">4.1.</span> <span class="toc-text">表 20-4              MyISAM 存储引擎的读写（INSERT）并发例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MyISAM-%E7%9A%84%E9%94%81%E8%B0%83%E5%BA%A6"><span class="toc-number">5.</span> <span class="toc-text">MyISAM 的锁调度</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#InnoDB-%E9%94%81%E9%97%AE%E9%A2%98"><span class="toc-number">6.</span> <span class="toc-text">InnoDB 锁问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86"><span class="toc-number">7.</span> <span class="toc-text">背景知识</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1%EF%BC%8E%E4%BA%8B%E5%8A%A1%EF%BC%88Transaction%EF%BC%89%E5%8F%8A%E5%85%B6-ACID-%E5%B1%9E%E6%80%A7"><span class="toc-number">7.1.</span> <span class="toc-text">1．事务（Transaction）及其 ACID 属性</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2%EF%BC%8E%E5%B9%B6%E5%8F%91%E4%BA%8B%E5%8A%A1%E5%A4%84%E7%90%86%E5%B8%A6%E6%9D%A5%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">7.2.</span> <span class="toc-text">2．并发事务处理带来的问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3%EF%BC%8E%E4%BA%8B%E5%8A%A1%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB"><span class="toc-number">7.3.</span> <span class="toc-text">3．事务隔离级别</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-5-4-%E7%A7%8D%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E6%AF%94%E8%BE%83"><span class="toc-number">7.4.</span> <span class="toc-text">表 20-5      4 种隔离级别比较</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%8E%B7%E5%8F%96-InnoDB-%E8%A1%8C%E9%94%81%E4%BA%89%E7%94%A8%E6%83%85%E5%86%B5"><span class="toc-number">8.</span> <span class="toc-text">获取 InnoDB 行锁争用情况</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#InnoDB-%E7%9A%84%E8%A1%8C%E9%94%81%E6%A8%A1%E5%BC%8F%E5%8F%8A%E5%8A%A0%E9%94%81%E6%96%B9%E6%B3%95"><span class="toc-number">9.</span> <span class="toc-text">InnoDB 的行锁模式及加锁方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-6-InnoDB-%E8%A1%8C%E9%94%81%E6%A8%A1%E5%BC%8F%E5%85%BC%E5%AE%B9%E6%80%A7%E5%88%97%E8%A1%A8"><span class="toc-number">9.1.</span> <span class="toc-text">表 20-6            InnoDB 行锁模式兼容性列表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-7-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E5%85%B1%E4%BA%AB%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">9.2.</span> <span class="toc-text">表 20-7  InnoDB 存储引擎的共享锁例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A820-8-InnoDB%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E6%8E%92%E4%BB%96%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">9.3.</span> <span class="toc-text">表20-8 InnoDB存储引擎的排他锁例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#InnoDB-%E8%A1%8C%E9%94%81%E5%AE%9E%E7%8E%B0%E6%96%B9%E5%BC%8F"><span class="toc-number">10.</span> <span class="toc-text">InnoDB 行锁实现方式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A820-9-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E8%A1%A8%E5%9C%A8%E4%B8%8D%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E6%97%B6%E4%BD%BF%E7%94%A8%E8%A1%A8%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">10.1.</span> <span class="toc-text">表20-9   InnoDB 存储引擎的表在不使用索引时使用表锁例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-10-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E8%A1%A8%E5%9C%A8%E4%BD%BF%E7%94%A8%E7%B4%A2%E5%BC%95%E6%97%B6%E4%BD%BF%E7%94%A8%E8%A1%8C%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">10.2.</span> <span class="toc-text">表 20-10  InnoDB 存储引擎的表在使用索引时使用行锁例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-11-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%BD%BF%E7%94%A8%E7%9B%B8%E5%90%8C%E7%B4%A2%E5%BC%95%E9%94%AE%E7%9A%84%E9%98%BB%E5%A1%9E%E4%BE%8B%E5%AD%90"><span class="toc-number">10.3.</span> <span class="toc-text">表 20-11 InnoDB 存储引擎使用相同索引键的阻塞例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-12-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E8%A1%A8%E4%BD%BF%E7%94%A8%E4%B8%8D%E5%90%8C%E7%B4%A2%E5%BC%95%E7%9A%84%E9%98%BB%E5%A1%9E%E4%BE%8B%E5%AD%90"><span class="toc-number">10.4.</span> <span class="toc-text">表 20-12  InnoDB 存储引擎的表使用不同索引的阻塞例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%97%B4%E9%9A%99%E9%94%81%EF%BC%88Next-Key-%E9%94%81%EF%BC%89"><span class="toc-number">11.</span> <span class="toc-text">间隙锁（Next-Key 锁）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-13-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E7%9A%84%E9%97%B4%E9%9A%99%E9%94%81%E9%98%BB%E5%A1%9E%E4%BE%8B%E5%AD%90"><span class="toc-number">11.1.</span> <span class="toc-text">表 20-13                InnoDB 存储引擎的间隙锁阻塞例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%A2%E5%A4%8D%E5%92%8C%E5%A4%8D%E5%88%B6%E7%9A%84%E9%9C%80%E8%A6%81%EF%BC%8C%E5%AF%B9-InnoDB-%E9%94%81%E6%9C%BA%E5%88%B6%E7%9A%84%E5%BD%B1%E5%93%8D"><span class="toc-number">12.</span> <span class="toc-text">恢复和复制的需要，对 InnoDB 锁机制的影响</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-14-CTAS-%E6%93%8D%E4%BD%9C%E7%BB%99%E5%8E%9F%E8%A1%A8%E5%8A%A0%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">12.1.</span> <span class="toc-text">表 20-14                   CTAS 操作给原表加锁例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-15-CTAS-%E6%93%8D%E4%BD%9C%E4%B8%8D%E7%BB%99%E5%8E%9F%E8%A1%A8%E5%8A%A0%E9%94%81%E5%B8%A6%E6%9D%A5%E7%9A%84%E5%AE%89%E5%85%A8%E9%97%AE%E9%A2%98%E4%BE%8B%E5%AD%90"><span class="toc-number">12.2.</span> <span class="toc-text">表 20-15              CTAS 操作不给原表加锁带来的安全问题例子</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#InnoDB-%E5%9C%A8%E4%B8%8D%E5%90%8C%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E4%B8%8B%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7%E8%AF%BB%E5%8F%8A%E9%94%81%E7%9A%84%E5%B7%AE%E5%BC%82"><span class="toc-number">13.</span> <span class="toc-text">InnoDB 在不同隔离级别下的一致性读及锁的差异</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A820-16-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E4%B8%8D%E5%90%8C-SQL-%E5%9C%A8%E4%B8%8D%E5%90%8C%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E4%B8%8B%E9%94%81%E6%AF%94%E8%BE%83"><span class="toc-number">13.1.</span> <span class="toc-text">表20-16      InnoDB 存储引擎中不同 SQL 在不同隔离级别下锁比较</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%97%B6%E5%80%99%E4%BD%BF%E7%94%A8%E8%A1%A8%E9%94%81"><span class="toc-number">14.</span> <span class="toc-text">什么时候使用表锁</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E6%AD%BB%E9%94%81"><span class="toc-number">15.</span> <span class="toc-text">关于死锁</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-17-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E7%9A%84%E6%AD%BB%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">15.1.</span> <span class="toc-text">表 20-17 InnoDB 存储引擎中的死锁例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-18-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E8%A1%A8%E9%A1%BA%E5%BA%8F%E9%80%A0%E6%88%90%E7%9A%84%E6%AD%BB%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">15.2.</span> <span class="toc-text">表 20-18        InnoDB 存储引擎中表顺序造成的死锁例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-19-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E8%A1%A8%E6%95%B0%E6%8D%AE%E6%93%8D%E4%BD%9C%E9%A1%BA%E5%BA%8F%E4%B8%8D%E4%B8%80%E8%87%B4%E9%80%A0%E6%88%90%E7%9A%84%E6%AD%BB%E9%94%81%E4%BE%8B%E5%AD%90"><span class="toc-number">15.3.</span> <span class="toc-text">表 20-19        InnoDB 存储引擎中表数据操作顺序不一致造成的死锁例子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-20-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%BC%95%E8%B5%B7%E7%9A%84%E6%AD%BB%E9%94%81%E4%BE%8B%E5%AD%901"><span class="toc-number">15.4.</span> <span class="toc-text">表 20-20   InnoDB 存储引擎中隔离级别引起的死锁例子1</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8-20-21-InnoDB-%E5%AD%98%E5%82%A8%E5%BC%95%E6%93%8E%E4%B8%AD%E9%9A%94%E7%A6%BB%E7%BA%A7%E5%88%AB%E5%BC%95%E8%B5%B7%E7%9A%84%E6%AD%BB%E9%94%81%E4%BE%8B%E5%AD%90-2"><span class="toc-number">15.5.</span> <span class="toc-text">表 20-21   InnoDB 存储引擎中隔离级别引起的死锁例子 2</span></a></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2021/03/29/CollectionNote/java/mysql/mysql%E9%94%81%E5%92%8C%E4%BA%8B%E5%8A%A1/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">round函数百分比显示并加百分号</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2021-03-29 00:00:00" itemprop="dateCreated datePublished" datetime="2021-03-29T00:00:00+08:00">2021-03-29</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:53" itemprop="dateModified" datetime="2021-07-11T16:54:53+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/mysql/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">mysql</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/mysql/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">mysql</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><blockquote>
+<p>本文由 <a target="_blank" rel="noopener" href="http://ksria.com/simpread/">简悦 SimpRead</a> 转码， 原文地址 <a target="_blank" rel="noopener" href="https://www.cnblogs.com/sessionbest/articles/8689082.html">www.cnblogs.com</a></p>
+</blockquote>
+<h3 id="锁"><a class="header-anchor" href="#锁">¶</a>锁</h3>
+<p>锁是计算机协调多个进程或线程并发访问某一资源的机制。在数据库中，除传统的计算资源（如 CPU、RAM、I/O 等）的争用以外，数据也是一种供许多用户共享的资源。如何保证数据并发访问的一致性、有效性是所有数据库必须解决的一个问题，锁冲突也是影响数据库并发访问性能的一个重要因素。从这个角度来说，锁对数据库而言显得尤其重要，也更加复杂。本章我们着重讨论 MySQL 锁机制的特点，常见的锁问题，以及解决 MySQL 锁问题的一些方法或建议。 MySQL 锁概述 相对其他数据库而言，MySQL 的锁机制比较简单，其最显著的特点是不同的存储引擎支持不同的锁机制。比如，MyISAM 和 MEMORY 存储引擎采用的是表级锁（table-level locking）；BDB 存储引擎采用的是页面锁（page-level locking），但也支持表级锁；InnoDB 存储引擎既支持行级锁（row-level locking），也支持表级锁，但默认情况下是采用行级锁。</p>
+<h3 id="MySQL-这-3-种锁的特性可大致归纳如下。"><a class="header-anchor" href="#MySQL-这-3-种锁的特性可大致归纳如下。">¶</a>MySQL 这 3 种锁的特性可大致归纳如下。</h3>
+<p><strong>开销、加锁速度、死锁、粒度、并发性能</strong></p>
+<ol>
+<li>表级锁：开销小，加锁快；不会出现死锁；锁定粒度大，发生锁冲突的概率最高, 并发度最低。</li>
+<li>行级锁：开销大，加锁慢；会出现死锁；锁定粒度最小，发生锁冲突的概率最低, 并发度也最高。</li>
+<li>页面锁：开销和加锁时间界于表锁和行锁之间；会出现死锁；锁定粒度界于表锁和行锁之间，并发度一般。</li>
+</ol>
+<p>从上述特点可见，很难笼统地说哪种锁更好，只能就具体应用的特点来说哪种锁更合适！仅从锁的角度来说：表级锁更适合于以查询为主，只有少量按索引条件更新数据的应用，如 Web 应用；而行级锁则更适合于有大量按索引条件并发更新少量不同数据，同时又有并发查询的应用，如一些在线事务处理（OLTP）系统。这一点在本书的 “开发篇” 介绍表类型的选择时，也曾提到过。下面几节我们重点介绍 MySQL 表锁和 InnoDB 行锁的问题，由于 BDB 已经被 InnoDB 取代，即将成为历史，在此就不做进一步的讨论了。<br>
+  MyISAM 表锁 MyISAM 存储引擎只支持表锁，这也是 MySQL 开始几个版本中唯一支持的锁类型。随着应用对事务完整性和并发性要求的不断提高，MySQL 才开始开发基于事务的存储引擎，后来慢慢出现了支持页锁的 BDB 存储引擎和支持行锁的 InnoDB 存储引擎（实际 InnoDB 是单独的一个公司，现在已经被 Oracle 公司收购）。但是 MyISAM 的表锁依然是使用最为广泛的锁类型。本节将详细介绍 MyISAM 表锁的使用。</p>
+<h2 id="MyISAM-表锁的使用"><a class="header-anchor" href="#MyISAM-表锁的使用">¶</a>MyISAM 表锁的使用</h2>
+<h3 id="查询表级锁争用情况"><a class="header-anchor" href="#查询表级锁争用情况">¶</a>查询表级锁争用情况</h3>
+<p>可以通过检查 <code>table_locks_waited</code> 和 <code>table_locks_immediate</code> 状态变量来分析系统上的表锁定争夺：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">show</span> <span class="token keyword">status</span> <span class="token operator">like</span> <span class="token string">'table%'</span><span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">-----------------------+-------+</span>
+<span class="token operator">|</span> Variable_name         <span class="token operator">|</span> <span class="token keyword">Value</span> <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">-----------------------+-------+</span>
+<span class="token operator">|</span> Table_locks_immediate <span class="token operator">|</span> <span class="token number">2979</span>  <span class="token operator">|</span>
+<span class="token operator">|</span> Table_locks_waited    <span class="token operator">|</span> <span class="token number">0</span>     <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">-----------------------+-------+</span>
+<span class="token number">2</span> <span class="token keyword">rows</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果<code>Table_locks_waited</code>的值比较高，则说明存在着较严重的表级锁争用情况。</p>
+<h3 id="MySQL-表级锁的锁模式"><a class="header-anchor" href="#MySQL-表级锁的锁模式">¶</a>MySQL 表级锁的锁模式</h3>
+<p>MySQL 的表级锁有两种模式：表共享读锁（Table Read Lock）和表独占写锁（Table Write Lock）。锁模式的兼容性如表 20-1 所示。</p>
+<h4 id="表-20-1-MySQL-中的表锁兼容性"><a class="header-anchor" href="#表-20-1-MySQL-中的表锁兼容性">¶</a>表 20-1             MySQL 中的表锁兼容性</h4>
+<table style="width: 565px" border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>请求锁模式</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 是否兼容</div>
+<div align="left">当前锁模式</div>
+</td>
+<td>
+<div>None</div>
+</td>
+<td>
+<div>读锁</div>
+</td>
+<td>
+<div>写锁</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>读锁</div>
+</td>
+<td valign="top">
+<div>是</div>
+</td>
+<td valign="top">
+<div>是</div>
+</td>
+<td valign="top">
+<div>否</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>写锁</div>
+</td>
+<td valign="top">
+<div>是</div>
+</td>
+<td valign="top">
+<div>否</div>
+</td>
+<td valign="top">
+<div>否</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>可见，对 MyISAM 表的读操作，不会阻塞其他用户对同一表的读请求，但会阻塞对同一表的写请求；对 MyISAM 表的写操作，则会阻塞其他用户对同一表的读和写操作；MyISAM 表的读操作与写操作之间，以及写操作之间是串行的！根据如表 20-2 所示的例子可以知道，当一个线程获得对一个表的写锁后，只有持有锁的线程可以对表进行更新操作。其他线程的读、写操作都会等待，直到锁被释放为止。</p>
+<h4 id="表-20-2-MyISAM-存储引擎的写阻塞读例子"><a class="header-anchor" href="#表-20-2-MyISAM-存储引擎的写阻塞读例子">¶</a>表 20-2          MyISAM 存储引擎的写阻塞读例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>获得表film_text的WRITE锁定</div>
+<div>mysql&gt; lock table film_text write;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session对锁定表的查询、更新、插入操作都可以执行：</div>
+<div>mysql&gt; select film_id,title from film_text where film_id = 1001;</div>
+<div>+---------+-------------+</div>
+<div>| film_id | title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</div>
+<div>+---------+-------------+</div>
+<div>| 1001&nbsp;&nbsp;&nbsp; | Update Test |</div>
+<div>+---------+-------------+</div>
+<div>1 row in set (0.00 sec)</div>
+<div>mysql&gt; insert into film_text (film_id,title) values(1003,'Test');</div>
+<div>Query OK, 1 row affected (0.00 sec)</div>
+<div>mysql&gt; update film_text set title = 'Test' where film_id = 1001;</div>
+<div>Query OK, 1 row affected (0.00 sec)</div>
+<div>Rows matched: 1&nbsp; Changed: 1&nbsp; Warnings: 0</div>
+</td>
+<td valign="top">
+<div>其他session对锁定表的查询被阻塞，需要等待锁被释放：</div>
+<div>mysql&gt; select film_id,title from film_text where film_id = 1001;</div>
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>释放锁：</div>
+<div>mysql&gt; unlock tables;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>Session2获得锁，查询返回：</div>
+<div>mysql&gt; select film_id,title from film_text where film_id = 1001;</div>
+<div>+---------+-------+</div>
+<div>| film_id | title |</div>
+<div>+---------+-------+</div>
+<div>| 1001&nbsp;&nbsp;&nbsp; | Test&nbsp; |</div>
+<div>+---------+-------+</div>
+<div>1 row in set (57.59 sec)</div>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="如何加表锁"><a class="header-anchor" href="#如何加表锁">¶</a>如何加表锁</h3>
+<p>MyISAM 在执行查询语句（SELECT）前，会自动给涉及的所有表加读锁，在执行更新操作（UPDATE、DELETE、INSERT 等）前，会自动给涉及的表加写锁，这个过程并不需要用户干预，因此，用户一般不需要直接用 LOCK TABLE 命令给 MyISAM 表显式加锁。在本书的示例中，显式加锁基本上都是为了方便而已，并非必须如此。 给 MyISAM 表显示加锁，一般是为了在一定程度模拟事务操作，实现对某一时间点多个表的一致性读取。例如，有一个订单表 orders，其中记录有各订单的总金额 total，同时还有一个订单明细表 order_detail，其中记录有各订单每一产品的金额小计 subtotal，假设我们需要检查这两个表的金额合计是否相符，可能就需要执行如下两条 SQL：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Select</span> <span class="token function">sum</span><span class="token punctuation">(</span>total<span class="token punctuation">)</span> <span class="token keyword">from</span> orders<span class="token punctuation">;</span>
+<span class="token keyword">Select</span> <span class="token function">sum</span><span class="token punctuation">(</span>subtotal<span class="token punctuation">)</span> <span class="token keyword">from</span> order_detail<span class="token punctuation">;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>这时，如果不先给两个表加锁，就可能产生错误的结果，因为第一条语句执行过程中，order_detail 表可能已经发生了改变。因此，正确的方法应该是：</p>
+ <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">Lock</span> <span class="token keyword">tables</span> orders <span class="token keyword">read</span> <span class="token keyword">local</span><span class="token punctuation">,</span> order_detail <span class="token keyword">read</span> <span class="token keyword">local</span><span class="token punctuation">;</span>
+<span class="token keyword">Select</span> <span class="token function">sum</span><span class="token punctuation">(</span>total<span class="token punctuation">)</span> <span class="token keyword">from</span> orders<span class="token punctuation">;</span> 
+<span class="token keyword">Select</span> <span class="token function">sum</span><span class="token punctuation">(</span>subtotal<span class="token punctuation">)</span> <span class="token keyword">from</span> order_detail<span class="token punctuation">;</span> 
+<span class="token keyword">Unlock</span> <span class="token keyword">tables</span><span class="token punctuation">;</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>要特别说明以下两点内容。</p>
+<ul>
+<li>上面的例子在 LOCK TABLES 时加了 “local” 选项，其作用就是在满足 MyISAM 表并发插入条件的情况下，允许其他用户在表尾并发插入记录，有关 MyISAM 表的并发插入问题，在后面的章节中还会进一步介绍。</li>
+<li>**在用 LOCK TABLES 给表显式加表锁时，必须同时取得所有涉及到表的锁，并且 MySQL 不支持锁升级。也就是说，在执行 LOCK TABLES 后，只能访问显式加锁的这些表，不能访问未加锁的表；同时，如果加的是读锁，那么只能执行查询操作，而不能执行更新操作。**其实，<strong>在自动加锁的情况下也基本如此，MyISAM 总是一次获得 SQL 语句所需要的全部锁。这也正是 MyISAM 表不会出现死锁（Deadlock Free）的原因。</strong></li>
+</ul>
+<p>在如表 20-3 所示的例子中，一个 session 使用 LOCK TABLE 命令给表 film_text 加了读锁，这个 session 可以查询锁定表中的记录，但更新或访问其他表都会提示错误；同时，另外一个 session 可以查询表中的记录，但更新就会出现锁等待。</p>
+<h4 id="表-20-3-MyISAM-存储引擎的读阻塞写例子"><a class="header-anchor" href="#表-20-3-MyISAM-存储引擎的读阻塞写例子">¶</a>表 20-3      MyISAM 存储引擎的读阻塞写例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>获得表film_text的READ锁定</div>
+<div>mysql&gt; lock table film_text read;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session可以查询该表记录</div>
+<div>mysql&gt; select film_id,title from film_text where film_id = 1001;</div>
+<div>+---------+------------------+</div>
+<div>| film_id | title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</div>
+<div>+---------+------------------+</div>
+<div>| 1001 &nbsp;&nbsp;&nbsp;| ACADEMY DINOSAUR |</div>
+<div>+---------+------------------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>其他session也可以查询该表的记录</div>
+<div>mysql&gt; select film_id,title from film_text where film_id = 1001;</div>
+<div>+---------+------------------+</div>
+<div>| film_id | title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</div>
+<div>+---------+------------------+</div>
+<div>| 1001&nbsp;&nbsp;&nbsp; | ACADEMY DINOSAUR |</div>
+<div>+---------+------------------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">当前session不能查询没有锁定的表</span></strong></div>
+<div>mysql&gt; select film_id,title from film where film_id = 1001;</div>
+<div>ERROR 1100 (HY000): Table 'film' was not locked with LOCK TABLES</div>
+</td>
+<td valign="top">
+<div>其他session可以查询或者更新未锁定的表</div>
+<div>mysql&gt; select film_id,title from film where film_id = 1001;</div>
+<div>+---------+---------------+</div>
+<div>| film_id | title&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</div>
+<div>+---------+---------------+</div>
+<div>| 1001&nbsp;&nbsp;&nbsp; | update record |</div>
+<div>+---------+---------------+</div>
+<div>1 row in set (0.00 sec)</div>
+<div>mysql&gt; update film set title = 'Test' where film_id = 1001;</div>
+<div>Query OK, 1 row affected (0.04 sec)</div>
+<div>Rows matched: 1&nbsp; Changed: 1&nbsp; Warnings: 0</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session中插入或者更新锁定的表都会提示错误：</div>
+<div>mysql&gt; insert into film_text (film_id,title) values(1002,'Test');</div>
+<div>ERROR 1099 (HY000): Table 'film_text' was locked with a READ lock and can't be updated</div>
+<div>mysql&gt; update film_text set title = 'Test' where film_id = 1001;</div>
+<div>ERROR 1099 (HY000): Table 'film_text' was locked with a READ lock and can't be updated</div>
+</td>
+<td valign="top">
+<div>其他session更新锁定表会等待获得锁：</div>
+<div>mysql&gt; update film_text set title = 'Test' where film_id = 1001;</div>
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>释放锁</div>
+<div>mysql&gt; unlock tables;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>Session获得锁，更新操作完成：</div>
+<div>mysql&gt; update film_text set title = 'Test' where film_id = 1001;</div>
+<div>Query OK, 1 row affected (1 min 0.71 sec)</div>
+<div>Rows matched: 1&nbsp; Changed: 1&nbsp; Warnings: 0</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>**当使用 LOCK TABLES 时，不仅需要一次锁定用到的所有表，而且，同一个表在 SQL 语句中出现多少次，就要通过与 SQL 语句中相同的别名锁定多少次，否则也会出错！**举例说明如下。</p>
+<ul>
+<li>（1）对 actor 表获得读锁：</li>
+</ul>
+  <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">lock</span> <span class="token keyword">table</span> actor <span class="token keyword">read</span><span class="token punctuation">;</span> 
+Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>（2）但是通过别名访问会提示错误：</li>
+</ul>
+  <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">select</span> a<span class="token punctuation">.</span>first_name<span class="token punctuation">,</span>a<span class="token punctuation">.</span>last_name<span class="token punctuation">,</span>b<span class="token punctuation">.</span>first_name<span class="token punctuation">,</span>b<span class="token punctuation">.</span>last_name <span class="token keyword">from</span> actor a<span class="token punctuation">,</span>actor b <span class="token keyword">where</span> a<span class="token punctuation">.</span>first_name <span class="token operator">=</span> b<span class="token punctuation">.</span>first_name <span class="token operator">and</span> a<span class="token punctuation">.</span>first_name <span class="token operator">=</span> <span class="token string">'Lisa'</span> <span class="token operator">and</span> a<span class="token punctuation">.</span>last_name <span class="token operator">=</span> <span class="token string">'Tom'</span> <span class="token operator">and</span> a<span class="token punctuation">.</span>last_name <span class="token operator">&lt;></span> b<span class="token punctuation">.</span>last_name<span class="token punctuation">;</span> 
+ERROR <span class="token number">1100</span> <span class="token punctuation">(</span>HY000<span class="token punctuation">)</span>: <span class="token keyword">Table</span> <span class="token string">'a'</span> was <span class="token operator">not</span> locked <span class="token keyword">with</span> <span class="token keyword">LOCK</span> <span class="token keyword">TABLES</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>（3）需要对别名分别锁定：</li>
+</ul>
+  <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">lock</span> <span class="token keyword">table</span> actor <span class="token keyword">as</span> a <span class="token keyword">read</span><span class="token punctuation">,</span>actor <span class="token keyword">as</span> b <span class="token keyword">read</span><span class="token punctuation">;</span>
+ Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>（4）按照别名的查询可以正确执行：</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">select</span> a<span class="token punctuation">.</span>first_name<span class="token punctuation">,</span>a<span class="token punctuation">.</span>last_name<span class="token punctuation">,</span>b<span class="token punctuation">.</span>first_name<span class="token punctuation">,</span>b<span class="token punctuation">.</span>last_name <span class="token keyword">from</span> actor a<span class="token punctuation">,</span>actor b <span class="token keyword">where</span> a<span class="token punctuation">.</span>first_name <span class="token operator">=</span> b<span class="token punctuation">.</span>first_name <span class="token operator">and</span> a<span class="token punctuation">.</span>first_name <span class="token operator">=</span> <span class="token string">'Lisa'</span> <span class="token operator">and</span> a<span class="token punctuation">.</span>last_name <span class="token operator">=</span> <span class="token string">'Tom'</span> <span class="token operator">and</span> a<span class="token punctuation">.</span>last_name <span class="token operator">&lt;></span> b<span class="token punctuation">.</span>last_name<span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">------------+-----------+------------+-----------+</span>
+<span class="token operator">|</span> first_name <span class="token operator">|</span> last_name <span class="token operator">|</span> first_name <span class="token operator">|</span> last_name <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">------------+-----------+------------+-----------+</span>
+<span class="token operator">|</span> Lisa       <span class="token operator">|</span> Tom       <span class="token operator">|</span> LISA       <span class="token operator">|</span> MONROE    <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">------------+-----------+------------+-----------+</span>
+<span class="token number">1</span> <span class="token keyword">row</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="并发插入（Concurrent-Inserts）"><a class="header-anchor" href="#并发插入（Concurrent-Inserts）">¶</a>并发插入（Concurrent Inserts）</h3>
+<p>上文提到过 MyISAM 表的读和写是串行的，但这是就总体而言的。在一定条件下，MyISAM 表也支持查询和插入操作的并发进行。</p>
+<p><strong>MyISAM 存储引擎有一个系统变量 concurrent_insert，专门用以控制其并发插入的行为，其值分别可以为 0、1 或 2。</strong></p>
+<ul>
+<li>当 concurrent_insert 设置为 0 时，不允许并发插入。</li>
+<li>当 concurrent_insert 设置为 1 时，如果 MyISAM 表中没有空洞（即表的中间没有被删除的行），MyISAM 允许在一个进程读表的同时，另一个进程从表尾插入记录。这也是 MySQL 的默认设置。</li>
+<li>当 concurrent_insert 设置为 2 时，无论 MyISAM 表中有没有空洞，都允许在表尾并发插入记录。</li>
+</ul>
+<p>在如表 20-4 所示的例子中，session_1 获得了一个表的 READ LOCAL 锁，该线程可以对表进行查询操作，但不能对表进行更新操作；其他的线程（session_2），虽然不能对表进行删除和更新操作，但却可以对该表进行并发插入操作，这里假设该表中间不存在空洞。</p>
+<h4 id="表-20-4-MyISAM-存储引擎的读写（INSERT）并发例子"><a class="header-anchor" href="#表-20-4-MyISAM-存储引擎的读写（INSERT）并发例子">¶</a>表 20-4              MyISAM 存储引擎的读写（INSERT）并发例子</h4>
+   <table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>获得表film_text的READ LOCAL锁定</div>
+<div>mysql&gt; lock table film_text read local;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session不能对锁定表进行更新或者插入操作：</div>
+<div>mysql&gt; insert into film_text (film_id,title) values(1002,'Test');</div>
+<div>ERROR 1099 (HY000): Table 'film_text' was locked with a READ lock and can't be updated</div>
+<div>mysql&gt; update film_text set title = 'Test' where film_id = 1001;</div>
+<div>ERROR 1099 (HY000): Table 'film_text' was locked with a READ lock and can't be updated</div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">其他session可以进行插入操作，但是更新会等待：</span></strong></div>
+<div>mysql&gt; insert into film_text (film_id,title) values(1002,'Test');</div>
+<div>Query OK, 1 row affected (0.00 sec) </div>
+<div>mysql&gt; update film_text set title = 'Update Test' where film_id = 1001;</div>
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session不能访问其他session插入的记录：</div>
+<div>mysql&gt; select film_id,title from film_text where film_id = 1002;</div>
+<div>Empty set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<div><span style="color: rgba(255, 102, 0, 1)"><strong>释放锁：</strong></span></div>
+<div>mysql&gt; unlock tables;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session解锁后可以获得其他session插入的记录：</div>
+<div>mysql&gt; select film_id,title from film_text where film_id = 1002;</div>
+<div>+---------+-------+</div>
+<div>| film_id | title |</div>
+<div>+---------+-------+</div>
+<div>| 1002&nbsp;&nbsp;&nbsp; | Test&nbsp; |</div>
+<div>+---------+-------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div><span style="color: rgba(255, 102, 0, 1)"><strong>Session2获得锁，更新操作完成：</strong></span></div>
+<div>mysql&gt; update film_text set title = 'Update Test' where film_id = 1001;</div>
+<div>Query OK, 1 row affected (1 min 17.75 sec)</div>
+<div>Rows matched: 1&nbsp; Changed: 1&nbsp; Warnings: 0</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>可以利用 MyISAM 存储引擎的并发插入特性，来解决应用中对同一表查询和插入的锁争用。例如，将 concurrent_insert 系统变量设为 2，总是允许并发插入；同时，**通过定期在系统空闲时段执行 OPTIMIZE TABLE 语句来整理空间碎片，收回因删除记录而产生的中间空洞。**有关 OPTIMIZE TABLE 语句的详细介绍，可以参见第 18 章中 “两个简单实用的优化方法” 一节的内容。</p>
+<h3 id="MyISAM-的锁调度"><a class="header-anchor" href="#MyISAM-的锁调度">¶</a>MyISAM 的锁调度</h3>
+<p>前面讲过，MyISAM 存储引擎的读锁和写锁是互斥的，读写操作是串行的。那么，一个进程请求某个 MyISAM 表的读锁，同时另一个进程也请求同一表的写锁，MySQL 如何处理呢？答案是<strong>写进程先获得锁</strong>。不仅如此，即使读请求先到锁等待队列，写请求后到，写锁也会插到读锁请求之前！这是因为 MySQL 认为写请求一般比读请求要重要。<strong>这也正是 MyISAM 表不太适合于有大量更新操作和查询操作应用的原因，因为，大量的更新操作会造成查询操作很难获得读锁，从而可能永远阻塞。这种情况有时可能会变得非常糟糕！幸好我们可以通过一些设置来调节 MyISAM 的调度行为。</strong></p>
+<ul>
+<li>通过指定启动参数 low-priority-updates，使 MyISAM 引擎默认给予读请求以优先的权利。</li>
+<li>通过执行命令 SET LOW_PRIORITY_UPDATES=1，使该连接发出的更新请求优先级降低。</li>
+<li>通过指定 INSERT、UPDATE、DELETE 语句的 LOW_PRIORITY 属性，降低该语句的优先级。</li>
+</ul>
+<p>虽然上面 3 种方法都是要么更新优先，要么查询优先的方法，但还是可以用其来解决查询相对重要的应用（如用户登录系统）中，读锁等待严重的问题。<br>
+另外，MySQL 也提供了一种折中的办法来调节读写冲突，即给系统参数 <strong>max_write_lock_count</strong> 设置一个合适的值，当一个表的读锁达到这个值后，MySQL 就暂时将写请求的优先级降低，给读进程一定获得锁的机会。 上面已经讨论了写优先调度机制带来的问题和解决办法。**这里还要强调一点：一些需要长时间运行的查询操作，也会使写进程 “饿死”！**因此，应用中应尽量避免出现长时间运行的查询操作，不要总想用一条 SELECT 语句来解决问题，因为这种看似巧妙的 SQL 语句，往往比较复杂，执行时间较长，在可能的情况下可以通过使用中间表等措施对 SQL 语句做一定的 “分解”，使每一步查询都能在较短时间完成，从而减少锁冲突。如果复杂查询不可避免，应尽量安排在数据库空闲时段执行，比如一些定期统计可以安排在夜间执行。</p>
+<h3 id="InnoDB-锁问题"><a class="header-anchor" href="#InnoDB-锁问题">¶</a>InnoDB 锁问题</h3>
+<p>InnoDB 与 MyISAM 的最大不同有两点：一是支持事务（TRANSACTION）；二是采用了行级锁。行级锁与表级锁本来就有许多不同之处，另外，事务的引入也带来了一些新问题。下面我们先介绍一点背景知识，然后详细讨论 InnoDB 的锁问题。</p>
+<h3 id="背景知识"><a class="header-anchor" href="#背景知识">¶</a>背景知识</h3>
+<h4 id="1．事务（Transaction）及其-ACID-属性"><a class="header-anchor" href="#1．事务（Transaction）及其-ACID-属性">¶</a>1．事务（Transaction）及其 ACID 属性</h4>
+<p>事务是由一组 SQL 语句组成的逻辑处理单元，事务具有以下 4 个属性，通常简称为事务的 ACID 属性。</p>
+<ul>
+<li>原子性（Atomicity）：事务是一个原子操作单元，其对数据的修改，要么全都执行，要么全都不执行。</li>
+<li>一致性（Consistent）：在事务开始和完成时，数据都必须保持一致状态。这意味着所有相关的数据规则都必须应用于事务的修改，以保持数据的完整性；事务结束时，所有的内部数据结构（如 B 树索引或双向链表）也都必须是正确的。</li>
+<li>隔离性（Isolation）：数据库系统提供一定的隔离机制，保证事务在不受外部并发操作影响的 “独立” 环境执行。这意味着事务处理过程中的中间状态对外部是不可见的，反之亦然。</li>
+<li>持久性（Durable）：事务完成之后，它对于数据的修改是永久性的，即使出现系统故障也能够保持。 银行转帐就是事务的一个典型例子。</li>
+</ul>
+<h4 id="2．并发事务处理带来的问题"><a class="header-anchor" href="#2．并发事务处理带来的问题">¶</a>2．并发事务处理带来的问题</h4>
+<p>相对于串行处理来说，并发事务处理能大大增加数据库资源的利用率，提高数据库系统的事务吞吐量，从而可以支持更多的用户。但并发事务处理也会带来一些问题，主要包括以下几种情况。</p>
+<ul>
+<li>更新丢失（Lost Update）：**当两个或多个事务选择同一行，然后基于最初选定的值更新该行时，由于每个事务都不知道其他事务的存在，就会发生丢失更新问题－－最后的更新覆盖了由其他事务所做的更新。例如，两个编辑人员制作了同一文档的电子副本。每个编辑人员独立地更改其副本，然后保存更改后的副本，这样就覆盖了原始文档。最后保存其更改副本的编辑人员覆盖另一个编辑人员所做的更改。如果在一个编辑人员完成并提交事务之前，另一个编辑人员不能访问同一文件，则可避免此问题。</li>
+<li>脏读（Dirty Reads）：**一个事务正在对一条记录做修改，在这个事务完成并提交前，这条记录的数据就处于不一致状态；这时，另一个事务也来读取同一条记录，如果不加控制，第二个事务读取了这些 “脏” 数据，并据此做进一步的处理，就会产生未提交的数据依赖关系。这种现象被形象地叫做 “脏读”。</li>
+<li>不可重复读（Non-Repeatable Reads）：**一个事务在读取某些数据后的某个时间，再次读取以前读过的数据，却发现其读出的数据已经发生了改变、或某些记录已经被删除了！这种现象就叫做 “不可重复读”。</li>
+<li>幻读（Phantom Reads）：**一个事务按相同的查询条件重新读取以前检索过的数据，却发现其他事务插入了满足其查询条件的新数据，这种现象就称为 “幻读”。</li>
+</ul>
+<h4 id="3．事务隔离级别"><a class="header-anchor" href="#3．事务隔离级别">¶</a>3．事务隔离级别</h4>
+<p>在上面讲到的并发事务处理带来的问题中**，“更新丢失” 通常是应该完全避免的。但防止更新丢失，并不能单靠数据库事务控制器来解决，需要应用程序对要更新的数据加必要的锁来解决，因此，防止更新丢失应该是应用的责任。** **“脏读”、“不可重复读” 和 “幻读”，其实都是数据库读一致性问题，必须由数据库提供一定的事务隔离机制来解决。**数据库实现事务隔离的方式，基本上可分为以下两种。</p>
+<ul>
+<li>一种是在读取数据前，对其加锁，阻止其他事务对数据进行修改。</li>
+<li>另一种是不用加任何锁，通过一定机制生成一个数据请求时间点的一致性数据快照（Snapshot)，并用这个快照来提供一定级别（语句级或事务级）的一致性读取。从用户的角度来看，好像是数据库可以提供同一数据的多个版本，因此，这种技术叫做数据<strong>多版本并发控制</strong>（MultiVersion Concurrency Control，简称 MVCC 或 MCC），也经常称为多版本数据库。 数据库的事务隔离越严格，并发副作用越小，但付出的代价也就越大，因为事务隔离实质上就是使事务在一定程度上 “串行化”进行，这显然与 “并发” 是矛盾的。同时，不同的应用对读一致性和事务隔离程度的要求也是不同的，比如许多应用对 “不可重复读” 和“幻读”并不敏感，可能更关心数据并发访问的能力。</li>
+</ul>
+<p>为了解决 “隔离” 与“并发”的矛盾，ISO/ANSI SQL92 定义了 4 个事务隔离级别，每个级别的隔离程度不同，允许出现的副作用也不同，应用可以根据自己的业务逻辑要求，通过选择不同的隔离级别来平衡 “隔离”与 “并发” 的矛盾。表 20-5 很好地概括了这 4 个隔离级别的特性。</p>
+<h4 id="表-20-5-4-种隔离级别比较"><a class="header-anchor" href="#表-20-5-4-种隔离级别比较">¶</a>表 20-5      4 种隔离级别比较</h4>
+<table style="width: 539px" border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>读数据一致性及允许的并发副作用</div>
+<div>隔离级别</div>
+</td>
+<td valign="top">
+<div>读数据一致性</div>
+</td>
+<td valign="top">
+<div>脏读</div>
+</td>
+<td valign="top">
+<div>不可重复读</div>
+</td>
+<td valign="top">
+<div>幻读</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left"><strong><span style="color: rgba(255, 102, 0, 1)">未提交读（Read uncommitted）</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">最低级别，只能保证不读取物理上损坏的数据</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">是</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">是</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">是</span></strong></div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left"><strong><span style="color: rgba(255, 102, 0, 1)">已提交度（Read committed）</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">语句级</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">否</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">是</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">是</span></strong></div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left"><strong><span style="color: rgba(255, 102, 0, 1)">可重复读（Repeatable read）</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">事务级</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">否</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">否</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">是</span></strong></div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left"><strong><span style="color: rgba(255, 102, 0, 1)">可序列化（Serializable）</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">最高级别，事务级</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">否</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">否</span></strong></div>
+</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">否</span></strong></div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>最后要说明的是：各具体数据库并不一定完全实现了上述 4 个隔离级别，例如，Oracle 只提供 Read committed 和 Serializable 两个标准隔离级别，另外还提供自己定义的 Read only 隔离级别；SQL Server 除支持上述 ISO/ANSI SQL92 定义的 4 个隔离级别外，还支持一个叫做 “快照” 的隔离级别，但严格来说它是一个用 MVCC 实现的 Serializable 隔离级别。MySQL 支持全部 4 个隔离级别，但在具体实现时，有一些特点，比如在一些隔离级别下是采用 MVCC 一致性读，但某些情况下又不是，这些内容在后面的章节中将会做进一步介绍。</p>
+<h3 id="获取-InnoDB-行锁争用情况"><a class="header-anchor" href="#获取-InnoDB-行锁争用情况">¶</a>获取 InnoDB 行锁争用情况</h3>
+<p>可以通过检查 InnoDB_row_lock 状态变量来分析系统上的行锁的争夺情况：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">show</span> <span class="token keyword">status</span> <span class="token operator">like</span> <span class="token string">'innodb_row_lock%'</span><span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">-------------------------------+-------+</span>
+<span class="token operator">|</span> Variable_name                 <span class="token operator">|</span> <span class="token keyword">Value</span> <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">-------------------------------+-------+</span>
+<span class="token operator">|</span> InnoDB_row_lock_current_waits <span class="token operator">|</span> <span class="token number">0</span>     <span class="token operator">|</span>
+<span class="token operator">|</span> InnoDB_row_lock_time          <span class="token operator">|</span> <span class="token number">0</span>     <span class="token operator">|</span>
+<span class="token operator">|</span> InnoDB_row_lock_time_avg      <span class="token operator">|</span> <span class="token number">0</span>     <span class="token operator">|</span>
+<span class="token operator">|</span> InnoDB_row_lock_time_max      <span class="token operator">|</span> <span class="token number">0</span>     <span class="token operator">|</span>
+<span class="token operator">|</span> InnoDB_row_lock_waits         <span class="token operator">|</span> <span class="token number">0</span>     <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">-------------------------------+-------+</span>
+<span class="token number">5</span> <span class="token keyword">rows</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.01</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>如果发现锁争用比较严重，如 InnoDB_row_lock_waits 和 InnoDB_row_lock_time_avg 的值比较高</strong>，还可以通过设置 InnoDB Monitors 来进一步观察发生锁冲突的表、数据行等，并分析锁争用的原因。</p>
+<p>具体方法如下：</p>
+  <pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">  mysql<span class="token operator">></span> <span class="token keyword">CREATE</span> <span class="token keyword">TABLE</span> innodb_monitor<span class="token punctuation">(</span>a <span class="token keyword">INT</span><span class="token punctuation">)</span> <span class="token keyword">ENGINE</span><span class="token operator">=</span><span class="token keyword">INNODB</span><span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.14</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>然后就可以用下面的语句来进行查看：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">Show</span> <span class="token keyword">innodb</span> <span class="token keyword">status</span>\G<span class="token punctuation">;</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token number">1.</span> <span class="token keyword">row</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+  <span class="token keyword">Type</span>: <span class="token keyword">InnoDB</span>
+  Name:
+<span class="token keyword">Status</span>:
+…
+…
+<span class="token comment">------------</span>
+<span class="token keyword">TRANSACTIONS</span>
+<span class="token comment">------------</span>
+Trx id counter <span class="token number">0</span> <span class="token number">117472192</span>
+<span class="token keyword">Purge</span> done <span class="token keyword">for</span> trx's n:o <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token number">117472190</span> undo n:o <span class="token operator">&lt;</span> <span class="token number">0</span> <span class="token number">0</span>
+History list length <span class="token number">17</span>
+Total number <span class="token keyword">of</span> <span class="token keyword">lock</span> structs <span class="token operator">in</span> <span class="token keyword">row</span> <span class="token keyword">lock</span> <span class="token keyword">hash</span> <span class="token keyword">table</span> <span class="token number">0</span>
+LIST <span class="token keyword">OF</span> <span class="token keyword">TRANSACTIONS</span> <span class="token keyword">FOR</span> EACH <span class="token keyword">SESSION</span>:
+<span class="token comment">---TRANSACTION 0 117472185, not started, process no 11052, OS thread id 1158191456</span>
+MySQL thread id <span class="token number">200610</span><span class="token punctuation">,</span> query id <span class="token number">291197</span> localhost root
+<span class="token comment">---TRANSACTION 0 117472183, not started, process no 11052, OS thread id 1158723936</span>
+MySQL thread id <span class="token number">199285</span><span class="token punctuation">,</span> query id <span class="token number">291199</span> localhost root
+<span class="token keyword">Show</span> <span class="token keyword">innodb</span> <span class="token keyword">status</span>
+…<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>监视器可以通过发出下列语句来停止查看：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">DROP</span> <span class="token keyword">TABLE</span> innodb_monitor<span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.05</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>设置监视器后，在 SHOW INNODB STATUS 的显示内容中，会有详细的当前锁等待的信息，包括表名、锁类型、锁定记录的情况等，便于进行进一步的分析和问题的确定。打开监视器以后，默认情况下每 15 秒会向日志中记录监控的内容，如果长时间打开会导致. err 文件变得非常的巨大，所以用户在确认问题原因之后，要记得删除监控表以关闭监视器，或者通过使用 “–console” 选项来启动服务器以关闭写日志文件。</p>
+<h3 id="InnoDB-的行锁模式及加锁方法"><a class="header-anchor" href="#InnoDB-的行锁模式及加锁方法">¶</a>InnoDB 的行锁模式及加锁方法</h3>
+<p>InnoDB 实现了以下两种类型的行锁。</p>
+<ul>
+<li>共享锁（S）：允许一个事务去读一行，阻止其他事务获得相同数据集的排他锁。</li>
+<li>排他锁（X)：允许获得排他锁的事务更新数据，阻止其他事务取得相同数据集的共享读锁和排他写锁。 另外，为了允许行锁和表锁共存，实现多粒度锁机制，InnoDB 还有两种内部使用的意向锁（Intention Locks），这两种意向锁都是表锁。</li>
+<li>意向共享锁（IS）：事务打算给数据行加行共享锁，事务在给一个数据行加共享锁前必须先取得该表的 IS 锁。</li>
+<li>意向排他锁（IX）：事务打算给数据行加行排他锁，事务在给一个数据行加排他锁前必须先取得该表的 IX 锁。</li>
+</ul>
+<p>上述锁模式的兼容情况具体如表 20-6 所示。</p>
+<h4 id="表-20-6-InnoDB-行锁模式兼容性列表"><a class="header-anchor" href="#表-20-6-InnoDB-行锁模式兼容性列表">¶</a>表 20-6            InnoDB 行锁模式兼容性列表</h4>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token operator">|</span> 请求锁模式  是否兼容当前锁模式 <span class="token operator">|</span> X    <span class="token operator">|</span> IX   <span class="token operator">|</span> S    <span class="token operator">|</span> <span class="token operator">IS</span>   <span class="token operator">|</span>
+<span class="token operator">|</span> <span class="token comment">------------------------------ | ---- | ---- | ---- | ---- |</span>
+<span class="token operator">|</span> X                              <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 冲突 <span class="token operator">|</span>
+<span class="token operator">|</span> IX                             <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 兼容 <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 兼容 <span class="token operator">|</span>
+<span class="token operator">|</span> S                              <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 兼容 <span class="token operator">|</span> 兼容 <span class="token operator">|</span>
+<span class="token operator">|</span> <span class="token operator">IS</span>                             <span class="token operator">|</span> 冲突 <span class="token operator">|</span> 兼容 <span class="token operator">|</span> 兼容 <span class="token operator">|</span> 兼容 <span class="token operator">|</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果一个事务请求的锁模式与当前的锁兼容，InnoDB 就将请求的锁授予该事务；</p>
+<p>反之，如果两者不兼容，该事务就要等待锁释放。</p>
+<p>意向锁是 InnoDB 自动加的，不需用户干预。对于 UPDATE、DELETE 和 INSERT 语句，InnoDB 会自动给涉及数据集加排他锁（X)；对于普通 SELECT 语句，InnoDB 不会加任何锁；事务可以通过以下语句显示给记录集加共享锁或排他锁。</p>
+<ul>
+<li>
+<p>共享锁（S）：SELECT * FROM table_name WHERE … LOCK IN SHARE MODE。</p>
+</li>
+<li>
+<p>排他锁（X)：SELECT * FROM table_name WHERE … FOR UPDATE。</p>
+</li>
+</ul>
+<p>用 <code>SELECT ... IN SHARE MODE</code> 获得共享锁，主要用在需要数据依存关系时来确认某行记录是否存在，并确保没有人对这个记录进行 <code>UPDATE</code> 或者 <code>DELETE</code> 操作。但是如果当前事务也需要对该记录进行更新操作，则很有可能造成死锁，对于锁定行记录后需要进行更新操作的应用，应该使用 <code>SELECT... FOR UPDATE</code> 方式获得排他锁。 在如表 20-7 所示的例子中，使用了 <code>SELECT ... IN SHARE MODE</code> 加锁后再更新记录，看看会出现什么情况，其中 actor 表的 actor_id 字段为主键。</p>
+<h4 id="表-20-7-InnoDB-存储引擎的共享锁例子"><a class="header-anchor" href="#表-20-7-InnoDB-存储引擎的共享锁例子">¶</a>表 20-7  <strong>InnoDB 存储引擎的共享锁例子</strong></h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178;</div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178;</div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session对actor_id=178的记录加share mode 的共享锁：</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178<strong><span style="color: rgba(255, 102, 0, 1)">lock in share mode;</span></strong></div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.01 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>其他session仍然可以查询记录，并也可以对该记录加share mode的共享锁：</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178<strong><span style="color: rgba(255, 102, 0, 1)">lock in share mode;</span></strong></div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.01 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">当前session对锁定的记录进行更新操作，等待锁：</span></strong></div>
+<div>mysql&gt; update actor set last_name = 'MONROE T' where actor_id = 178;</div>
+<div>等待</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div><strong><span style="color: rgba(255, 102, 0, 1)">其他session也对该记录进行更新操作，则会导致死锁退出：</span></strong></div>
+<div>mysql&gt; update actor set last_name = 'MONROE T' where actor_id = 178;</div>
+<div>ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>获得锁后，可以成功更新：</div>
+<div>mysql&gt; update actor set last_name = 'MONROE T' where actor_id = 178;</div>
+<div>Query OK, 1 row affected (17.67 sec)</div>
+<div>Rows matched: 1&nbsp; Changed: 1&nbsp; Warnings: 0</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<p>当使用<code>SELECT...FOR UPDATE</code>加锁后再更新记录，出现如表20-8所示的情况。</p>
+<h4 id="表20-8-InnoDB存储引擎的排他锁例子"><a class="header-anchor" href="#表20-8-InnoDB存储引擎的排他锁例子">¶</a>表20-8 InnoDB存储引擎的排他锁例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178;</div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178;</div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session对actor_id=178的记录加for update的排它锁：</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178 for update;</div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>其他session可以查询该记录，但是不能对该记录加共享锁，会等待获得锁：</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178;</div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE&nbsp;&nbsp;&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (0.00 sec)</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178 for update;</div>
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session可以对锁定的记录进行更新操作，更新后释放锁：</div>
+<div>mysql&gt; update actor set last_name = 'MONROE T' where actor_id = 178;</div>
+<div>Query OK, 1 row affected (0.00 sec)</div>
+<div>Rows matched: 1&nbsp; Changed: 1&nbsp; Warnings: 0</div>
+<div>mysql&gt; commit;</div>
+<div>Query OK, 0 rows affected (0.01 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>其他session获得锁，得到其他session提交的记录：</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 178 for update;</div>
+<div>+----------+------------+-----------+</div>
+<div>| actor_id | first_name | last_name |</div>
+<div>+----------+------------+-----------+</div>
+<div>| 178&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | LISA&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | MONROE T&nbsp; |</div>
+<div>+----------+------------+-----------+</div>
+<div>1 row in set (9.59 sec)</div>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="InnoDB-行锁实现方式"><a class="header-anchor" href="#InnoDB-行锁实现方式">¶</a>InnoDB 行锁实现方式</h3>
+<p><strong>InnoDB 行锁是通过给索引上的索引项加锁来实现的</strong>，这一点 MySQL 与 Oracle 不同，后者是<strong>通过在数据块中对相应数据行加锁来实现的。InnoDB 这种行锁实现特点意味着：只有通过索引条件检索数据，InnoDB 才使用行级锁，否则，InnoDB 将使用表锁！</strong></p>
+<p>**在实际应用中，要特别注意 InnoDB 行锁的这一特性，不然的话，可能导致大量的锁冲突，从而影响并发性能。**下面通过一些实际例子来加以说明。</p>
+<ul>
+<li>（1）在不通过索引条件查询的时候，InnoDB 确实使用的是表锁，而不是行锁。<br>
+在如表 20-9 所示的例子中，开始 tab_no_index 表没有索引：</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">create</span> <span class="token keyword">table</span> tab_no_index<span class="token punctuation">(</span>id <span class="token keyword">int</span><span class="token punctuation">,</span>name <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">engine</span><span class="token operator">=</span><span class="token keyword">innodb</span><span class="token punctuation">;</span> 
+Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.15</span> sec<span class="token punctuation">)</span> 
+mysql<span class="token operator">></span> <span class="token keyword">insert</span> <span class="token keyword">into</span> tab_no_index <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">'1'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">,</span><span class="token string">'2'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">3</span><span class="token punctuation">,</span><span class="token string">'3'</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span><span class="token string">'4'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> 
+Query OK<span class="token punctuation">,</span> <span class="token number">4</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span> 
+Records: <span class="token number">4</span>  Duplicates: <span class="token number">0</span>  <span class="token keyword">Warnings</span>: <span class="token number">0</span> <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="表20-9-InnoDB-存储引擎的表在不使用索引时使用表锁例子"><a class="header-anchor" href="#表20-9-InnoDB-存储引擎的表在不使用索引时使用表锁例子">¶</a>表20-9   <strong>InnoDB 存储引擎的表在不使用索引时使用表锁例子</strong></h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+<div align="left">mysql&gt; select * from tab_no_index where id = 1 ;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 1&nbsp;&nbsp;&nbsp; | 1&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+<div align="left">mysql&gt; select * from tab_no_index where id = 2 ;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 2&nbsp;&nbsp;&nbsp; | 2&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select * from tab_no_index where id = 1 for update;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 1&nbsp;&nbsp;&nbsp; | 1&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">mysql&gt; select * from tab_no_index where id = 2 for update;</div>
+<div align="left">等待</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>在如表 20 -9 所示的例子中，看起来 session_1 只给一行加了排他锁，但 session_2 在请求其他行的排他锁时，却出现了锁等待！原因就是在没有索引的情况下，InnoDB 只能使用表锁。当我们给其增加一个索引后，InnoDB 就只锁定了符合条件的行，如表 20-10 所示。</p>
+<p>创建 tab_with_index 表，id 字段有普通索引：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">create</span> <span class="token keyword">table</span> tab_with_index<span class="token punctuation">(</span>id <span class="token keyword">int</span><span class="token punctuation">,</span>name <span class="token keyword">varchar</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token keyword">engine</span><span class="token operator">=</span><span class="token keyword">innodb</span><span class="token punctuation">;</span> 
+Query OK<span class="token punctuation">,</span> <span class="token number">0</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.15</span> sec<span class="token punctuation">)</span> 
+mysql<span class="token operator">></span> <span class="token keyword">alter</span> <span class="token keyword">table</span> tab_with_index <span class="token keyword">add</span> <span class="token keyword">index</span> id<span class="token punctuation">(</span>id<span class="token punctuation">)</span><span class="token punctuation">;</span> 
+Query OK<span class="token punctuation">,</span> <span class="token number">4</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.24</span> sec<span class="token punctuation">)</span> 
+Records: <span class="token number">4</span>  Duplicates: <span class="token number">0</span>  <span class="token keyword">Warnings</span>: <span class="token number">0</span>  <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="表-20-10-InnoDB-存储引擎的表在使用索引时使用行锁例子"><a class="header-anchor" href="#表-20-10-InnoDB-存储引擎的表在使用索引时使用行锁例子">¶</a>表 20-10  <strong>InnoDB 存储引擎的表在使用索引时使用行锁例子</strong></h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+<div align="left">mysql&gt; select * from tab_with_index where id = 1 ;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 1&nbsp;&nbsp;&nbsp; | 1&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+<div align="left">mysql&gt; select * from tab_with_index where id = 2 ;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 2&nbsp;&nbsp;&nbsp; | 2&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select * from tab_with_index where id = 1 for update;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 1&nbsp;&nbsp;&nbsp; | 1&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">mysql&gt; select * from tab_with_index where id = 2 for update;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 2&nbsp;&nbsp;&nbsp; | 2&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>（2）**由于 MySQL 的行锁是针对索引加的锁，不是针对记录加的锁，所以虽然是访问不同行的记录，但是如果是使用相同的索引键，是会出现锁冲突的。**应用设计的时候要注意这一点。<br>
+在如表 20-11 所示的例子中，表 tab_with_index 的 id 字段有索引，name 字段没有索引：</li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">alter</span> <span class="token keyword">table</span> tab_with_index <span class="token keyword">drop</span> <span class="token keyword">index</span> name<span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">4</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.22</span> sec<span class="token punctuation">)</span>
+Records: <span class="token number">4</span>  Duplicates: <span class="token number">0</span>  <span class="token keyword">Warnings</span>: <span class="token number">0</span>
+mysql<span class="token operator">></span> <span class="token keyword">insert</span> <span class="token keyword">into</span> tab_with_index  <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span><span class="token string">'4'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">1</span> <span class="token keyword">row</span> affected <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span>
+mysql<span class="token operator">></span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tab_with_index <span class="token keyword">where</span> id <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+<span class="token operator">+</span><span class="token comment">------+------+</span>
+<span class="token operator">|</span> id   <span class="token operator">|</span> name <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">------+------+</span>
+<span class="token operator">|</span> <span class="token number">1</span>    <span class="token operator">|</span> <span class="token number">1</span>    <span class="token operator">|</span>
+<span class="token operator">|</span> <span class="token number">1</span>    <span class="token operator">|</span> <span class="token number">4</span>    <span class="token operator">|</span>
+<span class="token operator">+</span><span class="token comment">------+------+</span>
+<span class="token number">2</span> <span class="token keyword">rows</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="表-20-11-InnoDB-存储引擎使用相同索引键的阻塞例子"><a class="header-anchor" href="#表-20-11-InnoDB-存储引擎使用相同索引键的阻塞例子">¶</a>表 20-11 <strong>InnoDB 存储引擎使用相同索引键的阻塞例子</strong></h4>
+<table style="width: 548px" border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select * from tab_with_index where id = 1 and name = '1' for update;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 1&nbsp;&nbsp;&nbsp; | 1&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">虽然session_2访问的是和session_1不同的记录，但是因为使用了相同的索引，所以需要等待锁：</div>
+<div align="left">mysql&gt; select * from tab_with_index where id = 1 and name = '4' for update;</div>
+<div align="left">等待</div>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>（3）当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，另外，不论是使用主键索引、唯一索引或普通索引，InnoDB 都会使用行锁来对数据加锁。</li>
+</ul>
+<p>在如表 20-12 所示的例子中，表 tab_with_index 的 id 字段有主键索引，name 字段有普通索引：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">alter</span> <span class="token keyword">table</span> tab_with_index <span class="token keyword">add</span> <span class="token keyword">index</span> name<span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">5</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">0.23</span> sec<span class="token punctuation">)</span>
+Records: <span class="token number">5</span>  Duplicates: <span class="token number">0</span>  <span class="token keyword">Warnings</span>: <span class="token number">0</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h4 id="表-20-12-InnoDB-存储引擎的表使用不同索引的阻塞例子"><a class="header-anchor" href="#表-20-12-InnoDB-存储引擎的表使用不同索引的阻塞例子">¶</a>表 20-12  <strong>InnoDB 存储引擎的表使用不同索引的阻塞例子</strong></h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select * from tab_with_index where id = 1 for update;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id &nbsp;&nbsp;| name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 1&nbsp;&nbsp;&nbsp; | 1&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">| 1&nbsp;&nbsp;&nbsp; | 4&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">2 rows in set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">Session_2使用name的索引访问记录，因为记录没有被索引，所以可以获得锁：</div>
+<div align="left">mysql&gt; select * from tab_with_index where name = '2' for update;</div>
+<div align="left">+------+------+</div>
+<div align="left">| id&nbsp;&nbsp; | name |</div>
+<div align="left">+------+------+</div>
+<div align="left">| 2&nbsp;&nbsp;&nbsp; | 2&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------+------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">由于访问的记录已经被session_1锁定，所以等待获得锁。：</div>
+<div align="left">mysql&gt; select * from tab_with_index where name = '4' for update;</div>
+</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>（4）即便在条件中使用了索引字段，但是否使用索引来检索数据是由 MySQL 通过判断不同执行计划的代价来决定的，如果 MySQL 认为全表扫描效率更高，比如对一些很小的表，它就不会使用索引，这种情况下 InnoDB 将使用表锁，而不是行锁。<strong>因此，在分析锁冲突时，别忘了检查 SQL 的执行计划，以确认是否真正使用了索引。<strong>关于 MySQL 在什么情况下不使用索引的详细讨论，参见本章 “索引问题” 一节的介绍。 在下面的例子中，检索值的数据类型与索引字段不同，虽然 MySQL 能够进行数据类型转换，但却不会使用索引，从而导致 InnoDB 使用表锁。通过用 explain 检查两条 SQL 的执行</strong>计划，我们可以清楚地看到了这一点。</strong> <strong>例子中 tab_with_index 表的 name 字段有索引，但是 name 字段是 varchar 类型的，如果 where 条件中不是和 varchar 类型进行比较，则会对 name 进行类型转换，而执行的全表扫描。</strong></li>
+</ul>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">alter</span> <span class="token keyword">table</span> tab_no_index <span class="token keyword">add</span> <span class="token keyword">index</span> name<span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
+Query OK<span class="token punctuation">,</span> <span class="token number">4</span> <span class="token keyword">rows</span> affected <span class="token punctuation">(</span><span class="token number">8.06</span> sec<span class="token punctuation">)</span>
+Records: <span class="token number">4</span>  Duplicates: <span class="token number">0</span>  <span class="token keyword">Warnings</span>: <span class="token number">0</span>
+mysql<span class="token operator">></span> <span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tab_with_index <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token number">1</span> \G
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token number">1.</span> <span class="token keyword">row</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+           id: <span class="token number">1</span>
+  select_type: <span class="token keyword">SIMPLE</span>
+        <span class="token keyword">table</span>: tab_with_index
+         <span class="token keyword">type</span>: <span class="token keyword">ALL</span>
+possible_keys: name
+          <span class="token keyword">key</span>: <span class="token boolean">NULL</span>
+      key_len: <span class="token boolean">NULL</span>
+          ref: <span class="token boolean">NULL</span>
+         <span class="token keyword">rows</span>: <span class="token number">4</span>
+        Extra: <span class="token keyword">Using</span> <span class="token keyword">where</span>
+<span class="token number">1</span> <span class="token keyword">row</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span>
+mysql<span class="token operator">></span> <span class="token keyword">explain</span> <span class="token keyword">select</span> <span class="token operator">*</span> <span class="token keyword">from</span> tab_with_index <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'1'</span> \G
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token number">1.</span> <span class="token keyword">row</span> <span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span>
+           id: <span class="token number">1</span>
+  select_type: <span class="token keyword">SIMPLE</span>
+        <span class="token keyword">table</span>: tab_with_index
+         <span class="token keyword">type</span>: ref
+possible_keys: name
+          <span class="token keyword">key</span>: name
+      key_len: <span class="token number">23</span>
+          ref: const
+         <span class="token keyword">rows</span>: <span class="token number">1</span>
+        Extra: <span class="token keyword">Using</span> <span class="token keyword">where</span>
+<span class="token number">1</span> <span class="token keyword">row</span> <span class="token operator">in</span> <span class="token keyword">set</span> <span class="token punctuation">(</span><span class="token number">0.00</span> sec<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="间隙锁（Next-Key-锁）"><a class="header-anchor" href="#间隙锁（Next-Key-锁）">¶</a>间隙锁（Next-Key 锁）</h3>
+<p>当我们用范围条件而不是相等条件检索数据，并请求共享或排他锁时，InnoDB 会给符合条件的已有数据记录的索引项加锁；对于键值在条件范围内但并不存在的记录，叫做 “间隙（GAP)”，InnoDB 也会对这个“间隙” 加锁，这种锁机制就是所谓的间隙锁（Next-Key 锁）。</p>
+<p>举例来说，假如 emp 表中只有 101 条记录，其 empid 的值分别是 1,2,…,100,101，下面的 SQL： <code>Select * from  emp where empid &gt; 100 for update;</code></p>
+<p>是一个范围条件的检索，InnoDB 不仅会对符合条件的 empid 值为 101 的记录加锁，也会对 empid 大于 101（这些记录并不存在）的 “间隙” 加锁。 InnoDB 使用间隙锁的目的，一方面是为了防止幻读，以满足相关隔离级别的要求，对于上面的例子，要是不使用间隙锁，如果其他事务插入了 empid 大于 100 的任何记录，那么本事务如果再次执行上述语句，就会发生幻读；另外一方面，是为了满足其恢复和复制的需要。有关其恢复和复制对锁机制的影响，以及不同隔离级别下 InnoDB 使用间隙锁的情况，在后续的章节中会做进一步介绍。</p>
+<p>很显然，在使用范围条件检索并锁定记录时，InnoDB 这种加锁机制会阻塞符合条件范围内键值的并发插入，这往往会造成严重的锁等待。因此，在实际应用开发中，尤其是并发插入比较多的应用，我们要尽量优化业务逻辑，尽量使用相等条件来访问更新数据，避免使用范围条件。</p>
+<p>还要特别说明的是，InnoDB 除了通过范围条件加锁时使用间隙锁外，如果使用相等条件请求给一个不存在的记录加锁，InnoDB 也会使用间隙锁！</p>
+<p>在如表 20-13 所示的例子中，假如 emp 表中只有 101 条记录，其 empid 的值分别是 1,2,…,100,101。</p>
+<h4 id="表-20-13-InnoDB-存储引擎的间隙锁阻塞例子"><a class="header-anchor" href="#表-20-13-InnoDB-存储引擎的间隙锁阻塞例子">¶</a>表 20-13                InnoDB 存储引擎的间隙锁阻塞例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; select @@tx_isolation;</div>
+<div>+-----------------+</div>
+<div>| @@tx_isolation&nbsp; |</div>
+<div>+-----------------+</div>
+<div>| REPEATABLE-READ |</div>
+<div>+-----------------+</div>
+<div>1 row in set (0.00 sec)</div>
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>mysql&gt; select @@tx_isolation;</div>
+<div>+-----------------+</div>
+<div>| @@tx_isolation&nbsp; |</div>
+<div>+-----------------+</div>
+<div>| REPEATABLE-READ |</div>
+<div>+-----------------+</div>
+<div>1 row in set (0.00 sec)</div>
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session对不存在的记录加for update的锁：</div>
+<div>mysql&gt; select * from emp where empid = 102 for update;</div>
+<div>Empty set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>这时，如果其他session插入empid为102的记录（注意：这条记录并不存在），也会出现锁等待：</div>
+<div>mysql&gt;insert into emp(empid,...) values(102,...);</div>
+<div>阻塞等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">Session_1 执行rollback：</div>
+<div align="left">mysql&gt; rollback;</div>
+<div align="left">Query OK, 0 rows affected (13.04 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">由于其他session_1回退后释放了Next-Key锁，当前session可以获得锁并成功插入记录：</div>
+<div>mysql&gt;insert into emp(empid,...) values(102,...);</div>
+<div align="left">Query OK, 1 row affected (13.35 sec)</div>
+</td>
+</tr>
+</tbody>
+</table>
+<h3 id="恢复和复制的需要，对-InnoDB-锁机制的影响"><a class="header-anchor" href="#恢复和复制的需要，对-InnoDB-锁机制的影响">¶</a>恢复和复制的需要，对 InnoDB 锁机制的影响</h3>
+<p>MySQL 通过 BINLOG 录执行成功的 INSERT、UPDATE、DELETE 等更新数据的 SQL 语句，并由此实现 MySQL 数据库的恢复和主从复制（可以参见本书 “管理篇” 的介绍）。MySQL 的恢复机制（复制其实就是在 Slave Mysql 不断做基于 BINLOG 的恢复）有以下特点。</p>
+<ul>
+<li>一是 MySQL 的恢复是 SQL 语句级的，也就是重新执行 BINLOG 中的 SQL 语句。这与 Oracle 数据库不同，Oracle 是基于数据库文件块的。</li>
+<li>二是 MySQL 的 Binlog 是按照事务提交的先后顺序记录的，恢复也是按这个顺序进行的。这点也与 Oralce 不同，Oracle 是按照系统更新号（System Change Number，SCN）来恢复数据的，每个事务开始时，Oracle 都会分配一个全局唯一的 SCN，SCN 的顺序与事务开始的时间顺序是一致的。</li>
+</ul>
+<p>从上面两点可知，MySQL 的恢复机制要求：在一个事务未提交前，其他并发事务不能插入满足其锁定条件的任何记录，也就是不允许出现幻读，这已经超过了 ISO/ANSI SQL92“可重复读” 隔离级别的要求，实际上是要求事务要串行化。这也是许多情况下，InnoDB 要用到间隙锁的原因，比如在用范围条件更新记录时，无论在 Read Commited 或是 Repeatable Read 隔离级别下，InnoDB 都要使用间隙锁，但这并不是隔离级别要求的，有关 InnoDB 在不同隔离级别下加锁的差异在下一小节还会介绍。</p>
+<p>另外，对于 <code>insert  into target_tab select * from source_tab where ...</code> 和 <code>create  table new_tab ...select ... From  source_tab where ...(CTAS)</code> 这种 SQL 语句，用户并没有对 source_tab 做任何更新操作，但 MySQL 对这种 SQL 语句做了特别处理。先来看如表 20-14 的例子。</p>
+<h4 id="表-20-14-CTAS-操作给原表加锁例子"><a class="header-anchor" href="#表-20-14-CTAS-操作给原表加锁例子">¶</a>表 20-14                   CTAS 操作给原表加锁例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select * from target_tab;</div>
+<div>Empty set (0.00 sec)</div>
+<div>mysql&gt; select * from source_tab where name = '1';</div>
+<div>+----+------+----+</div>
+<div>| d1 | name | d2 |</div>
+<div>+----+------+----+</div>
+<div>|&nbsp; 4 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 5 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 6 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 7 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 8 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>+----+------+----+</div>
+<div>5 rows in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select * from target_tab;</div>
+<div>Empty set (0.00 sec)</div>
+<div>mysql&gt; select * from source_tab where name = '1';</div>
+<div>+----+------+----+</div>
+<div>| d1 | name | d2 |</div>
+<div>+----+------+----+</div>
+<div>|&nbsp; 4 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 5 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 6 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 7 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 8 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>+----+------+----+</div>
+<div>5 rows in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; insert into target_tab select d1,name from source_tab where name = '1';</div>
+<div>Query OK, 5 rows affected (0.00 sec)</div>
+<div>Records: 5&nbsp; Duplicates: 0&nbsp; Warnings: 0</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>mysql&gt; update source_tab set name = '1' where name = '8';</div>
+<div>等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>commit;</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>返回结果</div>
+<div>commit;</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>在上面的例子中，只是简单地读 source_tab 表的数据，相当于执行一个普通的 SELECT 语句，用一致性读就可以了。ORACLE 正是这么做的，它通过 MVCC 技术实现的多版本数据来实现一致性读，不需要给 source_tab 加任何锁。我们知道 InnoDB 也实现了多版本数据，对普通的 SELECT 一致性读，也不需要加任何锁；但这里 InnoDB 却给 source_tab 加了共享锁，并没有使用多版本数据一致性读技术！ MySQL 为什么要这么做呢？其原因还是为了保证恢复和复制的正确性。因为不加锁的话，如果在上述语句执行过程中，其他事务对 source_tab 做了更新操作，就可能导致数据恢复的结果错误。为了演示这一点，我们再重复一下前面的例子，不同的是在 session_1 执行事务前，先将系统变量 innodb_locks_unsafe_for_binlog 的值设置为 “on”（其默认值为 off），具体结果如表 20-15 所示。</p>
+<h4 id="表-20-15-CTAS-操作不给原表加锁带来的安全问题例子"><a class="header-anchor" href="#表-20-15-CTAS-操作不给原表加锁带来的安全问题例子">¶</a>表 20-15              CTAS 操作不给原表加锁带来的安全问题例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt;set innodb_locks_unsafe_for_binlog='on'</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select * from target_tab;</div>
+<div>Empty set (0.00 sec)</div>
+<div>mysql&gt; select * from source_tab where name = '1';</div>
+<div>+----+------+----+</div>
+<div>| d1 | name | d2 |</div>
+<div>+----+------+----+</div>
+<div>|&nbsp; 4 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 5 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 6 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 7 | 1&nbsp;&nbsp; &nbsp;|&nbsp; 1 | </div>
+<div>|&nbsp; 8 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>+----+------+----+</div>
+<div>5 rows in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select * from target_tab;</div>
+<div>Empty set (0.00 sec)</div>
+<div>mysql&gt; select * from source_tab where name = '1';</div>
+<div>+----+------+----+</div>
+<div>| d1 | name | d2 |</div>
+<div>+----+------+----+</div>
+<div>|&nbsp; 4 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 5 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 6 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 7 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 8 | 1&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>+----+------+----+</div>
+<div>5 rows in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; insert into target_tab select d1,name from source_tab where name = '1';</div>
+<div>Query OK, 5 rows affected (0.00 sec)</div>
+<div>Records: 5&nbsp; Duplicates: 0&nbsp; Warnings: 0</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>session_1未提交，可以对session_1的select的记录进行更新操作。</div>
+<div>mysql&gt; update source_tab set name = '8' where name = '1';</div>
+<div>Query OK, 5 rows affected (0.00 sec)</div>
+<div>Rows matched: 5&nbsp; Changed: 5&nbsp; Warnings: 0</div>
+<div>mysql&gt; select * from source_tab where name = '8';</div>
+<div>+----+------+----+</div>
+<div>| d1 | name | d2 |</div>
+<div>+----+------+----+</div>
+<div>|&nbsp; 4 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 5 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 6 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 7 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 8 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>+----+------+----+</div>
+<div>5 rows in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>更新操作先提交</div>
+<div>mysql&gt; commit;</div>
+<div>Query OK, 0 rows affected (0.05 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>插入操作后提交</div>
+<div>mysql&gt; commit;</div>
+<div>Query OK, 0 rows affected (0.07 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<div>此时查看数据，target_tab中可以插入source_tab更新前的结果，这符合应用逻辑：</div>
+<div>mysql&gt; select * from source_tab where name = '8';</div>
+<div>+----+------+----+</div>
+<div>| d1 | name | d2 |</div>
+<div>+----+------+----+</div>
+<div>|&nbsp; 4 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 5 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 6 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 7 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 8 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>+----+------+----+</div>
+<div>5 rows in set (0.00 sec)</div>
+<div>mysql&gt; select * from target_tab;</div>
+<div>+------+------+</div>
+<div>| id&nbsp;&nbsp; | name |</div>
+<div>+------+------+</div>
+<div>| 4&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 5&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 6&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 7&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 8&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>+------+------+</div>
+<div>5 rows in set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>mysql&gt; select * from tt1 where name = '1';</div>
+<div>Empty set (0.00 sec)</div>
+<div>mysql&gt; select * from source_tab where name = '8';</div>
+<div>+----+------+----+</div>
+<div>| d1 | name | d2 |</div>
+<div>+----+------+----+</div>
+<div>|&nbsp; 4 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 5 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 6 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 7 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>|&nbsp; 8 | 8&nbsp;&nbsp;&nbsp; |&nbsp; 1 | </div>
+<div>+----+------+----+</div>
+<div>5 rows in set (0.00 sec)</div>
+<div>mysql&gt; select * from target_tab;</div>
+<div>+------+------+</div>
+<div>| id&nbsp;&nbsp; | name |</div>
+<div>+------+------+</div>
+<div>| 4&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 5&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 6&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 7&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>| 8&nbsp;&nbsp;&nbsp; | 1.00 | </div>
+<div>+------+------+</div>
+<div>5 rows in set (0.00 sec)</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>从上可见，设置系统变量 <code>innodb_locks_unsafe_for_binlog</code> 的值为 <code>on</code> 后，InnoDB 不再对 source_tab 加锁，结果也符合应用逻辑，但是如果分析 BINLOG 的内容：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+<span class="token keyword">SET</span> <span class="token keyword">TIMESTAMP</span><span class="token operator">=</span><span class="token number">1169175130</span><span class="token punctuation">;</span>
+<span class="token keyword">BEGIN</span><span class="token punctuation">;</span>
+<span class="token comment"># at 274</span>
+<span class="token comment">#070119 10:51:57 server id 1  end_log_pos 105   Query   thread_id=1     exec_time=0     error_code=0</span>
+<span class="token keyword">SET</span> <span class="token keyword">TIMESTAMP</span><span class="token operator">=</span><span class="token number">1169175117</span><span class="token punctuation">;</span>
+<span class="token keyword">update</span> source_tab <span class="token keyword">set</span> name <span class="token operator">=</span> <span class="token string">'8'</span> <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'1'</span><span class="token punctuation">;</span>
+<span class="token comment"># at 379</span>
+<span class="token comment">#070119 10:52:10 server id 1  end_log_pos 406   Xid = 5</span>
+<span class="token keyword">COMMIT</span><span class="token punctuation">;</span>
+<span class="token comment"># at 406</span>
+<span class="token comment">#070119 10:52:14 server id 1  end_log_pos 474   Query   thread_id=2     exec_time=0     error_code=0</span>
+<span class="token keyword">SET</span> <span class="token keyword">TIMESTAMP</span><span class="token operator">=</span><span class="token number">1169175134</span><span class="token punctuation">;</span>
+<span class="token keyword">BEGIN</span><span class="token punctuation">;</span>
+<span class="token comment"># at 474</span>
+<span class="token comment">#070119 10:51:29 server id 1  end_log_pos 119   Query   thread_id=2     exec_time=0     error_code=0</span>
+<span class="token keyword">SET</span> <span class="token keyword">TIMESTAMP</span><span class="token operator">=</span><span class="token number">1169175089</span><span class="token punctuation">;</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> target_tab <span class="token keyword">select</span> d1<span class="token punctuation">,</span>name <span class="token keyword">from</span> source_tab <span class="token keyword">where</span> name <span class="token operator">=</span> <span class="token string">'1'</span><span class="token punctuation">;</span>
+<span class="token comment"># at 593</span>
+<span class="token comment">#070119 10:52:14 server id 1  end_log_pos 620   Xid = 7</span>
+<span class="token keyword">COMMIT</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以发现，在 BINLOG 中，更新操作的位置在 INSERT…SELECT 之前，如果使用这个 BINLOG 进行数据库恢复，恢复的结果与实际的应用逻辑不符；如果进行复制，就会导致主从数据库不一致！ 通过上面的例子，我们就不难理解为什么 MySQL 在处理 “Insert  into target_tab select * from source_tab where …” 和 “create  table new_tab …select … From  source_tab where …” 时要给 source_tab 加锁，而不是使用对并发影响最小的多版本数据来实现一致性读。还要特别说明的是，如果上述语句的 SELECT 是范围条件，InnoDB 还会给源表加间隙锁（Next-Lock）。</p>
+<p><strong>因此，<code>INSERT...SELECT...</code> 和 <code>CREATE TABLE...SELECT...</code> 语句，可能会阻止对源表的并发更新，造成对源表锁的等待。如果查询比较复杂的话，会造成严重的性能问题，我们在应用中应尽量避免使用。实际上，MySQL 将这种 SQL 叫作不确定（non-deterministic）的 SQL，不推荐使用。</strong> 如果应用中一定要用这种 SQL 来实现业务逻辑，又不希望对源表的并发更新产生影响，可以采取以下两种措施： ¡  一是采取上面示例中的做法，将 innodb_locks_unsafe_for_binlog 的值设置为 “on”，强制 MySQL 使用多版本数据一致性读。但付出的代价是可能无法用 binlog 正确地恢复或复制数据，因此，不推荐使用这种方式。 ¡  二是通过使用 <code>select * from source_tab ... Into outfile</code> 和<code>load data infile ...</code>语句组合来间接实现，采用这种方式 MySQL 不会给 source_tab 加锁。</p>
+<h3 id="InnoDB-在不同隔离级别下的一致性读及锁的差异"><a class="header-anchor" href="#InnoDB-在不同隔离级别下的一致性读及锁的差异">¶</a>InnoDB 在不同隔离级别下的一致性读及锁的差异</h3>
+<p>前面讲过，锁和多版本数据是 InnoDB 实现一致性读和 ISO/ANSI SQL92 隔离级别的手段，因此，在不同的隔离级别下，InnoDB 处理 SQL 时采用的一致性读策略和需要的锁是不同的。同时，数据恢复和复制机制的特点，也对一些 SQL 的一致性读策略和锁策略有很大影响。将这些特性归纳成如表 20-16 所示的内容，以便读者查阅。</p>
+<h4 id="表20-16-InnoDB-存储引擎中不同-SQL-在不同隔离级别下锁比较"><a class="header-anchor" href="#表20-16-InnoDB-存储引擎中不同-SQL-在不同隔离级别下锁比较">¶</a>表20-16      InnoDB 存储引擎中不同 SQL 在不同隔离级别下锁比较</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td colspan="2" valign="top">
+<div>隔离级别</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 一致性读和锁</div>
+<div>SQL</div>
+</td>
+<td valign="top">
+<div>Read Uncommited</div>
+</td>
+<td valign="top">
+<div>Read Commited</div>
+</td>
+<td valign="top">
+<div>Repeatable Read</div>
+</td>
+<td valign="top">
+<div>Serializable</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>SQL</div>
+</td>
+<td valign="top">
+<div>条件</div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>select</div>
+</td>
+<td valign="top">
+<div>相等</div>
+</td>
+<td valign="top">
+<div>None locks</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>范围</div>
+</td>
+<td valign="top">
+<div>None locks</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>update</div>
+</td>
+<td valign="top">
+<div>相等</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>Exclusive locks</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>范围</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+</tr>
+<tr>
+<td>
+<div>Insert</div>
+</td>
+<td valign="top">
+<div>N/A</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>replace</div>
+</td>
+<td valign="top">
+<div>无键冲突</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>键冲突</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>delete</div>
+</td>
+<td valign="top">
+<div>相等</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>范围</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>Select ... from ... Lock in share mode</div>
+</td>
+<td valign="top">
+<div>相等</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>范围</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>Select * from ... For update</div>
+</td>
+<td valign="top">
+<div>相等</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>范围</div>
+</td>
+<td valign="top">
+<div>exclusive locks</div>
+</td>
+<td valign="top">
+<div>Share locks</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+<td valign="top">
+<div>exclusive next-key</div>
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>Insert into ... Select ...</div>
+<div>（指源表锁）</div>
+</td>
+<td valign="top">
+<div>innodb_locks_unsafe_for_binlog=off</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>innodb_locks_unsafe_for_binlog=on</div>
+</td>
+<td valign="top">
+<div>None locks</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+</tr>
+<tr>
+<td rowspan="2">
+<div>create table ... Select ...</div>
+<div>（指源表锁）</div>
+</td>
+<td valign="top">
+<div>innodb_locks_unsafe_for_binlog=off</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>innodb_locks_unsafe_for_binlog=on</div>
+</td>
+<td valign="top">
+<div>None locks</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Consisten read/None lock</div>
+</td>
+<td valign="top">
+<div>Share Next-Key</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>从表 20-16 可以看出：对于许多 SQL，隔离级别越高，InnoDB 给记录集加的锁就越严格（尤其是使用范围条件的时候），产生锁冲突的可能性也就越高，从而对并发性事务处理性能的影响也就越大。因此，我们在应用中，应该尽量使用较低的隔离级别，以减少锁争用的机率。实际上，通过优化事务逻辑，大部分应用使用 Read Commited 隔离级别就足够了。对于一些确实需要更高隔离级别的事务，可以通过在程序中执行 <code>SET SESSION TRANSACTION ISOLATION LEVEL REPEATABLE READ</code> 或 <code>SET SESSION TRANSACTION ISOLATION LEVEL SERIALIZABLE</code> 动态改变隔离级别的方式满足需求。</p>
+<h3 id="什么时候使用表锁"><a class="header-anchor" href="#什么时候使用表锁">¶</a>什么时候使用表锁</h3>
+<p>对于 InnoDB 表，在绝大部分情况下都应该使用行级锁，因为事务和行锁往往是我们之所以选择 InnoDB 表的理由。但在个别特殊事务中，也可以考虑使用表级锁。</p>
+<ul>
+<li><strong>第一种情况是：事务需要更新大部分或全部数据，表又比较大，如果使用默认的行锁，不仅这个事务执行效率低，而且可能造成其他事务长时间锁等待和锁冲突，这种情况下可以考虑使用表锁来提高该事务的执行速度。</strong></li>
+<li><strong>第二种情况是：事务涉及多个表，比较复杂，很可能引起死锁，造成大量事务回滚。这种情况也可以考虑一次性锁定事务涉及的表，从而避免死锁、减少数据库因事务回滚带来的开销。</strong></li>
+</ul>
+<p>当然，应用中这两种事务不能太多，否则，就应该考虑使用 MyISAM 表了。 在 InnoDB 下，使用表锁要注意以下两点。</p>
+<ul>
+<li>
+<p><strong>(1）使用 LOCK TABLES 虽然可以给 InnoDB 加表级锁，但必须说明的是，表锁不是由 InnoDB 存储引擎层管理的，而是由其上一层──MySQL Server 负责的，仅当 autocommit=0、innodb_table_locks=1（默认设置）时，InnoDB 层才能知道 MySQL 加的表锁，MySQL Server 也才能感知 InnoDB 加的行锁，这种情况下，InnoDB 才能自动识别涉及表级锁的死锁；否则，InnoDB 将无法自动检测并处理这种死锁。有关死锁，下一小节还会继续讨论。</strong></p>
+</li>
+<li>
+<p><strong>（2）在用 LOCK TABLES 对 InnoDB 表加锁时要注意，要将 AUTOCOMMIT 设为 0，否则 MySQL 不会给表加锁；事务结束前，不要用 UNLOCK TABLES 释放表锁，因为 UNLOCK TABLES 会隐含地提交事务；COMMIT 或 ROLLBACK 并不能释放用 LOCK TABLES 加的表级锁，必须用 UNLOCK TABLES 释放表锁。</strong></p>
+</li>
+</ul>
+<p>正确的方式见如下语句：<br>
+例如，如果需要写表 t1 并从表 t 读，可以按如下做：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql"><span class="token keyword">SET</span> AUTOCOMMIT<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">LOCK</span> <span class="token keyword">TABLES</span> t1 <span class="token keyword">WRITE</span><span class="token punctuation">,</span> t2 <span class="token keyword">READ</span><span class="token punctuation">,</span> <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">;</span>
+<span class="token punctuation">[</span><span class="token keyword">do</span> something <span class="token keyword">with</span> <span class="token keyword">tables</span> t1 <span class="token operator">and</span> t2 here<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token keyword">COMMIT</span><span class="token punctuation">;</span>
+<span class="token keyword">UNLOCK</span> <span class="token keyword">TABLES</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="关于死锁"><a class="header-anchor" href="#关于死锁">¶</a>关于死锁</h3>
+<p>上文讲过，MyISAM 表锁是 deadlock free 的，这是因为 MyISAM 总是一次获得所需的全部锁，要么全部满足，要么等待，因此不会出现死锁。但在 InnoDB 中，除单个 SQL 组成的事务外，锁是逐步获得的，这就决定了在 InnoDB 中发生死锁是可能的。如表 20-17 所示的就是一个发生死锁的例子。</p>
+<h4 id="表-20-17-InnoDB-存储引擎中的死锁例子"><a class="header-anchor" href="#表-20-17-InnoDB-存储引擎中的死锁例子">¶</a>表 20-17 <strong>InnoDB 存储引擎中的死锁例子</strong></h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select * from table_1 where where id=1 for update;</div>
+<div>...</div>
+<div>做一些其他处理...</div>
+</td>
+<td valign="top">
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+<div>mysql&gt; select * from table_2 where id=1 for update;</div>
+<div>...</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>select * from table_2 where id =1 for update;</div>
+<div>因session_2已取得排他锁，等待</div>
+</td>
+<td valign="top">
+<div>做一些其他处理...</div>
+</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>mysql&gt; select * from table_1 where where id=1 for update;</div>
+<div>死锁</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>在上面的例子中，两个事务都需要获得对方持有的排他锁才能继续完成事务，这种循环锁等待就是典型的死锁。</p>
+<p><strong>发生死锁后，InnoDB 一般都能自动检测到，并使一个事务释放锁并回退，另一个事务获得锁，继续完成事务。但在涉及外部锁，或涉及表锁的情况下，InnoDB 并不能完全自动检测到死锁，这需要通过设置锁等待超时参数 innodb_lock_wait_timeout 来解决。需要说明的是，这个参数并不是只用来解决死锁问题，在并发访问比较高的情况下，如果大量事务因无法立即获得所需的锁而挂起，会占用大量计算机资源，造成严重性能问题，甚至拖跨数据库。我们通过设置合适的锁等待超时阈值，可以避免这种情况发生。</strong></p>
+<p>通常来说，死锁都是应用设计的问题，通过调整业务流程、数据库对象设计、事务大小，以及访问数据库的 SQL 语句，绝大部分死锁都可以避免。下面就通过实例来介绍几种避免死锁的常用方法。</p>
+<ul>
+<li>（1）在应用中，如果不同的程序会并发存取多个表，应尽量约定以相同的顺序来访问表，这样可以大大降低产生死锁的机会。在下面的例子中，由于两个 session 访问两个表的顺序不同，发生死锁的机会就非常高！但如果以相同的顺序来访问，死锁就可以避免。</li>
+</ul>
+<h4 id="表-20-18-InnoDB-存储引擎中表顺序造成的死锁例子"><a class="header-anchor" href="#表-20-18-InnoDB-存储引擎中表顺序造成的死锁例子">¶</a>表 20-18        InnoDB 存储引擎中表顺序造成的死锁例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select first_name,last_name from actor where actor_id = 1 for update;</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| first_name | last_name |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| PENELOPE&nbsp;&nbsp; | GUINESS&nbsp;&nbsp; |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">mysql&gt; insert into country (country_id,country) values(110,'Test');</div>
+<div align="left">Query OK, 1 row affected (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt;&nbsp; insert into country (country_id,country) values(110,'Test');</div>
+<div align="left">等待</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">mysql&gt; select first_name,last_name from actor where actor_id = 1 for update;</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| first_name | last_name |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| PENELOPE&nbsp;&nbsp; | GUINESS&nbsp;&nbsp; |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt;&nbsp; insert into country (country_id,country) values(110,'Test');</div>
+<div align="left">ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>（2）在程序以批量方式处理数据的时候，如果事先对数据排序，保证每个线程按固定的顺序来处理记录，也可以大大降低出现死锁的可能。</li>
+</ul>
+<h4 id="表-20-19-InnoDB-存储引擎中表数据操作顺序不一致造成的死锁例子"><a class="header-anchor" href="#表-20-19-InnoDB-存储引擎中表数据操作顺序不一致造成的死锁例子">¶</a>表 20-19        InnoDB 存储引擎中表数据操作顺序不一致造成的死锁例子</h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select first_name,last_name from actor where actor_id = 1 for update;</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| first_name | last_name |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| PENELOPE&nbsp;&nbsp; | GUINESS&nbsp;&nbsp; |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">mysql&gt; select first_name,last_name from actor where actor_id = 3 for update;</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| first_name | last_name |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| ED&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | CHASE&nbsp;&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select first_name,last_name from actor where actor_id = 3 for update;</div>
+<div align="left">等待</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">mysql&gt; select first_name,last_name from actor where actor_id = 1 for update;</div>
+<div align="left">ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select first_name,last_name from actor where actor_id = 3 for update;</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| first_name | last_name |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| ED&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | CHASE&nbsp;&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">1 row in set (4.71 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>（3）在事务中，如果要更新记录，应该直接申请足够级别的锁，即排他锁，而不应先申请共享锁，更新时再申请排他锁，因为当用户申请排他锁时，其他事务可能又已经获得了相同记录的共享锁，从而造成锁冲突，甚至死锁。具体演示可参见 20.3.3 小节中的例子。</li>
+<li>（4）前面讲过，在 REPEATABLE-READ 隔离级别下，如果两个线程同时对相同条件记录用 SELECT…FOR UPDATE 加排他锁，在没有符合该条件记录情况下，两个线程都会加锁成功。程序发现记录尚不存在，就试图插入一条新记录，如果两个线程都这么做，就会出现死锁。这种情况下，将隔离级别改成 READ COMMITTED，就可避免问题，如表 20-20 所示。</li>
+</ul>
+<h4 id="表-20-20-InnoDB-存储引擎中隔离级别引起的死锁例子1"><a class="header-anchor" href="#表-20-20-InnoDB-存储引擎中隔离级别引起的死锁例子1">¶</a>表 20-20   <strong>InnoDB 存储引擎中隔离级别引起的死锁例子1</strong></h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>mysql&gt; select @@tx_isolation;</div>
+<div>+-----------------+</div>
+<div>| @@tx_isolation&nbsp; |</div>
+<div>+-----------------+</div>
+<div>| REPEATABLE-READ |</div>
+<div>+-----------------+</div>
+<div>1 row in set (0.00 sec)</div>
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+<td valign="top">
+<div>mysql&gt; select @@tx_isolation;</div>
+<div>+-----------------+</div>
+<div>| @@tx_isolation&nbsp; |</div>
+<div>+-----------------+</div>
+<div>| REPEATABLE-READ |</div>
+<div>+-----------------+</div>
+<div>1 row in set (0.00 sec)</div>
+<div>mysql&gt; set autocommit = 0;</div>
+<div>Query OK, 0 rows affected (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div>当前session对不存在的记录加for update的锁：</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 201 for update;</div>
+<div>Empty set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div>其他session也可以对不存在的记录加for update的锁：</div>
+<div>mysql&gt; select actor_id,first_name,last_name from actor where actor_id = 201 for update;</div>
+<div>Empty set (0.00 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">因为其他session也对该记录加了锁，所以当前的插入会等待：</div>
+<div align="left">mysql&gt; insert into actor (actor_id , first_name , last_name) values(201,'Lisa','Tom');</div>
+<div align="left">等待</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">因为其他session已经对记录进行了更新，这时候再插入记录就会提示死锁并退出：</div>
+<div align="left">mysql&gt; insert into actor (actor_id, first_name , last_name) values(201,'Lisa','Tom');</div>
+<div align="left">ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">由于其他session已经退出，当前session可以获得锁并成功插入记录：</div>
+<div align="left">mysql&gt; insert into actor (actor_id , first_name , last_name) values(201,'Lisa','Tom');</div>
+<div align="left">Query OK, 1 row affected (13.35 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>（5）<strong>当隔离级别为 READ COMMITTED 时，如果两个线程都先执行 SELECT…FOR UPDATE，判断是否存在符合条件的记录，如果没有，就插入记录。此时，只有一个线程能插入成功，另一个线程会出现锁等待，当第 1 个线程提交后，第 2 个线程会因主键重出错，但虽然这个线程出错了，却会获得一个排他锁！这时如果有第 3 个线程又来申请排他锁，也会出现死锁。</strong></li>
+</ul>
+<p>对于这种情况，可以直接做插入操作，然后再捕获主键重异常，或者在遇到主键重错误时，总是执行 ROLLBACK 释放获得的排他锁，如表 20-21 所示。</p>
+<h4 id="表-20-21-InnoDB-存储引擎中隔离级别引起的死锁例子-2"><a class="header-anchor" href="#表-20-21-InnoDB-存储引擎中隔离级别引起的死锁例子-2">¶</a>表 20-21   <strong>InnoDB 存储引擎中隔离级别引起的死锁例子 2</strong></h4>
+<table border="1" cellspacing="0" cellpadding="0">
+<tbody>
+<tr>
+<td valign="top">
+<div>session_1</div>
+</td>
+<td valign="top">
+<div>session_2</div>
+</td>
+<td valign="top">
+<div>session_3</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">mysql&gt; select @@tx_isolation;</div>
+<div align="left">+----------------+</div>
+<div align="left">| @@tx_isolation |</div>
+<div align="left">+----------------+</div>
+<div align="left">| READ-COMMITTED |</div>
+<div align="left">+----------------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.01 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; select @@tx_isolation;</div>
+<div align="left">+----------------+</div>
+<div align="left">| @@tx_isolation |</div>
+<div align="left">+----------------+</div>
+<div align="left">| READ-COMMITTED |</div>
+<div align="left">+----------------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.01 sec)</div>
+</td>
+<td valign="top">
+<div align="left">mysql&gt; select @@tx_isolation;</div>
+<div align="left">+----------------+</div>
+<div align="left">| @@tx_isolation |</div>
+<div align="left">+----------------+</div>
+<div align="left">| READ-COMMITTED |</div>
+<div align="left">+----------------+</div>
+<div align="left">1 row in set (0.00 sec)</div>
+<div align="left">mysql&gt; set autocommit=0;</div>
+<div align="left">Query OK, 0 rows affected (0.01 sec)</div>
+</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">Session_1获得for update的共享锁：</div>
+<div align="left">mysql&gt; select actor_id, first_name,last_name from actor where actor_id = 201 for update;</div>
+<div align="left">Empty set (0.00 sec)</div>
+</td>
+<td valign="top">
+<div align="left">由于记录不存在，session_2也可以获得for update的共享锁：</div>
+<div align="left">mysql&gt; select actor_id, first_name,last_name from actor where actor_id = 201 for update;</div>
+<div align="left">Empty set (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">Session_1可以成功插入记录：</div>
+<div align="left">mysql&gt; insert into actor (actor_id,first_name,last_name) values(201,'Lisa','Tom');</div>
+<div align="left">Query OK, 1 row affected (0.00 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">Session_2插入申请等待获得锁：</div>
+<div align="left">mysql&gt; insert into actor (actor_id,first_name,last_name) values(201,'Lisa','Tom');</div>
+<div align="left">等待</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">
+<div align="left">Session_1成功提交：</div>
+<div align="left">mysql&gt; commit;</div>
+<div align="left">Query OK, 0 rows affected (0.04 sec)</div>
+</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">Session_2获得锁，发现插入记录主键重，这个时候抛出了异常，但是并没有释放共享锁：</div>
+<div align="left">mysql&gt; insert into actor (actor_id,first_name,last_name) values(201,'Lisa','Tom');</div>
+<div align="left">ERROR 1062 (23000): Duplicate entry '201' for key 'PRIMARY'</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">Session_3申请获得共享锁，因为session_2已经锁定该记录，所以session_3需要等待：</div>
+<div align="left">mysql&gt; select actor_id, first_name,last_name from actor where actor_id = 201 for update;</div>
+<div align="left">等待</div>
+</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">这个时候，如果session_2直接对记录进行更新操作，则会抛出死锁的异常：</div>
+<div align="left">mysql&gt; update actor set last_name='Lan' where actor_id = 201;</div>
+<div align="left">ERROR 1213 (40001): Deadlock found when trying to get lock; try restarting transaction</div>
+</td>
+<td valign="top">&nbsp;</td>
+</tr>
+<tr>
+<td valign="top">&nbsp;</td>
+<td valign="top">&nbsp;</td>
+<td valign="top">
+<div align="left">Session_2释放锁后，session_3获得锁：</div>
+<div align="left">mysql&gt; select first_name, last_name from actor where actor_id = 201 for update;</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| first_name | last_name |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">| Lisa&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | Tom&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |</div>
+<div align="left">+------------+-----------+</div>
+<div align="left">1 row in set (31.12 sec)</div>
+</td>
+</tr>
+</tbody>
+</table>
+<p>尽管通过上面介绍的设计和 SQL 优化等措施，可以大大减少死锁，但死锁很难完全避免。因此，在程序设计中总是捕获并处理死锁异常是一个很好的编程习惯。 如果出现死锁，可以用 SHOW INNODB STATUS 命令来确定最后一个死锁产生的原因。返回结果中包括死锁相关事务的详细信息，如引发死锁的 SQL 语句，事务已经获得的锁，正在等待什么锁，以及被回滚的事务等。据此可以分析死锁产生的原因和改进措施。下面是一段 SHOW INNODB STATUS 输出的样例：</p>
+<pre class="line-numbers language-sql" data-language="sql"><code class="language-sql">mysql<span class="token operator">></span> <span class="token keyword">show</span> <span class="token keyword">innodb</span> <span class="token keyword">status</span> \G
+……<span class="token punctuation">.</span>
+<span class="token comment">------------------------</span>
+LATEST DETECTED DEADLOCK
+<span class="token comment">------------------------</span>
+<span class="token number">070710</span> <span class="token number">14</span>:<span class="token number">05</span>:<span class="token number">16</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token keyword">TRANSACTION</span>:
+<span class="token keyword">TRANSACTION</span> <span class="token number">0</span> <span class="token number">117470078</span><span class="token punctuation">,</span> ACTIVE <span class="token number">117</span> sec<span class="token punctuation">,</span> process <span class="token keyword">no</span> <span class="token number">1468</span><span class="token punctuation">,</span> OS thread id <span class="token number">1197328736</span> inserting
+mysql <span class="token keyword">tables</span> <span class="token operator">in</span> <span class="token keyword">use</span> <span class="token number">1</span><span class="token punctuation">,</span> locked <span class="token number">1</span>
+<span class="token keyword">LOCK</span> WAIT <span class="token number">5</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1216</span>
+MySQL thread id <span class="token number">7521657</span><span class="token punctuation">,</span> query id <span class="token number">673468054</span> localhost root <span class="token keyword">update</span>
+<span class="token keyword">insert</span> <span class="token keyword">into</span> country <span class="token punctuation">(</span>country_id<span class="token punctuation">,</span>country<span class="token punctuation">)</span> <span class="token keyword">values</span><span class="token punctuation">(</span><span class="token number">110</span><span class="token punctuation">,</span><span class="token string">'Test'</span><span class="token punctuation">)</span>
+………
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token keyword">TRANSACTION</span>:
+<span class="token keyword">TRANSACTION</span> <span class="token number">0</span> <span class="token number">117470079</span><span class="token punctuation">,</span> ACTIVE <span class="token number">39</span> sec<span class="token punctuation">,</span> process <span class="token keyword">no</span> <span class="token number">1468</span><span class="token punctuation">,</span> OS thread id <span class="token number">1164048736</span> <span class="token keyword">starting</span> <span class="token keyword">index</span> <span class="token keyword">read</span><span class="token punctuation">,</span> thread declared inside <span class="token keyword">InnoDB</span> <span class="token number">500</span>
+mysql <span class="token keyword">tables</span> <span class="token operator">in</span> <span class="token keyword">use</span> <span class="token number">1</span><span class="token punctuation">,</span> locked <span class="token number">1</span>
+<span class="token number">4</span> <span class="token keyword">lock</span> struct<span class="token punctuation">(</span>s<span class="token punctuation">)</span><span class="token punctuation">,</span> heap size <span class="token number">1216</span><span class="token punctuation">,</span> undo log entries <span class="token number">1</span>
+MySQL thread id <span class="token number">7521664</span><span class="token punctuation">,</span> query id <span class="token number">673468058</span> localhost root <span class="token keyword">statistics</span>
+<span class="token keyword">select</span> first_name<span class="token punctuation">,</span>last_name <span class="token keyword">from</span> actor <span class="token keyword">where</span> actor_id <span class="token operator">=</span> <span class="token number">1</span> <span class="token keyword">for</span> <span class="token keyword">update</span>
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> HOLDS THE <span class="token keyword">LOCK</span><span class="token punctuation">(</span>S<span class="token punctuation">)</span>:
+………
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> <span class="token punctuation">(</span><span class="token number">2</span><span class="token punctuation">)</span> WAITING <span class="token keyword">FOR</span> THIS <span class="token keyword">LOCK</span> <span class="token keyword">TO</span> BE GRANTED:
+………
+<span class="token operator">*</span><span class="token operator">*</span><span class="token operator">*</span> WE ROLL BACK <span class="token keyword">TRANSACTION</span> <span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span>
+……<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>小结<br>
+本章重点介绍了MySQL中MyISAM表级锁和InnoDB行级锁的实现特点，并讨论了两种存储引擎经常遇到的锁问题和解决办法。<br>
+对于MyISAM的表锁，主要讨论了以下几点：</p>
+<ul>
+<li>（1）共享读锁（S）之间是兼容的，但共享读锁（S）与排他写锁（X）之间，以及排他写锁（X）之间是互斥的，也就是说读和写是串行的。</li>
+<li>（2）在一定条件下，MyISAM允许查询和插入并发执行，我们可以利用这一点来解决应用中对同一表查询和插入的锁争用问题。</li>
+<li>（3）MyISAM默认的锁调度机制是写优先，这并不一定适合所有应用，用户可以通过设置LOW_PRIORITY_UPDATES参数，或在INSERT、UPDATE、DELETE语句中指定LOW_PRIORITY选项来调节读写锁的争用。</li>
+<li>（4）由于表锁的锁定粒度大，读写之间又是串行的，因此，如果更新操作较多，MyISAM表可能会出现严重的锁等待，可以考虑采用InnoDB表来减少锁冲突。</li>
+</ul>
+<p>对于InnoDB表，本章主要讨论了以下几项内容。</p>
+<ul>
+<li>InnoDB的行锁是基于锁引实现的，如果不通过索引访问数据，InnoDB会使用表锁。</li>
+<li>介绍了InnoDB间隙锁（Next-key)机制，以及InnoDB使用间隙锁的原因。</li>
+<li>在不同的隔离级别下，InnoDB的锁机制和一致性读策略不同。</li>
+<li>MySQL的恢复和复制对InnoDB锁机制和一致性读策略也有较大影响。</li>
+<li>锁冲突甚至死锁很难完全避免。</li>
+</ul>
+<p>在了解InnoDB锁特性后，用户可以通过设计和SQL调整等措施减少锁冲突和死锁，包括：</p>
+<ul>
+<li>尽量使用较低的隔离级别；</li>
+<li>精心设计索引，并尽量使用索引访问数据，使加锁更精确，从而减少锁冲突的机会；</li>
+<li>选择合理的事务大小，小事务发生锁冲突的几率也更小；</li>
+<li>给记录集显示加锁时，最好一次性请求足够级别的锁。比如要修改数据的话，最好直接申请排他锁，而不是先申请共享锁，修改时再请求排他锁，这样容易产生死锁；</li>
+<li>不同的程序访问一组表时，应尽量约定以相同的顺序访问各表，对一个表而言，尽可能以固定的顺序存取表中的行。这样可以大大减少死锁的机会；</li>
+<li>尽量用相等条件访问数据，这样可以避免间隙锁对并发插入的影响；</li>
+<li>不要申请超过实际需要的锁级别；除非必须，查询时不要显示加锁；</li>
+<li>对于一些特定的事务，可以使用表锁来提高处理速度或减少死锁的可能。</li>
+</ul>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2021/03/29/CollectionNote/java/mysql/mysql%E9%94%81%E5%92%8C%E4%BA%8B%E5%8A%A1/" title="round函数百分比显示并加百分号">https://ppxiaodi.gitee.io/2021/03/29/CollectionNote/java/mysql/mysql%E9%94%81%E5%92%8C%E4%BA%8B%E5%8A%A1/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/03/29/CollectionNote/java/mysql/mysql%E9%99%A4%E6%B3%95%E8%BF%90%E7%AE%97%E4%BF%9D%E7%95%99%E5%B0%8F%E6%95%B0%E7%9A%84%E7%94%A8%E6%B3%95/" rel="prev" title="mysql除法运算保留小数的用法"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">mysql除法运算保留小数的用法</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/03/29/CollectionNote/java/mysql/round%E5%87%BD%E6%95%B0%E7%99%BE%E5%88%86%E6%AF%94%E6%98%BE%E7%A4%BA%E5%B9%B6%E5%8A%A0%E7%99%BE%E5%88%86%E5%8F%B7/" rel="next" title="round函数百分比显示并加百分号"><span class="post-nav-text">round函数百分比显示并加百分号</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>

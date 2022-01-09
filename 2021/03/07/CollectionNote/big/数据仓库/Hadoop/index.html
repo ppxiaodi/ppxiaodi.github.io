@@ -1,0 +1,883 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>Hadoop | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="尚硅谷大数据技术之Hadoop（入门） (作者：尚硅谷大数据研发部) 版本：V2.0 第3章 Hadoop运行环境搭建（开发重点） ¶3.1 虚拟机环境准备 1. 克隆虚拟机 2. 修改克隆虚拟机的静态IP 3. 修改主机名 4. 关闭防火墙 5. 创建atguigu用户 6. 配置atguigu用户具有root权限（详见《尚硅谷大数据技术之Linux》） 7．在&#x2F;opt目录下创建文件夹 （1）在">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hadoop">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="尚硅谷大数据技术之Hadoop（入门） (作者：尚硅谷大数据研发部) 版本：V2.0 第3章 Hadoop运行环境搭建（开发重点） ¶3.1 虚拟机环境准备 1. 克隆虚拟机 2. 修改克隆虚拟机的静态IP 3. 修改主机名 4. 关闭防火墙 5. 创建atguigu用户 6. 配置atguigu用户具有root权限（详见《尚硅谷大数据技术之Linux》） 7．在&#x2F;opt目录下创建文件夹 （1）在">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307205902313.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210039305.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210056050.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210108480.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210258472.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210310828.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307211533110.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307211746068.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307211826537.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307212109990.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307212141393.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307212153184.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307213624142.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307214039096.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307214340841.png">
+<meta property="article:published_time" content="2021-03-06T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:53.417Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="电商数仓">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307205902313.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">第3章 Hadoop运行环境搭建（开发重点）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#3-1-%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%8E%AF%E5%A2%83%E5%87%86%E5%A4%87"><span class="toc-number">1.1.</span> <span class="toc-text">3.1 虚拟机环境准备</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-2-%E5%AE%89%E8%A3%85JDK"><span class="toc-number">1.2.</span> <span class="toc-text">3.2 安装JDK</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-3-%E5%AE%89%E8%A3%85Hadoop"><span class="toc-number">1.3.</span> <span class="toc-text">3.3 安装Hadoop</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-Hadoop%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.</span> <span class="toc-text">3.4 Hadoop目录结构</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">第4章 Hadoop运行模式</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#4-2-%E4%BC%AA%E5%88%86%E5%B8%83%E5%BC%8F%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="toc-number">2.1.</span> <span class="toc-text">4.2 伪分布式运行模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-1-%E5%90%AF%E5%8A%A8HDFS%E5%B9%B6%E8%BF%90%E8%A1%8CMapReduce%E7%A8%8B%E5%BA%8F"><span class="toc-number">2.1.1.</span> <span class="toc-text">4.2.1 启动HDFS并运行MapReduce程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-2-%E5%90%AF%E5%8A%A8YARN%E5%B9%B6%E8%BF%90%E8%A1%8CMapReduce%E7%A8%8B%E5%BA%8F"><span class="toc-number">2.1.2.</span> <span class="toc-text">4.2.2 启动YARN并运行MapReduce程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-3-%E9%85%8D%E7%BD%AE%E5%8E%86%E5%8F%B2%E6%9C%8D%E5%8A%A1%E5%99%A8"><span class="toc-number">2.1.3.</span> <span class="toc-text">4.2.3 配置历史服务器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-4-%E9%85%8D%E7%BD%AE%E6%97%A5%E5%BF%97%E7%9A%84%E8%81%9A%E9%9B%86"><span class="toc-number">2.1.4.</span> <span class="toc-text">4.2.4 配置日志的聚集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-5-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E8%AF%B4%E6%98%8E"><span class="toc-number">2.1.5.</span> <span class="toc-text">4.2.5 配置文件说明</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-3-%E5%AE%8C%E5%85%A8%E5%88%86%E5%B8%83%E5%BC%8F%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F%EF%BC%88%E5%BC%80%E5%8F%91%E9%87%8D%E7%82%B9%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">4.3 完全分布式运行模式（开发重点）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-1-%E8%99%9A%E6%8B%9F%E6%9C%BA%E5%87%86%E5%A4%87"><span class="toc-number">2.2.1.</span> <span class="toc-text">4.3.1 虚拟机准备</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-2-%E7%BC%96%E5%86%99%E9%9B%86%E7%BE%A4%E5%88%86%E5%8F%91%E8%84%9A%E6%9C%ACxsync"><span class="toc-number">2.2.2.</span> <span class="toc-text">4.3.2 编写集群分发脚本xsync</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-3-%E9%9B%86%E7%BE%A4%E9%85%8D%E7%BD%AE"><span class="toc-number">2.2.3.</span> <span class="toc-text">4.3.3 集群配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-4-%E9%9B%86%E7%BE%A4%E5%8D%95%E7%82%B9%E5%90%AF%E5%8A%A8"><span class="toc-number">2.2.4.</span> <span class="toc-text">4.3.4 集群单点启动</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-5-SSH%E6%97%A0%E5%AF%86%E7%99%BB%E5%BD%95%E9%85%8D%E7%BD%AE"><span class="toc-number">2.2.5.</span> <span class="toc-text">4.3.5 SSH无密登录配置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-6-%E7%BE%A4%E8%B5%B7%E9%9B%86%E7%BE%A4"><span class="toc-number">2.2.6.</span> <span class="toc-text">4.3.6 群起集群</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-7-%E9%9B%86%E7%BE%A4%E5%90%AF%E5%8A%A8-%E5%81%9C%E6%AD%A2%E6%96%B9%E5%BC%8F%E6%80%BB%E7%BB%93"><span class="toc-number">2.2.7.</span> <span class="toc-text">4.3.7 集群启动&#x2F;停止方式总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-8-%E9%9B%86%E7%BE%A4%E6%97%B6%E9%97%B4%E5%90%8C%E6%AD%A5"><span class="toc-number">2.2.8.</span> <span class="toc-text">4.3.8 集群时间同步</span></a></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Hadoop</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2021-03-07 00:00:00" itemprop="dateCreated datePublished" datetime="2021-03-07T00:00:00+08:00">2021-03-07</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:53" itemprop="dateModified" datetime="2021-07-11T16:54:53+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">大数据</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/%E7%94%B5%E5%95%86%E6%95%B0%E4%BB%93/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">电商数仓</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">大数据</span></a><a class="tag-item" href="/tags/%E7%94%B5%E5%95%86%E6%95%B0%E4%BB%93/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">电商数仓</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><p>尚硅谷大数据技术之Hadoop（入门）</p>
+<p>(作者：尚硅谷大数据研发部)</p>
+<p>版本：V2.0</p>
+<h1>第3章 Hadoop运行环境搭建（开发重点）</h1>
+<h2 id="3-1-虚拟机环境准备"><a class="header-anchor" href="#3-1-虚拟机环境准备">¶</a>3.1 虚拟机环境准备</h2>
+<p>1. 克隆虚拟机</p>
+<p>2. 修改克隆虚拟机的静态IP</p>
+<p>3. 修改主机名</p>
+<p>4. 关闭防火墙</p>
+<p>5. 创建atguigu用户</p>
+<p>6. 配置atguigu用户具有root权限（详见《尚硅谷大数据技术之Linux》）</p>
+<p>7．在/opt目录下创建文件夹</p>
+<p>（1）在/opt目录下创建module、software文件夹</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 opt]$ sudo mkdir module
+[atguigu@hadoop101 opt]$ sudo mkdir software<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（2）修改module、software文件夹的所有者cd</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 opt]$ sudo chown atguigu:atguigu module&#x2F; software&#x2F;
+[atguigu@hadoop101 opt]$ ll
+总用量 8
+drwxr-xr-x. 2 atguigu atguigu 4096 1月  17 14:37 module
+drwxr-xr-x. 2 atguigu atguigu 4096 1月  17 14:38 software<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="3-2-安装JDK"><a class="header-anchor" href="#3-2-安装JDK">¶</a>3.2 安装JDK</h2>
+<p>1. 卸载现有JDK</p>
+<p>（1）查询是否安装Java软件：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 opt]$ rpm -qa | grep java<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（2）如果安装的版本低于1.7，卸载该JDK：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 opt]$ sudo rpm -e 软件包<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（3）查看JDK安装路径：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 ~]$ which java<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ol start="2">
+<li></li>
+</ol>
+<p>用SecureCRT工具将JDK导入到opt目录下面的software文件夹下面，如图2-28所示</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307205902313.png" class="" title="image-20210307205902313" loading="lazy">
+<p>&quot;alt+p&quot;进入sftp模式，如图2-29所示</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210039305.png" class="" title="image-20210307210039305" loading="lazy">
+<p>图2-29 进入sftp模式</p>
+<p>选择jdk1.8拖入，如图2-30，2-31所示</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210056050.png" class="" title="image-20210307210056050" loading="lazy">
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210108480.png" class="" title="image-20210307210108480" loading="lazy">
+<ol>
+<li>在Linux系统下的opt目录中查看软件包是否导入成功</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 opt]$ cd software&#x2F;
+[atguigu@hadoop101 software]$ ls
+hadoop-2.7.2.tar.gz  jdk-8u144-linux-x64.tar.gz<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ol start="2">
+<li>解压JDK到/opt/module目录下</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 software]$ tar -zxvf jdk-8u144-linux-x64.tar.gz -C &#x2F;opt&#x2F;module&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>5. 配置JDK环境变量</p>
+<p>（1）先获取JDK路径</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 jdk1.8.0_144]$ pwd
+&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（2）打开/etc/profile文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 software]$ sudo vi &#x2F;etc&#x2F;profile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在profile文件末尾添加JDK路径</p>
+<pre class="line-numbers language-none"><code class="language-none">#JAVA_HOME
+export JAVA_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144
+export PATH&#x3D;$PATH:$JAVA_HOME&#x2F;bin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>（3）保存后退出</p>
+<pre class="line-numbers language-none"><code class="language-none">:wq<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（4）让修改后的文件生效</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 jdk1.8.0_144]$ source &#x2F;etc&#x2F;profile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>6. 测试JDK是否安装成功</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 jdk1.8.0_144]# java -version
+java version &quot;1.8.0_144&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>注意：重启（如果java -version可以用就不用重启）</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 jdk1.8.0_144]$ sync
+[atguigu@hadoop101 jdk1.8.0_144]$ sudo reboot<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="3-3-安装Hadoop"><a class="header-anchor" href="#3-3-安装Hadoop">¶</a>3.3 安装Hadoop</h2>
+<p>0. Hadoop下载地址：</p>
+<p><a target="_blank" rel="noopener" href="https://archive.apache.org/dist/hadoop/common/hadoop-2.7.2/">[https://archive.apache.org/dist/hadoop/common/hadoop-2.7.2/]{.underline}</a></p>
+<ol>
+<li>用SecureCRT工具将hadoop-2.7.2.tar.gz导入到opt目录下面的software文件夹下面</li>
+</ol>
+<p>切换到sftp连接页面，选择Linux下编译的hadoop jar包拖入，如图2-32所示</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210258472.png" class="" title="image-20210307210258472" loading="lazy">
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307210310828.png" class="" title="image-20210307210310828" loading="lazy">
+<ol start="2">
+<li>进入到Hadoop安装包路径下</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 ~]$ cd &#x2F;opt&#x2F;software&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ol start="3">
+<li>解压安装文件到/opt/module下面</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 software]$ tar -zxvf hadoop-2.7.2.tar.gz -C &#x2F;opt&#x2F;module&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ol start="4">
+<li>查看是否解压成功</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 software]$ ls &#x2F;opt&#x2F;module&#x2F;
+hadoop-2.7.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>5. 将Hadoop添加到环境变量</p>
+<p>（1）获取Hadoop安装路径</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ pwd
+&#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（2）打开/etc/profile文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sudo vi &#x2F;etc&#x2F;profile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在profile文件末尾添加JDK路径：（shitf+g）</p>
+<pre class="line-numbers language-none"><code class="language-none">##HADOOP_HOME
+export HADOOP_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2
+export PATH&#x3D;$PATH:$HADOOP_HOME&#x2F;bin
+export PATH&#x3D;$PATH:$HADOOP_HOME&#x2F;sbin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（3）保存后退出</p>
+<pre class="line-numbers language-none"><code class="language-none">:wq<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（4）让修改后的文件生效</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@ hadoop101 hadoop-2.7.2]$ source &#x2F;etc&#x2F;profile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>6. 测试是否安装成功</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ hadoop version
+Hadoop 2.7.2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>7. 重启(如果Hadoop命令不能用再重启)</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@ hadoop101 hadoop-2.7.2]$ sync
+[atguigu@ hadoop101 hadoop-2.7.2]$ sudo reboot<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h2 id="3-4-Hadoop目录结构"><a class="header-anchor" href="#3-4-Hadoop目录结构">¶</a>3.4 Hadoop目录结构</h2>
+<p>1、查看Hadoop目录结构</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ ll
+总用量 52
+drwxr-xr-x. 2 atguigu atguigu  4096 5月  22 2017 bin
+drwxr-xr-x. 3 atguigu atguigu  4096 5月  22 2017 etc
+drwxr-xr-x. 2 atguigu atguigu  4096 5月  22 2017 include
+drwxr-xr-x. 3 atguigu atguigu  4096 5月  22 2017 lib
+drwxr-xr-x. 2 atguigu atguigu  4096 5月  22 2017 libexec
+-rw-r--r--. 1 atguigu atguigu 15429 5月  22 2017 LICENSE.txt
+-rw-r--r--. 1 atguigu atguigu   101 5月  22 2017 NOTICE.txt
+-rw-r--r--. 1 atguigu atguigu  1366 5月  22 2017 README.txt
+drwxr-xr-x. 2 atguigu atguigu  4096 5月  22 2017 sbin
+drwxr-xr-x. 4 atguigu atguigu  4096 5月  22 2017 share<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>2、重要目录</p>
+<p>（1）bin目录：存放对Hadoop相关服务（HDFS,YARN）进行操作的脚本</p>
+<p>（2）etc目录：Hadoop的配置文件目录，存放Hadoop的配置文件</p>
+<p>（3）lib目录：存放Hadoop的本地库（对数据进行压缩解压缩功能）</p>
+<p>（4）sbin目录：存放启动或停止Hadoop相关服务的脚本</p>
+<p>（5）share目录：存放Hadoop的依赖jar包、文档、和官方案例</p>
+<h1>第4章 Hadoop运行模式</h1>
+<p>Hadoop运行模式包括：本地模式、伪分布式模式以及完全分布式模式。</p>
+<p>Hadoop官方网站：<a target="_blank" rel="noopener" href="http://hadoop.apache.org/">http://hadoop.apache.org/</a></p>
+<h2 id="4-2-伪分布式运行模式"><a class="header-anchor" href="#4-2-伪分布式运行模式">¶</a>4.2 伪分布式运行模式</h2>
+<h3 id="4-2-1-启动HDFS并运行MapReduce程序"><a class="header-anchor" href="#4-2-1-启动HDFS并运行MapReduce程序">¶</a>4.2.1 启动HDFS并运行MapReduce程序</h3>
+<p>1. 分析</p>
+<p>（1）配置集群</p>
+<p>（2）启动、测试集群增、删、查</p>
+<p>（3）执行WordCount案例</p>
+<p>2. 执行步骤</p>
+<p>（1）配置集群</p>
+<p>（a）配置：<a target="_blank" rel="noopener" href="http://hadoop-env.sh">hadoop-env.sh</a></p>
+<p>Linux系统中获取JDK的安装路径：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@ hadoop101 ~]# echo $JAVA_HOME
+&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>修改JAVA_HOME 路径：</p>
+<pre class="line-numbers language-none"><code class="language-none">export JAVA_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（b）配置：core-site.xml</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token comment">&lt;!-- 指定HDFS中NameNode的地址 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>name</span><span class="token punctuation">></span></span>fs.defaultFS<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>name</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>hdfs://hadoop101:9000<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span>
+
+<span class="token comment">&lt;!-- 指定Hadoop运行时产生文件的存储目录 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>name</span><span class="token punctuation">></span></span>hadoop.tmp.dir<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>name</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>/opt/module/hadoop-2.7.2/data/tmp<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（c）配置：hdfs-site.xml</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token comment">&lt;!-- 指定HDFS副本的数量 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>name</span><span class="token punctuation">></span></span>dfs.replication<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>name</span><span class="token punctuation">></span></span>
+	<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（2）启动集群</p>
+<p>（a）<strong>格式化NameNode</strong>（第一次启动时格式化，以后就不要总格式化）</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs namenode -format<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（b）启动NameNode</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;hadoop-daemon.sh start namenode<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（c）启动DataNode</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;hadoop-daemon.sh start datanode<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（3）查看集群</p>
+<p>（a）查看是否启动成功</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ jps
+13586 NameNode
+13668 DataNode
+13786 Jps<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>注意：jps是JDK中的命令，不是Linux命令。不安装JDK不能使用jps</p>
+</blockquote>
+<p>（b）web端查看HDFS文件系统</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://hadoop101:50070/dfshealth.html#tab-overview">http://hadoop101:50070/dfshealth.html#tab-overview</a></p>
+<p>注意：如果不能查看，看如下帖子处理</p>
+<p><a target="_blank" rel="noopener" href="http://www.cnblogs.com/zlslch/p/6604189.html">http://www.cnblogs.com/zlslch/p/6604189.html</a></p>
+</blockquote>
+<p>（c）查看产生的Log日志</p>
+<p>说明：在企业中遇到Bug时，经常根据日志提示信息去分析问题、解决Bug。</p>
+<p>当前目录：/opt/module/hadoop-2.7.2/logs</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 logs]$ ls
+hadoop-atguigu-datanode-hadoop.atguigu.com.log
+hadoop-atguigu-datanode-hadoop.atguigu.com.out
+hadoop-atguigu-namenode-hadoop.atguigu.com.log
+hadoop-atguigu-namenode-hadoop.atguigu.com.out
+SecurityAuth-root.audit
+[atguigu@hadoop101 logs]# cat hadoop-atguigu-datanode-hadoop101.log<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（d）思考：为什么不能一直格式化NameNode，格式化NameNode，要注意什么？</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ cd data&#x2F;tmp&#x2F;dfs&#x2F;name&#x2F;current&#x2F;
+[atguigu@hadoop101 current]$ cat VERSION
+clusterID&#x3D;CID-f0330a58-36fa-4a2a-a65f-2688269b5837
+
+[atguigu@hadoop101 hadoop-2.7.2]$ cd data&#x2F;tmp&#x2F;dfs&#x2F;data&#x2F;current&#x2F;
+clusterID&#x3D;CID-f0330a58-36fa-4a2a-a65f-2688269b5837
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>注意：格式化NameNode，会产生新的集群id,导致NameNode和DataNode的集群id不一致，集群找不到已往数据。所以，格式NameNode时，一定要先删除data数据和log日志，然后再格式化NameNode。</p>
+</blockquote>
+<p>（4）操作集群</p>
+<p>（a）在HDFS文件系统上<strong>创建</strong>一个input文件夹</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs dfs -mkdir -p &#x2F;user&#x2F;atguigu&#x2F;input<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（b）将测试文件内容<strong>上传</strong>到文件系统上</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$bin&#x2F;hdfs dfs -put wcinput&#x2F;wc.input
+  &#x2F;user&#x2F;atguigu&#x2F;input&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（c）<strong>查看</strong>上传的文件是否正确</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs dfs -ls  &#x2F;user&#x2F;atguigu&#x2F;input&#x2F;
+[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs dfs -cat  &#x2F;user&#x2F;atguigu&#x2F; input&#x2F;wc.input<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（d）运行MapReduce程序</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hadoop jar
+share&#x2F;hadoop&#x2F;mapreduce&#x2F;hadoop-mapreduce-examples-2.7.2.jar wordcount &#x2F;user&#x2F;atguigu&#x2F;input&#x2F; &#x2F;user&#x2F;atguigu&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（e）查看输出结果</p>
+<p>命令行查看：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs dfs -cat &#x2F;user&#x2F;atguigu&#x2F;output&#x2F;*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>浏览器查看，如图2-34所示</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307211533110.png" class="" title="image-20210307211533110" loading="lazy">
+<p>（f）将测试文件内容<strong>下载</strong>到本地</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ hdfs dfs -get &#x2F;user&#x2F;atguigu&#x2F;output&#x2F;part-r-00000 .&#x2F;wcoutput&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（g）<strong>删除</strong>输出结果</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ hdfs dfs -rm -r &#x2F;user&#x2F;atguigu&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="4-2-2-启动YARN并运行MapReduce程序"><a class="header-anchor" href="#4-2-2-启动YARN并运行MapReduce程序">¶</a>4.2.2 启动YARN并运行MapReduce程序</h3>
+<p>1. 分析</p>
+<p>（1）配置集群在YARN上运行MR</p>
+<p>（2）启动、测试集群增、删、查</p>
+<p>（3）在YARN上执行WordCount案例</p>
+<p>2. 执行步骤</p>
+<p>（1）配置集群</p>
+<p>（a）<a target="_blank" rel="noopener" href="http://xn--yarn-env-vz2ve12k.sh">配置yarn-env.sh</a></p>
+<p>配置一下JAVA_HOME</p>
+<pre class="line-numbers language-none"><code class="language-none">export JAVA_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（b）配置yarn-site.xml</p>
+<pre class="line-numbers language-xml" data-language="xml"><code class="language-xml"><span class="token comment">&lt;!-- Reducer获取数据的方式 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span><span class="token punctuation">></span></span>
+ 		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>name</span><span class="token punctuation">></span></span>yarn.nodemanager.aux-services<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>name</span><span class="token punctuation">></span></span>
+ 		<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>mapreduce_shuffle<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span>
+
+<span class="token comment">&lt;!-- 指定YARN的ResourceManager的地址 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>property</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>name</span><span class="token punctuation">></span></span>yarn.resourcemanager.hostname<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>name</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>value</span><span class="token punctuation">></span></span>hadoop101<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>value</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>property</span><span class="token punctuation">></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（c）配置：<a target="_blank" rel="noopener" href="http://mapred-env.sh">mapred-env.sh</a></p>
+<p>配置一下JAVA_HOME</p>
+<pre class="line-numbers language-none"><code class="language-none">export JAVA_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（d）配置： (对mapred-site.xml.template重新命名为) mapred-site.xml</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop]$ mv mapred-site.xml.template mapred-site.xml
+[atguigu@hadoop101 hadoop]$ vi mapred-site.xml
+
+&lt;!-- 指定MR运行在YARN上 --&gt;
+&lt;property&gt;
+		&lt;name&gt;mapreduce.framework.name&lt;&#x2F;name&gt;
+		&lt;value&gt;yarn&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（2）启动集群</p>
+<p>（a）启动前必须保证NameNode和DataNode已经启动</p>
+<p>（b）启动ResourceManager</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;yarn-daemon.sh start resourcemanager<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（c）启动NodeManager</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;yarn-daemon.sh start nodemanager<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（3）集群操作</p>
+<p>（a）YARN的浏览器页面查看，如图2-35所示</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://hadoop101:8088/cluster">http://hadoop101:8088/cluster</a></p>
+</blockquote>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307211746068.png" class="" title="image-20210307211746068" loading="lazy">
+<p>图2-35 YARN的浏览器页面</p>
+<p>（b）删除文件系统上的output文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs dfs -rm -R &#x2F;user&#x2F;atguigu&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（c）执行MapReduce程序</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hadoop jar
+ share&#x2F;hadoop&#x2F;mapreduce&#x2F;hadoop-mapreduce-examples-2.7.2.jar wordcount &#x2F;user&#x2F;atguigu&#x2F;input  &#x2F;user&#x2F;atguigu&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（d）查看运行结果，如图2-36所示</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs dfs -cat &#x2F;user&#x2F;atguigu&#x2F;output&#x2F;*<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307211826537.png" class="" title="image-20210307211826537" loading="lazy">
+<h3 id="4-2-3-配置历史服务器"><a class="header-anchor" href="#4-2-3-配置历史服务器">¶</a>4.2.3 配置历史服务器</h3>
+<p>为了查看程序的历史运行情况，需要配置一下历史服务器。具体配置步骤如下：</p>
+<p>1. 配置mapred-site.xml</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop]$ vi mapred-site.xml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在该文件里面增加如下配置。</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;!-- 历史服务器端地址 --&gt;
+&lt;property&gt;
+&lt;name&gt;mapreduce.jobhistory.address&lt;&#x2F;name&gt;
+&lt;value&gt;hadoop101:10020&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;
+
+&lt;!-- 历史服务器web端地址 --&gt;
+&lt;property&gt;
+    &lt;name&gt;mapreduce.jobhistory.webapp.address&lt;&#x2F;name&gt;
+    &lt;value&gt;hadoop101:19888&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>2. 启动历史服务器</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;mr-jobhistory-daemon.sh start historyserver<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>3. 查看历史服务器是否启动</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ jps<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>4. 查看JobHistory</p>
+<p><a target="_blank" rel="noopener" href="http://hadoop101:19888/jobhistory">http://hadoop101:19888/jobhistory</a></p>
+<h3 id="4-2-4-配置日志的聚集"><a class="header-anchor" href="#4-2-4-配置日志的聚集">¶</a>4.2.4 配置日志的聚集</h3>
+<p>日志聚集概念：应用运行完成以后，将程序运行日志信息上传到HDFS系统上。</p>
+<p>日志聚集功能好处：可以方便的查看到程序运行详情，方便开发调试。</p>
+<p>注意：开启日志聚集功能，需要重新启动NodeManager<br>
+、ResourceManager和HistoryManager。</p>
+<p>开启日志聚集功能具体步骤如下：</p>
+<ol>
+<li>配置yarn-site.xml</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop]$ vi yarn-site.xml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在该文件里面增加如下配置。</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;!-- 日志聚集功能使能 --&gt;
+&lt;property&gt;
+&lt;name&gt;yarn.log-aggregation-enable&lt;&#x2F;name&gt;
+&lt;value&gt;true&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;
+
+&lt;!-- 日志保留时间设置7天 --&gt;
+&lt;property&gt;
+&lt;name&gt;yarn.log-aggregation.retain-seconds&lt;&#x2F;name&gt;
+&lt;value&gt;604800&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol start="2">
+<li>
+<p>关闭NodeManager 、ResourceManager和HistoryManager</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;yarn-daemon.sh stop resourcemanager
+[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;yarn-daemon.sh stop nodemanager
+[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;mr-jobhistory-daemon.sh stop historyserver<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p>启动NodeManager 、ResourceManager和HistoryManager</p>
+</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;yarn-daemon.sh start resourcemanager
+[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;yarn-daemon.sh start nodemanager
+[atguigu@hadoop101 hadoop-2.7.2]$ sbin&#x2F;mr-jobhistory-daemon.sh start historyserver<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<ol start="4">
+<li>删除HDFS上已经存在的输出文件</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ bin&#x2F;hdfs dfs -rm -R &#x2F;user&#x2F;atguigu&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ol start="5">
+<li>执行WordCount程序</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 hadoop-2.7.2]$ hadoop jar
+ share&#x2F;hadoop&#x2F;mapreduce&#x2F;hadoop-mapreduce-examples-2.7.2.jar wordcount &#x2F;user&#x2F;atguigu&#x2F;input &#x2F;user&#x2F;atguigu&#x2F;output<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ol start="6">
+<li>查看日志，如图2-37，2-38，2-39所示</li>
+</ol>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="http://hadoop101:19888/jobhistory">http://hadoop101:19888/jobhistory</a></p>
+</blockquote>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307212109990.png" class="" title="image-20210307212109990" loading="lazy">
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307212141393.png" class="" title="image-20210307212141393" loading="lazy">
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307212153184.png" class="" title="image-20210307212153184" loading="lazy">
+<h3 id="4-2-5-配置文件说明"><a class="header-anchor" href="#4-2-5-配置文件说明">¶</a>4.2.5 配置文件说明</h3>
+<p>Hadoop配置文件分两类：默认配置文件和自定义配置文件，只有用户想修改某一默认配置值时，才需要修改自定义配置文件，更改相应属性值。</p>
+<p>（1）默认配置文件：</p>
+<table>
+<thead>
+<tr>
+<th>要获取的默认文件</th>
+<th>文件存放在Hadoop的jar包中的位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>[core-default.xml]</td>
+<td>hadoop-common-2.7.2.jar/ core-default.xml</td>
+</tr>
+<tr>
+<td>[hdfs-default.xml]</td>
+<td>hadoop-hdfs-2.7.2.jar/ hdfs-default.xml</td>
+</tr>
+<tr>
+<td>[yarn-default.xml]</td>
+<td>hadoop-yarn-common-2.7.2.jar/ yarn-default.xml</td>
+</tr>
+<tr>
+<td>[mapred-default.xml]</td>
+<td>hadoop-mapreduce-client-core-2.7.2.jar/ mapred-default.xml</td>
+</tr>
+</tbody>
+</table>
+<p>（2）自定义配置文件：</p>
+<p><strong>core-site.xml、hdfs-site.xml、yarn-site.xml、mapred-site.xml</strong>四个配置文件存放在$HADOOP_HOME/etc/hadoop这个路径上，用户可以根据项目需求重新进行修改配置。</p>
+<h2 id="4-3-完全分布式运行模式（开发重点）"><a class="header-anchor" href="#4-3-完全分布式运行模式（开发重点）">¶</a>4.3 完全分布式运行模式（开发重点）</h2>
+<p>分析：</p>
+<p>1）准备3台客户机（关闭防火墙、静态ip、主机名称）</p>
+<p>2）安装JDK</p>
+<p>3）配置环境变量</p>
+<p>4）安装Hadoop</p>
+<p>5）配置环境变量</p>
+<p>6）配置集群</p>
+<p>7）单点启动</p>
+<p>8）配置ssh</p>
+<p>9）群起并测试集群</p>
+<h3 id="4-3-1-虚拟机准备"><a class="header-anchor" href="#4-3-1-虚拟机准备">¶</a>4.3.1 虚拟机准备</h3>
+<p>详见3.1章。</p>
+<h3 id="4-3-2-编写集群分发脚本xsync"><a class="header-anchor" href="#4-3-2-编写集群分发脚本xsync">¶</a>4.3.2 编写集群分发脚本xsync</h3>
+<p>1. scp（secure copy）安全拷贝</p>
+<p>（1）scp定义：</p>
+<blockquote>
+<p>scp可以实现服务器与服务器之间的数据拷贝。（from server1 to server2）</p>
+</blockquote>
+<p>（2）基本语法</p>
+<pre class="line-numbers language-none"><code class="language-none">scp    -r   $pdir&#x2F;$fname     $user@hadoop$host:$pdir&#x2F;$fname<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">命令   递归       要拷贝的文件路径&#x2F;名称    目的用户@主机:目的路径&#x2F;名称<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（3）案例实操</p>
+<p>（a）在hadoop101上，将hadoop101中/opt/module目录下的软件拷贝到hadoop102上。</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 &#x2F;]$ scp -r &#x2F;opt&#x2F;module  root@hadoop102:&#x2F;opt&#x2F;module<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（b）在hadoop103上，将hadoop101服务器上的/opt/module目录下的软件拷贝到hadoop103上。</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop103 opt]$sudo scp -r atguigu@hadoop101:&#x2F;opt&#x2F;module root@hadoop103:&#x2F;opt&#x2F;module<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（c）在hadoop103上操作将hadoop101中/opt/module目录下的软件拷贝到hadoop104上。</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop103 opt]$ scp -r atguigu@hadoop101:&#x2F;opt&#x2F;module root@hadoop104:&#x2F;opt&#x2F;module<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>注意：拷贝过来的/opt/module目录，别忘了在hadoop102、hadoop103、hadoop104上修改所有文件的，所有者和所有者组。sudo<br>
+chown atguigu:atguigu -R /opt/module</p>
+<p>（d）将hadoop101中/etc/profile文件拷贝到hadoop102的/etc/profile上。</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 ~]$ sudo scp &#x2F;etc&#x2F;profile root@hadoop102:&#x2F;etc&#x2F;profile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（e）将hadoop101中/etc/profile文件拷贝到hadoop103的/etc/profile上。</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 ~]$ sudo scp &#x2F;etc&#x2F;profile root@hadoop103:&#x2F;etc&#x2F;profile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（f）将hadoop101中/etc/profile文件拷贝到hadoop104的/etc/profile上。</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 ~]$ sudo scp &#x2F;etc&#x2F;profile root@hadoop104:&#x2F;etc&#x2F;profile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>注意：拷贝过来的配置文件别忘了source一下/etc/profile，。</p>
+</blockquote>
+<p>2. rsync 远程同步工具</p>
+<p>rsync主要用于备份和镜像。具有速度快、避免复制相同内容和支持符号链接的优点。</p>
+<p>rsync和scp区别：用rsync做文件的复制要比scp的速度快，rsync只对差异文件做更新。scp是把所有文件都复制过去。</p>
+<p>（1）基本语法</p>
+<pre class="line-numbers language-none"><code class="language-none">rsync    -rvl    $pdir&#x2F;$fname    $user@hadoop$host:$pdir&#x2F;$fname<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">命令   选项参数   要拷贝的文件路径&#x2F;名称    目的用户@主机:目的路径&#x2F;名称<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>选项参数说明</p>
+<table>
+<thead>
+<tr>
+<th>选项</th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-r</td>
+<td>递归</td>
+</tr>
+<tr>
+<td>-v</td>
+<td>显示复制过程</td>
+</tr>
+<tr>
+<td>-l</td>
+<td>拷贝符号连接</td>
+</tr>
+</tbody>
+</table>
+<p>（2）案例实操</p>
+<p>（a）把hadoop101机器上的/opt/software目录同步到hadoop102服务器的root用户下的/opt/目录</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop101 opt]$ rsync -rvl &#x2F;opt&#x2F;software&#x2F; root@hadoop102:&#x2F;opt&#x2F;software<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>3. xsync集群分发脚本</p>
+<p>（1）需求：循环复制文件到所有节点的相同目录下</p>
+<p>（2）需求分析：</p>
+<p>（a）rsync命令原始拷贝：</p>
+<pre class="line-numbers language-none"><code class="language-none">rsync  -rvl     &#x2F;opt&#x2F;module  		 root@hadoop103:&#x2F;opt&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（b）期望脚本：</p>
+<blockquote>
+<p>xsync要同步的文件名称</p>
+</blockquote>
+<p>（c）说明：在/home/atguigu/bin这个目录下存放的脚本，atguigu用户可以在系统任何地方直接执行。</p>
+<p>（3）脚本实现</p>
+<p>（a）在/home/atguigu目录下创建bin目录，并在bin目录下xsync创建文件，文件内容如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 ~]$ mkdir bin
+[atguigu@hadoop102 ~]$ cd bin&#x2F;
+[atguigu@hadoop102 bin]$ touch xsync
+[atguigu@hadoop102 bin]$ vi xsync<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在该文件中编写如下代码</p>
+<pre class="line-numbers language-none"><code class="language-none">#!&#x2F;bin&#x2F;bash
+#1 获取输入参数个数，如果没有参数，直接退出
+pcount&#x3D;$#
+if((pcount&#x3D;&#x3D;0)); then
+echo no args;
+exit;
+fi
+
+#2 获取文件名称
+p1&#x3D;$1
+fname&#x3D;&#96;basename $p1&#96;
+echo fname&#x3D;$fname
+
+#3 获取上级目录到绝对路径
+pdir&#x3D;&#96;cd -P $(dirname $p1); pwd&#96;
+echo pdir&#x3D;$pdir
+
+#4 获取当前用户名称
+user&#x3D;&#96;whoami&#96;
+
+#5 循环
+for((host&#x3D;103; host&lt;105; host++)); do
+        echo ------------------- hadoop$host --------------
+        rsync -rvl $pdir&#x2F;$fname $user@hadoop$host:$pdir
+done<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（b）修改脚本 xsync 具有执行权限</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 bin]$ chmod 777 xsync<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（c）调用脚本形式：xsync 文件名称</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 bin]$ xsync &#x2F;home&#x2F;atguigu&#x2F;bin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>注意：如果将xsync放到/home/atguigu/bin目录下仍然不能实现全局使用，可以将xsync移动到/usr/local/bin目录下。</p>
+</blockquote>
+<h3 id="4-3-3-集群配置"><a class="header-anchor" href="#4-3-3-集群配置">¶</a>4.3.3 集群配置</h3>
+<p>1. 集群部署规划</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>hadoop102</th>
+<th>hadoop103</th>
+<th>hadoop104</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HDFS</td>
+<td>NameNodeDataNode</td>
+<td>DataNode</td>
+<td>SecondaryNameNodeDataNode</td>
+</tr>
+<tr>
+<td>YARN</td>
+<td>NodeManager</td>
+<td>ResourceManagerNodeManager</td>
+<td>NodeManager</td>
+</tr>
+</tbody>
+</table>
+<p>2. 配置集群</p>
+<p>（1）核心配置文件</p>
+<p>配置core-site.xml</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ vi core-site.xml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在该文件中编写如下配置</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;!-- 指定HDFS中NameNode的地址 --&gt;
+&lt;property&gt;
+		&lt;name&gt;fs.defaultFS&lt;&#x2F;name&gt;
+      &lt;value&gt;hdfs:&#x2F;&#x2F;hadoop102:9000&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;
+
+&lt;!-- 指定Hadoop运行时产生文件的存储目录 --&gt;
+&lt;property&gt;
+		&lt;name&gt;hadoop.tmp.dir&lt;&#x2F;name&gt;
+		&lt;value&gt;&#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2&#x2F;data&#x2F;tmp&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（2）HDFS配置文件</p>
+<p><a target="_blank" rel="noopener" href="http://xn--hadoop-env-o150at28m.sh">配置hadoop-env.sh</a></p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ vi hadoop-env.sh
+export JAVA_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>配置hdfs-site.xml</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ vi hdfs-site.xml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在该文件中编写如下配置</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;property&gt;
+		&lt;name&gt;dfs.replication&lt;&#x2F;name&gt;
+		&lt;value&gt;1&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;
+
+&lt;!-- 指定Hadoop辅助名称节点主机配置 --&gt;
+&lt;property&gt;
+      &lt;name&gt;dfs.namenode.secondary.http-address&lt;&#x2F;name&gt;
+      &lt;value&gt;hadoop104:50090&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（3）YARN配置文件</p>
+<p><a target="_blank" rel="noopener" href="http://xn--yarn-env-vz2ve12k.sh">配置yarn-env.sh</a></p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ vi yarn-env.sh
+export JAVA_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>配置yarn-site.xml</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ vi yarn-site.xml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在该文件中增加如下配置</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;!-- Reducer获取数据的方式 --&gt;
+&lt;property&gt;
+		&lt;name&gt;yarn.nodemanager.aux-services&lt;&#x2F;name&gt;
+		&lt;value&gt;mapreduce_shuffle&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;
+
+&lt;!-- 指定YARN的ResourceManager的地址 --&gt;
+&lt;property&gt;
+		&lt;name&gt;yarn.resourcemanager.hostname&lt;&#x2F;name&gt;
+		&lt;value&gt;hadoop103&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（4）MapReduce配置文件</p>
+<p><a target="_blank" rel="noopener" href="http://xn--mapred-env-o150at28m.sh">配置mapred-env.sh</a></p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ vi mapred-env.sh
+export JAVA_HOME&#x3D;&#x2F;opt&#x2F;module&#x2F;jdk1.8.0_144<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>配置mapred-site.xml</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ cp mapred-site.xml.template mapred-site.xml
+
+[atguigu@hadoop102 hadoop]$ vi mapred-site.xml<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>在该文件中增加如下配置</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;!-- 指定MR运行在Yarn上 --&gt;
+&lt;property&gt;
+		&lt;name&gt;mapreduce.framework.name&lt;&#x2F;name&gt;
+		&lt;value&gt;yarn&lt;&#x2F;value&gt;
+&lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3．在集群上分发配置好的Hadoop配置文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ xsync &#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>4．查看文件分发情况</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop103 hadoop]$ cat &#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2&#x2F;etc&#x2F;hadoop&#x2F;core-site.xml<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="4-3-4-集群单点启动"><a class="header-anchor" href="#4-3-4-集群单点启动">¶</a>4.3.4 集群单点启动</h3>
+<p>（1）如果集群是第一次启动，需要<strong>格式化NameNode</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ hadoop namenode -format<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（2）在hadoop102上启动NameNode</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ hadoop-daemon.sh start namenode
+[atguigu@hadoop102 hadoop-2.7.2]$ jps
+3461 NameNode<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>（3）在hadoop102、hadoop103以及hadoop104上分别启动DataNode</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ hadoop-daemon.sh start datanode
+[atguigu@hadoop102 hadoop-2.7.2]$ jps
+3461 NameNode
+3608 Jps
+3561 DataNode
+[atguigu@hadoop103 hadoop-2.7.2]$ hadoop-daemon.sh start datanode
+[atguigu@hadoop103 hadoop-2.7.2]$ jps
+3190 DataNode
+3279 Jps
+[atguigu@hadoop104 hadoop-2.7.2]$ hadoop-daemon.sh start datanode
+[atguigu@hadoop104 hadoop-2.7.2]$ jps
+3237 Jps
+3163 DataNode<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（4）思考：每次都一个一个节点启动，如果节点数增加到1000个怎么办？</p>
+<p>早上来了开始一个一个节点启动，到晚上下班刚好完成，下班？</p>
+<h3 id="4-3-5-SSH无密登录配置"><a class="header-anchor" href="#4-3-5-SSH无密登录配置">¶</a>4.3.5 SSH无密登录配置</h3>
+<p>1. 配置ssh</p>
+<p>（1）基本语法</p>
+<blockquote>
+<p>ssh另一台电脑的ip地址</p>
+</blockquote>
+<p>（2）ssh连接时出现Host key verification failed的解决方法</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 opt] $ ssh 192.168.1.103
+The authenticity of host &#39;192.168.1.103 (192.168.1.103)&#39; can&#39;t be established.
+RSA key fingerprint is cf:1e:de:d7:d0:4c:2d:98:60:b4:fd:ae:b1:2d:ad:06.
+Are you sure you want to continue connecting (yes&#x2F;no)? 
+Host key verification failed.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（3）解决方案如下：直接输入yes</p>
+<p>2. 无密钥配置</p>
+<p>（1）免密登录原理，如图2-40所示</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307213624142.png" class="" title="image-20210307213624142" loading="lazy">
+<p>（2）生成公钥和私钥：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 .ssh]$ ssh-keygen -t rsa<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>然后敲（三个回车），就会生成两个文件id_rsa（私钥）、id_rsa.pub（公钥）</p>
+</blockquote>
+<p>（3）将公钥拷贝到要免密登录的目标机器上</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 .ssh]$ ssh-copy-id hadoop102
+[atguigu@hadoop102 .ssh]$ ssh-copy-id hadoop103
+[atguigu@hadoop102 .ssh]$ ssh-copy-id hadoop104<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>注意：</p>
+<p>还需要在hadoop102上采用root账号，配置一下无密登录到hadoop102、hadoop103、hadoop104；</p>
+<p>还需要在hadoop103上采用atguigu账号配置一下无密登录到hadoop102、hadoop103、hadoop104服务器上。</p>
+</blockquote>
+<p>3. <code>.ssh</code>文件夹下（<code>~/.ssh</code>）的文件功能解释</p>
+<table>
+<thead>
+<tr>
+<th>known_hosts</th>
+<th>记录ssh访问过计算机的公钥(public key)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>id_rsa</td>
+<td>生成的私钥</td>
+</tr>
+<tr>
+<td>id_rsa.pub</td>
+<td>生成的公钥</td>
+</tr>
+<tr>
+<td>authorized_keys</td>
+<td>存放授权过得无密登录服务器公钥</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-3-6-群起集群"><a class="header-anchor" href="#4-3-6-群起集群">¶</a>4.3.6 群起集群</h3>
+<p>1. 配置slaves</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2&#x2F;etc&#x2F;hadoop&#x2F;slaves
+[atguigu@hadoop102 hadoop]$ vi slaves<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>在该文件中增加如下内容：</p>
+<pre class="line-numbers language-none"><code class="language-none">hadoop102
+hadoop103
+hadoop104<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>注意：该文件中添加的内容结尾不允许有空格，文件中不允许有空行。</p>
+</blockquote>
+<p>同步所有节点配置文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ xsync slaves<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>2. 启动集群</p>
+<p>（1）如果集群是第一次启动，需要格式化NameNode（注意格式化之前，一定要先停止上次启动的所有namenode和datanode进程，然后再删除data和log数据）</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ bin&#x2F;hdfs namenode -format<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（2）启动HDFS</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ sbin&#x2F;start-dfs.sh
+[atguigu@hadoop102 hadoop-2.7.2]$ jps
+4166 NameNode
+4482 Jps
+4263 DataNode
+[atguigu@hadoop103 hadoop-2.7.2]$ jps
+3218 DataNode
+3288 Jps<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop104 hadoop-2.7.2]$ jps
+3221 DataNode
+3283 SecondaryNameNode
+3364 Jps<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（3）启动YARN</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop103 hadoop-2.7.2]$ sbin&#x2F;start-yarn.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>注意：NameNode和ResourceManger如果不是同一台机器，不能在NameNode上启动<br>
+YARN，应该在ResouceManager所在的机器上启动YARN。</p>
+</blockquote>
+<p>（4）Web端查看SecondaryNameNode</p>
+<blockquote>
+<p>（a）浏览器中输入：<a target="_blank" rel="noopener" href="http://hadoop104:50090/status.html">http://hadoop104:50090/status.html</a></p>
+</blockquote>
+<p>（b）查看SecondaryNameNode信息，如图2-41所示。</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307214039096.png" class="" title="image-20210307214039096" loading="lazy">
+<p>3. 集群基本测试</p>
+<p>（1）上传文件到集群</p>
+<p>上传小文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ hdfs dfs -mkdir -p &#x2F;user&#x2F;atguigu&#x2F;input
+[atguigu@hadoop102 hadoop-2.7.2]$ hdfs dfs -put wcinput&#x2F;wc.input &#x2F;user&#x2F;atguigu&#x2F;input<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>上传大文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ bin&#x2F;hadoop fs -put
+ &#x2F;opt&#x2F;software&#x2F;hadoop-2.7.2.tar.gz  &#x2F;user&#x2F;atguigu&#x2F;input<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（2）上传文件后查看文件存放在什么位置</p>
+<p>（a）查看HDFS文件存储路径</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 subdir0]$ pwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>/opt/module/hadoop-2.7.2/data/tmp/dfs/data/current/BP-938951106-192.168.10.107-1495462844069/current/finalized/subdir0/subdir0</p>
+</blockquote>
+<p>（b）查看HDFS在磁盘存储文件内容</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 subdir0]$ cat blk_1073741825
+hadoop yarn
+hadoop mapreduce 
+atguigu
+atguigu<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（3）拼接</p>
+<pre class="line-numbers language-none"><code class="language-none">-rw-rw-r--. 1 atguigu atguigu 134217728 5月  23 16:01 blk_1073741836
+-rw-rw-r--. 1 atguigu atguigu   1048583 5月  23 16:01 blk_1073741836_1012.meta
+-rw-rw-r--. 1 atguigu atguigu  63439959 5月  23 16:01 blk_1073741837
+-rw-rw-r--. 1 atguigu atguigu    495635 5月  23 16:01 blk_1073741837_1013.meta<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 subdir0]$ cat blk_1073741836&gt;&gt;tmp.file
+[atguigu@hadoop102 subdir0]$ cat blk_1073741837&gt;&gt;tmp.file
+[atguigu@hadoop102 subdir0]$ tar -zxvf tmp.file<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>（4）下载</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop-2.7.2]$ bin&#x2F;hadoop fs -get
+ &#x2F;user&#x2F;atguigu&#x2F;input&#x2F;hadoop-2.7.2.tar.gz .&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="4-3-7-集群启动-停止方式总结"><a class="header-anchor" href="#4-3-7-集群启动-停止方式总结">¶</a>4.3.7 集群启动/停止方式总结</h3>
+<p>1. 各个服务组件逐一启动/停止</p>
+<p>（1）分别启动/停止HDFS组件</p>
+<pre class="line-numbers language-none"><code class="language-none">hadoop-daemon.sh  start &#x2F; stop  namenode &#x2F; datanode &#x2F; secondarynamenode<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（2）启动/停止YARN</p>
+<pre class="line-numbers language-none"><code class="language-none">yarn-daemon.sh  start &#x2F; stop  resourcemanager &#x2F; nodemanager<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>2. 各个模块分开启动/停止（配置ssh是前提）常用</p>
+<p>（1）整体启动/停止HDFS</p>
+<pre class="line-numbers language-none"><code class="language-none">start-dfs.sh   &#x2F;  stop-dfs.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（2）整体启动/停止YARN</p>
+<pre class="line-numbers language-none"><code class="language-none">start-yarn.sh  &#x2F;  stop-yarn.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="4-3-8-集群时间同步"><a class="header-anchor" href="#4-3-8-集群时间同步">¶</a>4.3.8 集群时间同步</h3>
+<p>时间同步的方式：找一个机器，作为时间服务器，所有的机器与这台集群时间进行定时的同步，比如，每隔十分钟，同步一次时间。</p>
+<img src="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/image-20210307214340841.png" class="" title="image-20210307214340841" loading="lazy">
+<p><strong>配置时间同步具体实操：</strong></p>
+<p>1. 时间服务器配置（必须root用户）</p>
+<p>（1）检查ntp是否安装</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop102 桌面]# rpm -qa|grep ntp<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">ntp-4.2.6p5-10.el6.centos.x86_64
+fontpackages-filesystem-1.41-1.1.el6.noarch
+ntpdate-4.2.6p5-10.el6.centos.x86_64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>（2）修改ntp配置文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop102 桌面]# vi &#x2F;etc&#x2F;ntp.conf<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>修改内容如下</p>
+<p>a）修改1（授权192.168.1.0-192.168.1.255网段上的所有机器可以从这台机器上查询和同步时间）</p>
+<pre class="line-numbers language-none"><code class="language-none">#restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap为
+restrict 192.168.1.0 mask 255.255.255.0 nomodify notrap<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>b）修改2（集群在局域网中，不使用其他互联网上的时间）</p>
+<pre class="line-numbers language-none"><code class="language-none">server 0.centos.pool.ntp.org iburst
+server 1.centos.pool.ntp.org iburst
+server 2.centos.pool.ntp.org iburst
+server 3.centos.pool.ntp.org iburst为
+#server 0.centos.pool.ntp.org iburst
+#server 1.centos.pool.ntp.org iburst
+#server 2.centos.pool.ntp.org iburst
+#server 3.centos.pool.ntp.org iburst<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>c）添加3（当该节点丢失网络连接，依然可以采用本地时间作为时间服务器为集群中的其他节点提供时间同步）</p>
+<pre class="line-numbers language-none"><code class="language-none">server 127.127.1.0
+fudge 127.127.1.0 stratum 10<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>（3）修改/etc/sysconfig/ntpd 文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop102 桌面]# vim &#x2F;etc&#x2F;sysconfig&#x2F;ntpd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>增加内容如下（让硬件时间与系统时间一起同步）</p>
+<pre class="line-numbers language-none"><code class="language-none">SYNC_HWCLOCK&#x3D;yes<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（4）重新启动ntpd服务</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop102 桌面]# service ntpd status<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>ntpd 已停</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop102 桌面]# service ntpd start<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>正在启动 ntpd： [确定]</p>
+<p>（5）设置ntpd服务开机启动</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop102 桌面]# chkconfig ntpd on<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>2. 其他机器配置（必须root用户）</p>
+<p>（1）在其他机器配置10分钟与时间服务器同步一次</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop103桌面]# crontab -e<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>编写定时任务如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">*&#x2F;10 * * * * &#x2F;usr&#x2F;sbin&#x2F;ntpdate hadoop102<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（2）修改任意机器时间</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop103桌面]# date -s &quot;2017-9-11 11:11:11&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>（3）十分钟后查看机器是否与时间服务器同步</p>
+<pre class="line-numbers language-none"><code class="language-none">[root@hadoop103桌面]# date<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>说明：测试的时候可以将10分钟调整为1分钟，节省时间。</p>
+</blockquote>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/" title="Hadoop">https://ppxiaodi.gitee.io/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hadoop/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Flume/" rel="prev" title="Flume"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">Flume</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2021/03/07/CollectionNote/big/%E6%95%B0%E6%8D%AE%E4%BB%93%E5%BA%93/Hive/" rel="next" title="Hive"><span class="post-nav-text">Hive</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>

@@ -1,0 +1,1453 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>JVM压力测试与调优 | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="JVM压力测试与调优  图片未下载到本地   本文由 简悦 SimpRead 转码， 原文地址 blog.csdn.net  ¶文章目录        黑马 JVM   2 jvm 的运行参数   2.1 &#x3D;&#x3D; 三种参数类型 &#x3D;&#x3D;   标准参数 -X 参数（非标准参数） -XX 参数（使用率较高）     2.2 标准参数   2.2.2 -server 与 - client 参数   2.3 -">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JVM压力测试与调优">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/JVM%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%B0%83%E4%BC%98/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="JVM压力测试与调优  图片未下载到本地   本文由 简悦 SimpRead 转码， 原文地址 blog.csdn.net  ¶文章目录        黑马 JVM   2 jvm 的运行参数   2.1 &#x3D;&#x3D; 三种参数类型 &#x3D;&#x3D;   标准参数 -X 参数（非标准参数） -XX 参数（使用率较高）     2.2 标准参数   2.2.2 -server 与 - client 参数   2.3 -">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828143025659.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828144452469.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190823143557190.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828151336235.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828151815119.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152210122.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152257397.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152324107.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152339931.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152402248.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152429720.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152451692.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828152535272.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828153637539.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828154213917.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828154254103.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/201908281543407.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190826105334293.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828160635951.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828160706334.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828160800377.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828160840630.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828160913757.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828160944121.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828161049296.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190826164847907.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828162053170.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828162103394.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20190828162109714.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307122950387.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307123008205.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307123021144.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307123041165.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307123053755.png">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/2020030712313196.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307123400520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307123717513.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70">
+<meta property="og:image" content="https://img-blog.csdnimg.cn/20200307123741753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70">
+<meta property="article:published_time" content="2020-03-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:54.081Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="谷粒商城">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://img-blog.csdnimg.cn/20190828143025659.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">JVM压力测试与调优</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E7%AB%A0%E7%9B%AE%E5%BD%95"><span class="toc-number">1.0.1.</span> <span class="toc-text">文章目录</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%BB%91%E9%A9%AC-JVM"><span class="toc-number">1.0.1.1.</span> <span class="toc-text">黑马 JVM</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-jvm-%E7%9A%84%E8%BF%90%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.2.</span> <span class="toc-text">2 jvm 的运行参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-%E4%B8%89%E7%A7%8D%E5%8F%82%E6%95%B0%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.0.2.1.</span> <span class="toc-text">2.1 三种参数类型</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%A0%87%E5%87%86%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.2.1.1.</span> <span class="toc-text">标准参数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#X-%E5%8F%82%E6%95%B0%EF%BC%88%E9%9D%9E%E6%A0%87%E5%87%86%E5%8F%82%E6%95%B0%EF%BC%89"><span class="toc-number">1.0.2.1.2.</span> <span class="toc-text">-X 参数（非标准参数）</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#XX-%E5%8F%82%E6%95%B0%EF%BC%88%E4%BD%BF%E7%94%A8%E7%8E%87%E8%BE%83%E9%AB%98%EF%BC%89"><span class="toc-number">1.0.2.1.3.</span> <span class="toc-text">-XX 参数（使用率较高）</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%A0%87%E5%87%86%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.3.</span> <span class="toc-text">2.2 标准参数</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-server-%E4%B8%8E-client-%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.3.1.</span> <span class="toc-text">2.2.2 -server 与 - client 参数</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-X%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.4.</span> <span class="toc-text">2.3 -X参数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-3-1-Xint-%E3%80%81-Xcomp-%E3%80%81-Xmixed"><span class="toc-number">1.0.4.0.1.</span> <span class="toc-text">2.3.1 -Xint 、 -Xcomp 、 -Xmixed</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-XX%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.4.1.</span> <span class="toc-text">2.4 -XX参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-Xms%E4%B8%8E-Xmx%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.4.2.</span> <span class="toc-text">2.5 -Xms与-Xmx参数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-6-%E6%9F%A5%E7%9C%8B-jvm-%E7%9A%84%E8%BF%90%E8%A1%8C%E5%8F%82%E6%95%B0"><span class="toc-number">1.0.4.3.</span> <span class="toc-text">2.6 查看 jvm 的运行参数</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-6-1-%E8%BF%90%E8%A1%8C-java-%E5%91%BD%E4%BB%A4%E6%97%B6%E6%89%93%E5%8D%B0%E5%8F%82%E6%95%B0-XX-PrintFlagsFinal"><span class="toc-number">1.0.4.3.1.</span> <span class="toc-text">2.6.1 运行 java 命令时打印参数-XX:+PrintFlagsFinal</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-6-2-%E6%9F%A5%E7%9C%8B%E6%AD%A3%E5%9C%A8%E8%BF%90%E8%A1%8C%E7%9A%84-jvm-%E5%8F%82%E6%95%B0jinfo"><span class="toc-number">1.0.4.3.2.</span> <span class="toc-text">2.6.2 查看正在运行的 jvm 参数jinfo</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-jvm-%E7%9A%84%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.0.5.</span> <span class="toc-text">3 jvm 的内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-1-jdk1-7-%E7%9A%84%E5%A0%86%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.0.5.1.</span> <span class="toc-text">3.1 jdk1.7 的堆内存模型</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Perm-%E6%B0%B8%E4%B9%85%E5%8C%BA"><span class="toc-number">1.0.5.1.1.</span> <span class="toc-text">Perm 永久区</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Virtual-%E5%8C%BA%EF%BC%9A"><span class="toc-number">1.0.5.1.2.</span> <span class="toc-text">Virtual 区：</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-jdk1-8-%E7%9A%84%E5%A0%86%E5%86%85%E5%AD%98%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.0.5.2.</span> <span class="toc-text">3.2 jdk1.8 的堆内存模型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%BA%9F%E5%BC%83-1-7-%E4%B8%AD%E7%9A%84%E6%B0%B8%E4%B9%85%E5%8C%BA"><span class="toc-number">1.0.5.3.</span> <span class="toc-text">3.3 为什么要废弃 1.7 中的永久区</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-4-jstat%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8B%E5%A0%86%E5%86%85%E5%AD%98"><span class="toc-number">1.1.</span> <span class="toc-text">3.4 jstat命令查看堆内存</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-1-%E6%9F%A5%E7%9C%8B-class-%E5%8A%A0%E8%BD%BD%E7%BB%9F%E8%AE%A1"><span class="toc-number">1.1.0.0.1.</span> <span class="toc-text">3.4.1 查看 class 加载统计</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-2-%E6%9F%A5%E7%9C%8B%E7%BC%96%E8%AF%91%E7%BB%9F%E8%AE%A1"><span class="toc-number">1.1.0.0.2.</span> <span class="toc-text">3.4.2 查看编译统计</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#3-4-2-%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E7%BB%9F%E8%AE%A1"><span class="toc-number">1.1.0.0.3.</span> <span class="toc-text">3.4.2 垃圾回收统计</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-jmap-%E5%91%BD%E4%BB%A4%E6%9F%A5%E7%9C%8B%E5%A0%86%E5%86%85%E5%AD%98"><span class="toc-number">1.2.</span> <span class="toc-text">4 jmap 命令查看堆内存</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-1-jmap-heap-%E8%BF%9B%E7%A8%8BID%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">4.1 jmap -heap 进程ID查看内存使用情况</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-jmap-%E2%80%90histo-pid-more%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E4%B8%AD%E5%AF%B9%E8%B1%A1%E6%95%B0%E9%87%8F%E5%8F%8A%E5%A4%A7%E5%B0%8F"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">4.2 jmap ‐histo &lt;pid&gt; | more查看内存中对象数量及大小</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-3-jmap-%E2%80%90dump-format-b-file-dumpFileName%E5%90%8D%E5%AD%97-pid%E8%BF%9B%E7%A8%8B%E5%8F%B7-%E5%B0%86%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5-dump-%E5%88%B0%E6%96%87%E4%BB%B6%E4%B8%AD"><span class="toc-number">1.2.0.3.</span> <span class="toc-text">4.3 jmap ‐dump:format&#x3D;b,file&#x3D;dumpFileName名字 &lt;pid进程号&gt;将内存使用情况 dump 到文件中</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-4-%E9%80%9A%E8%BF%87jhat%E5%AF%B9-dump-%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90"><span class="toc-number">1.2.0.4.</span> <span class="toc-text">4.4 通过jhat对 dump 文件进行分析</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-%E9%80%9A%E8%BF%87MAT%E5%B7%A5%E5%85%B7%E5%AF%B9-dump-%E6%96%87%E4%BB%B6%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90"><span class="toc-number">1.2.0.5.</span> <span class="toc-text">4.5 通过MAT工具对 dump 文件进行分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA%E7%9A%84%E5%AE%9A%E4%BD%8D%E4%B8%8E%E5%88%86%E6%9E%90"><span class="toc-number">1.3.</span> <span class="toc-text">5 内存溢出的定位与分析</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-%E6%A8%A1%E6%8B%9F%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA"><span class="toc-number">1.3.0.1.</span> <span class="toc-text">5.1 模拟内存溢出</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-3-%E5%AF%BC%E5%85%A5-hprof-%E6%96%87%E4%BB%B6%E5%88%B0MAT%E5%B7%A5%E5%85%B7%E4%B8%AD%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90"><span class="toc-number">1.3.0.2.</span> <span class="toc-text">5.3 导入. hprof 文件到MAT工具中进行分析</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-jstack-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.4.</span> <span class="toc-text">6 jstack 的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#6-1-%E7%BA%BF%E7%A8%8B%E7%9A%84%E7%8A%B6%E6%80%81"><span class="toc-number">1.4.0.1.</span> <span class="toc-text">6.1 线程的状态</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-2-%E6%AD%BB%E9%94%81%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.0.2.</span> <span class="toc-text">6.2 死锁问题</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#6-2-1-%E6%9E%84%E9%80%A0%E6%AD%BB%E9%94%81"><span class="toc-number">1.4.0.2.1.</span> <span class="toc-text">6.2.1 构造死锁</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-2-2%E3%80%81%E5%9C%A8-linux-%E4%B8%8A%E8%BF%90%E8%A1%8C"><span class="toc-number">1.4.0.2.2.</span> <span class="toc-text">6.2.2、在 linux 上运行</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#6-2-3-%E4%BD%BF%E7%94%A8-jstack-%E8%BF%9B%E8%A1%8C%E5%88%86%E6%9E%90jstack-%E8%BF%9B%E7%A8%8B%E5%8F%B7"><span class="toc-number">1.4.0.2.3.</span> <span class="toc-text">6.2.3 使用 jstack 进行分析jstack 进程号</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-JVisualVM-%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">1.5.</span> <span class="toc-text">7 JVisualVM 的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-JVisualVM-%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.5.0.1.</span> <span class="toc-text">7.1 JVisualVM 介绍</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-%E6%9F%A5%E7%9C%8B%E6%9C%AC%E5%9C%B0%E8%BF%9B%E7%A8%8B"><span class="toc-number">1.5.0.2.</span> <span class="toc-text">7.2 查看本地进程</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-%E6%9F%A5%E7%9C%8B-CPU%E3%80%81%E5%86%85%E5%AD%98%E3%80%81%E7%B1%BB%E3%80%81%E7%BA%BF%E7%A8%8B%E8%BF%90%E8%A1%8C%E4%BF%A1%E6%81%AF"><span class="toc-number">1.5.0.3.</span> <span class="toc-text">7.3 查看 CPU、内存、类、线程运行信息</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-4-%E6%9F%A5%E7%9C%8B%E7%BA%BF%E7%A8%8B%E8%AF%A6%E6%83%85"><span class="toc-number">1.5.0.4.</span> <span class="toc-text">7.4 查看线程详情</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-5-%E6%8A%BD%E6%A0%B7%E5%99%A8"><span class="toc-number">1.5.0.5.</span> <span class="toc-text">7.5 抽样器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-6-%E7%9B%91%E6%8E%A7%E8%BF%9C%E7%A8%8B%E7%9A%84-jvm"><span class="toc-number">1.5.0.6.</span> <span class="toc-text">7.6 监控远程的 jvm</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#7-6-2-%E7%9B%91%E6%8E%A7%E8%BF%9C%E7%A8%8B%E7%9A%84-tomcat"><span class="toc-number">1.5.0.6.1.</span> <span class="toc-text">7.6.2 监控远程的 tomcat</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#7-6-3-%E4%BD%BF%E7%94%A8-JVisualVM-%E8%BF%9E%E6%8E%A5%E8%BF%9C%E7%A8%8B-tomcat"><span class="toc-number">1.5.0.6.2.</span> <span class="toc-text">7.6.3 使用 JVisualVM 连接远程 tomcat</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jvisualVM-%E6%9F%A5%E7%9C%8B%E5%86%85%E5%AD%98%E6%BA%A2%E5%87%BA"><span class="toc-number">1.5.1.</span> <span class="toc-text">jvisualVM 查看内存溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#jvisualVM-%E6%A0%88%E6%BA%A2%E5%87%BA"><span class="toc-number">1.5.2.</span> <span class="toc-text">jvisualVM 栈溢出</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BA%BF%E7%A8%8B%E6%AD%BB%E9%94%81%E6%A3%80%E6%B5%8B%EF%BC%9A"><span class="toc-number">1.5.3.</span> <span class="toc-text">线程死锁检测：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%83%E7%A9%BA%E9%97%B4%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90%EF%BC%9A"><span class="toc-number">1.5.4.</span> <span class="toc-text">元空间深度解析：</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">1.5.4.0.1.</span> <span class="toc-text">参考</span></a></li></ol></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">原来内容</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#JMC"><span class="toc-number">2.0.1.</span> <span class="toc-text">JMC</span></a></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/JVM%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%B0%83%E4%BC%98/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">JVM压力测试与调优</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2020-03-14 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-14T00:00:00+08:00">2020-03-14</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:54" itemprop="dateModified" datetime="2021-07-11T16:54:54+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">java</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">谷粒商城</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/java/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">java</span></a><a class="tag-item" href="/tags/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">谷粒商城</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><h1>JVM压力测试与调优</h1>
+<blockquote>
+<p>图片未下载到本地</p>
+</blockquote>
+<blockquote>
+<p>本文由 <a target="_blank" rel="noopener" href="http://ksria.com/simpread/">简悦 SimpRead</a> 转码， 原文地址 <a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/108312012">blog.csdn.net</a></p>
+</blockquote>
+<h3 id="文章目录"><a class="header-anchor" href="#文章目录">¶</a>文章目录</h3>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#JVM_1">黑马 JVM</a></li>
+</ul>
+</li>
+<li><a href="#2_jvm_15">2 jvm 的运行参数</a></li>
+<li>
+<ul>
+<li><a href="#21__19">2.1 == 三种参数类型 ==</a></li>
+<li>
+<ul>
+<li><a href="#_23">标准参数</a></li>
+<li><a href="#X_30">-X 参数（非标准参数）</a></li>
+<li><a href="#XX_37">-XX 参数（使用率较高）</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#22__44">2.2 标准参数</a></li>
+<li>
+<ul>
+<li><a href="#222_serverclient_195">2.2.2 -server 与 - client 参数</a></li>
+</ul>
+</li>
+<li><a href="#23_X_231">2.3 <code>-X</code> 参数</a></li>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#231__Xint__Xcomp___Xmixed_274">2.3.1 -Xint 、 -Xcomp 、 -Xmixed</a></li>
+</ul>
+</li>
+<li><a href="#24_XX_303">2.4 <code>-XX</code> 参数</a></li>
+<li><a href="#25_XmsXmx_334">2.5 <code>-Xms</code> 与 <code>-Xmx</code> 参数</a></li>
+<li><a href="#26_jvm_352">2.6 查看 jvm 的运行参数</a></li>
+<li>
+<ul>
+<li><a href="#261_javaXXPrintFlagsFinal_360">2.6.1 运行 java 命令时打印参数 <code>-XX:+PrintFlagsFinal</code></a></li>
+<li><a href="#262_jvmjinfo_409">2.6.2 查看正在运行的 jvm 参数 <code>jinfo</code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3_jvm_475">3 jvm 的内存模型</a></li>
+<li>
+<ul>
+<li><a href="#31__jdk17_477">3.1 jdk1.7 的堆内存模型</a></li>
+<li>
+<ul>
+<li><a href="#Perm_481">Perm 永久区</a></li>
+<li><a href="#Virtual_485">Virtual 区：</a></li>
+</ul>
+</li>
+<li><a href="#32__jdk18_489">3.2 jdk1.8 的堆内存模型</a></li>
+<li><a href="#33__17_501">3.3 为什么要废弃 1.7 中的永久区</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#34__jstat_512">3.4 <code>jstat</code> 命令查看堆内存</a></li>
+<li>
+<ul>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#341__class_520">3.4.1 查看 class 加载统计</a></li>
+<li><a href="#342___539">3.4.2 查看编译统计</a></li>
+<li><a href="#342___558">3.4.2 垃圾回收统计</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#4__jmap_596">4 ==jmap== 命令查看堆内存</a></li>
+<li>
+<ul>
+<li>
+<ul>
+<li><a href="#41_jmap_heap_ID_607">4.1 <code>jmap -heap 进程 ID</code> 查看内存使用情况</a></li>
+<li><a href="#42__jmap_histo_pid__more_665">4.2 <code>jmap ‐histo | more</code> 查看内存中对象数量及大小</a></li>
+<li><a href="#43__jmap_dumpformatbfiledumpFileName_piddump_721">4.3 `jmap ‐dump:format=b,file=dumpFileName 名字</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="黑马-JVM"><a class="header-anchor" href="#黑马-JVM">¶</a>黑马 JVM</h4>
+<p>1 我们为什么要对 jvm 做优化？<br>
+在本地开发环境中我们很少会遇到需要对 jvm 进行优化的需求，但是到了生产环境，我们可能将有下面的需求：</p>
+<ul>
+<li>运行的应用 “卡住了”，日志不输出，程序没有反应</li>
+<li>服务器的 CPU 负载突然升高</li>
+<li>在多线程应用下，如何分配线程的数量？</li>
+<li>……</li>
+</ul>
+<p>因此，我们需要对 JVM 有更深入的学习，分析解决在生产环境中所遇到的各种棘手的问题。</p>
+<h3 id="2-jvm-的运行参数"><a class="header-anchor" href="#2-jvm-的运行参数">¶</a>2 jvm 的运行参数</h3>
+<p>在 jvm 中有很多的参数可以进行设置，这样可以让 jvm 在各种环境中都能够高效的运行。绝大部分的参数保持默认即可。</p>
+<h4 id="2-1-三种参数类型"><a class="header-anchor" href="#2-1-三种参数类型">¶</a>2.1 三种参数类型</h4>
+<p>jvm 的参数类型分为三类，分别是：</p>
+<h5 id="标准参数"><a class="header-anchor" href="#标准参数">¶</a>标准参数</h5>
+<p>代表在以后的 JVM 版本中也会保留</p>
+<pre class="line-numbers language-none"><code class="language-none">-help
+ -version<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h5 id="X-参数（非标准参数）"><a class="header-anchor" href="#X-参数（非标准参数）">¶</a>-X 参数（非标准参数）</h5>
+<p>不稳定，在未来一些版本中可能被改变</p>
+<pre class="line-numbers language-none"><code class="language-none">-Xint
+ -Xcomp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h5 id="XX-参数（使用率较高）"><a class="header-anchor" href="#XX-参数（使用率较高）">¶</a>-XX 参数（使用率较高）</h5>
+<p>也是非标准参数，往往用于 JVM 调优和 debug</p>
+<pre class="line-numbers language-none"><code class="language-none">-XX:newSize
+ -XX:+UseSerialGC<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="2-2-标准参数"><a class="header-anchor" href="#2-2-标准参数">¶</a>2.2 标准参数</h3>
+<p>jvm 的标准参数，一般都是很稳定的，在未来的 JVM 版本中不会改变，可以使用 java -help 检索出所有的标准参数</p>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# java -help
+用法: java [-options] class [args...]
+           (执行类)
+   或  java [-options] -jar jarfile [args...]
+           (执行 jar 文件)
+其中选项包括:
+    -d32          使用 32 位数据模型 (如果可用)
+    -d64          使用 64 位数据模型 (如果可用)
+    -server       选择 &quot;server&quot; VM
+                  默认 VM 是 server.
+-cp &lt;目录和 zip&#x2F;jar 文件的类搜索路径&gt;
+-classpath &lt;目录和 zip&#x2F;jar 文件的类搜索路径&gt;
+              用 : 分隔的目录, JAR 档案
+              和 ZIP 档案列表, 用于搜索类文件。
+-D&lt;名称&gt;&#x3D;&lt;值&gt;
+              设置系统属性
+-verbose:[class|gc|jni]
+              启用详细输出
+-version      输出产品版本并退出
+-version:&lt;值&gt;
+              警告: 此功能已过时, 将在
+              未来发行版中删除。
+              需要指定的版本才能运行
+-showversion  输出产品版本并继续
+-jre-restrict-search | -no-jre-restrict-search
+              警告: 此功能已过时, 将在
+              未来发行版中删除。
+              在版本搜索中包括&#x2F;排除用户专用 JRE
+-? -help      输出此帮助消息
+-X            输出非标准选项的帮助
+-ea[:&lt;packagename&gt;...|:&lt;classname&gt;]
+-enableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+              按指定的粒度启用断言
+-da[:&lt;packagename&gt;...|:&lt;classname&gt;]
+-disableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+              禁用具有指定粒度的断言
+-esa | -enablesystemassertions
+              启用系统断言
+-dsa | -disablesystemassertions
+              禁用系统断言
+-agentlib:&lt;libname&gt;[&#x3D;&lt;选项&gt;]
+              加载本机代理库 &lt;libname&gt;, 例如 -agentlib:hprof
+              另请参阅 -agentlib:jdwp&#x3D;help 和 -agentlib:hprof&#x3D;help
+-agentpath:&lt;pathname&gt;[&#x3D;&lt;选项&gt;]
+              按完整路径名加载本机代理库
+-javaagent:&lt;jarpath&gt;[&#x3D;&lt;选项&gt;]
+              加载 Java 编程语言代理, 请参阅 java.lang.instrument
+-splash:&lt;imagepath&gt;
+              使用指定的图像显示启动屏幕<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# java -version<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>‐showversion</code>参数是表示，先打印版本信息，再执行后面的命令，在调试时非常有用，</p>
+<p>通过 - D 设置系统属性参数 (环境变量)，然后通过<code>System.getProperty(&quot;str&quot;)</code>获得参数</p>
+<pre class="line-numbers language-none"><code class="language-none">public class TestJVM &#123;
+    public static void main(String[] args) &#123;
+        String str &#x3D; System.getProperty(&quot;str&quot;);
+        if (null &#x3D;&#x3D; str) &#123;
+            System.out.println(&quot;没拿到参数&quot;);
+        &#125; else &#123;
+            System.out.println(&quot;拿到参数了&quot;+str);
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>进行编译、测试</p>
+<pre class="line-numbers language-none"><code class="language-none">#编译
+[root@node01 test]# javac TestJVM.java
+#测试
+[root@node01 test]# java TestJVM
+没拿到参数
+[root@node01 test]# java ‐Dstr&#x3D;123 TestJVM
+拿到参数了123
+
+D和str是挨着的，通过System.getProperty(&quot;str&quot;)获取<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">ouc-13@ouc-13:~&#x2F;hanfeng$ java -D
+Usage: java [-options] class [args...]
+           (to execute a class)
+   or  java [-options] -jar jarfile [args...]
+           (to execute a jar file)
+where options include:
+    -d32	  use a 32-bit data model if available
+    -d64	  use a 64-bit data model if available
+    -server	  to select the &quot;server&quot; VM
+                  The default VM is server,
+                  because you are running on a server-class machine.
+
+
+    -cp &lt;class search path of directories and zip&#x2F;jar files&gt;
+    -classpath &lt;class search path of directories and zip&#x2F;jar files&gt;
+                  A : separated list of directories, JAR archives,
+                  and ZIP archives to search for class files.
+    -D&lt;name&gt;&#x3D;&lt;value&gt; # 这里
+                  set a system property 
+    -verbose:[class|gc|jni]
+                  enable verbose output
+    -version      print product version and exit
+    -version:&lt;value&gt;
+                  Warning: this feature is deprecated and will be removed
+                  in a future release.
+                  require the specified version to run
+    -showversion  print product version and continue
+    -jre-restrict-search | -no-jre-restrict-search
+                  Warning: this feature is deprecated and will be removed
+                  in a future release.
+                  include&#x2F;exclude user private JREs in the version search
+    -? -help      print this help message
+    -X            print help on non-standard options
+    -ea[:&lt;packagename&gt;...|:&lt;classname&gt;]
+    -enableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+                  enable assertions with specified granularity
+    -da[:&lt;packagename&gt;...|:&lt;classname&gt;]
+    -disableassertions[:&lt;packagename&gt;...|:&lt;classname&gt;]
+                  disable assertions with specified granularity
+    -esa | -enablesystemassertions
+                  enable system assertions
+    -dsa | -disablesystemassertions
+                  disable system assertions
+    -agentlib:&lt;libname&gt;[&#x3D;&lt;options&gt;]
+                  load native agent library &lt;libname&gt;, e.g. -agentlib:hprof
+                  see also, -agentlib:jdwp&#x3D;help and -agentlib:hprof&#x3D;help
+    -agentpath:&lt;pathname&gt;[&#x3D;&lt;options&gt;]
+                  load native agent library by full pathname
+    -javaagent:&lt;jarpath&gt;[&#x3D;&lt;options&gt;]
+                  load Java programming language agent, see java.lang.instrument
+    -splash:&lt;imagepath&gt;
+                  show splash screen with specified image
+See http:&#x2F;&#x2F;www.oracle.com&#x2F;technetwork&#x2F;java&#x2F;javase&#x2F;documentation&#x2F;index.html for more details.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-2-2-server-与-client-参数"><a class="header-anchor" href="#2-2-2-server-与-client-参数">¶</a>2.2.2 -server 与 - client 参数</h4>
+<p>可以通过 - server 或 - client 设置 jvm 的运行参数</p>
+<ul>
+<li>Server VM：初始堆空间会大一些，默认使用的是并行垃圾回收器，启动慢运行快。</li>
+<li>Client VM：相对来讲会保守一些，初始堆空间会小一些，使用串行垃圾回收器，它的目标是为了让 JVM 的启动速度更快，但运行速度会比 Server 模式慢一些。</li>
+</ul>
+<p>JVM 在启动的时候会根据硬件和操作系统自动选择使用 Server 还是 Client 类型的 JVM：</p>
+<ul>
+<li>
+<p>32 位操作系统</p>
+<ul>
+<li>如果是 Windows 系统，不论硬件配置如何，都默认使用 Client 类型的 JVM。</li>
+<li>如果是其他操作系统上，机器配置有 2GB 以上的内存同时有 2 个以上 CPU 的话默认使用 server 模式，否则使用 client 模式。</li>
+</ul>
+</li>
+<li>
+<p>64 位操作系统</p>
+<ul>
+<li>只有 server 类型，不支持 client 类型</li>
+</ul>
+</li>
+</ul>
+<p>测试：</p>
+<pre class="line-numbers language-none"><code class="language-none"># &#96;‐showversion&#96;参数是表示，先打印版本信息，再执行后面的命令，在调试时非常有用，
+root@ubuntu64:~&#x2F;test# java -client -showversion TestJVM  
+java version &quot;1.8.0_141&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_141-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 25.141-b15, mixed mode)
+没拿到参数
+root@ubuntu64:~&#x2F;test# java -server -showversion TestJVM      
+java version &quot;1.8.0_141&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_141-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 25.141-b15, mixed mode)
+没拿到参数
+# 为什么一样？
+# 由于机器是64位系统，所以不支持client模式<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-3-X参数"><a class="header-anchor" href="#2-3-X参数">¶</a>2.3 <code>-X</code>参数</h3>
+<p>jvm 的 - X 参数是非标准参数，在不同版本的 jvm 中，参数可能会有所不同，可以通过 java -X 查看非标准参数。</p>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# java -X
+    -Xmixed           混合模式执行 (默认)
+    -Xint             仅解释模式执行
+    -Xbootclasspath:&lt;用 : 分隔的目录和 zip&#x2F;jar 文件&gt;
+                      设置搜索路径以引导类和资源
+    -Xbootclasspath&#x2F;a:&lt;用 : 分隔的目录和 zip&#x2F;jar 文件&gt;
+                      附加在引导类路径末尾
+    -Xbootclasspath&#x2F;p:&lt;用 : 分隔的目录和 zip&#x2F;jar 文件&gt;
+                      置于引导类路径之前
+    -Xdiag            显示附加诊断消息
+    -Xnoclassgc       禁用类垃圾收集
+    -Xincgc           启用增量垃圾收集
+    -Xloggc:&lt;file&gt;    将 GC 状态记录在文件中 (带时间戳)
+    -Xbatch           禁用后台编译
+    -Xms&lt;size&gt;        设置初始 Java 堆大小
+    -Xmx&lt;size&gt;        设置最大 Java 堆大小
+    -Xss&lt;size&gt;        设置 Java 线程堆栈大小
+    -Xprof            输出 cpu 配置文件数据
+    -Xfuture          启用最严格的检查, 预期将来的默认值
+    -Xrs              减少 Java&#x2F;VM 对操作系统信号的使用 (请参阅文档)
+    -Xcheck:jni       对 JNI 函数执行其他检查
+    -Xshare:off       不尝试使用共享类数据
+    -Xshare:auto      在可能的情况下使用共享类数据 (默认)
+    -Xshare:on        要求使用共享类数据, 否则将失败。
+    -XshowSettings    显示所有设置并继续
+    -XshowSettings:all
+                      显示所有设置并继续
+    -XshowSettings:vm 显示所有与 vm 相关的设置并继续
+    -XshowSettings:properties
+                      显示所有属性设置并继续
+    -XshowSettings:locale
+                      显示所有与区域设置相关的设置并继续
+
+-X 选项是非标准选项, 如有更改, 恕不另行通知。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="2-3-1-Xint-、-Xcomp-、-Xmixed"><a class="header-anchor" href="#2-3-1-Xint-、-Xcomp-、-Xmixed">¶</a>2.3.1 -Xint 、 -Xcomp 、 -Xmixed</h5>
+<ul>
+<li>在解释模式（interpreted model）下，-Xint 标记会强制 JVM 执行所有的字节码，当然这会降低运行速度，通常低 10 倍或更多。</li>
+<li>-Xcomp 参数与它（-Xint）正好相反，JVM 在第一次使用时会把所有的字节码编译成本地代码，从而带来最大程度的优化。
+<ul>
+<li>然而。很多应用在使用 - Xcomp 也会有一些性能损失，当然这比使用 - Xint 损失的少，原因是 - Xcomp 没有让 JVM 启用 JIT 编译器的全部功能。JIT 编译器可以对是否需要编译做判断，如果所有代码都进行编译的话，对于一些只执行一次的代码就没有意义了。</li>
+</ul>
+</li>
+<li>-Xmixed 是混合模式 (默认)：将解释模式与编译模式进行混合使用，由 jvm 自己决定，这是 jvm 默认的模式，也是推荐使用的模式。</li>
+</ul>
+<p>示例：强制设置运行模式</p>
+<pre class="line-numbers language-none"><code class="language-none">#强制设置为解释模式
+root@ubuntu64:~&#x2F;test# java -showversion -Xint TestJVM
+java version &quot;1.8.0_141&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_141-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 25.141-b15, interpreted mode)
+
+没拿到参数
+
+#强制设置为编译模式
+root@ubuntu64:~&#x2F;test# java -showversion -Xcomp TestJVM
+java version &quot;1.8.0_141&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_141-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 25.141-b15, compiled mode)
+
+没拿到参数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-4-XX参数"><a class="header-anchor" href="#2-4-XX参数">¶</a>2.4 <code>-XX</code>参数</h4>
+<p>-XX 参数也是非标准参数，主要用于 jvm 的调优和 debug 操作。</p>
+<p>-XX 参数的使用有 2 种方式，一种是 boolean 类型，一种是非 boolean 类型：</p>
+<ul>
+<li>
+<p>boolean 类型</p>
+<ul>
+<li>
+<pre><code>格式：-XX：[+-]
+如：-XX:+DisableExplicitGC表示禁用手动调用gc操作，也就是说调用System.gc()无效
+<pre class="line-numbers language-none"><code class="language-none">        
+*   非 boolean 类型
+    
+    *   &#96;&#96;&#96;
+        格式：-XX:
+        如：-XX:NewRatio&#x3D;1表示新生代和老年代的比值<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+
+
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<p>用法：</p>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# java -showversion -XX:+DisableExplicitGC TestJVM  
+java version &quot;1.8.0_141&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_141-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 25.141-b15, mixed mode)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-5-Xms与-Xmx参数"><a class="header-anchor" href="#2-5-Xms与-Xmx参数">¶</a>2.5 <code>-Xms</code>与<code>-Xmx</code>参数</h4>
+<p>-Xms 与 - Xmx 分别是设置 jvm 的堆内存的初始大小和最大大小。可以两个同时设置，不冲突</p>
+<ul>
+<li><code>-Xmx2048m</code>：等价于 - XX：MaxHeapSize, 设置 JVM 最大堆内存为 2048M。</li>
+<li><code>-Xms512m</code>：等价于 - XX：InitialHeapSize, 设置 JVM 初始堆内存为 512M.</li>
+</ul>
+<p>适当的调整 jvm 的内存大小，可以充分利用服务器资源，让程序跑的更快。</p>
+<p>示例：</p>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# java -Xms512m -Xmx2048m TestJVM  
+没拿到参数<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h4 id="2-6-查看-jvm-的运行参数"><a class="header-anchor" href="#2-6-查看-jvm-的运行参数">¶</a>2.6 查看 jvm 的运行参数</h4>
+<p>有些时候我们需要查看 jvm 的运行参数，这个需求可能会存在 2 种情况：</p>
+<p>第一，运行 java 命令时打印出运行参数；</p>
+<p>第二，查看正在运行的 java 进程的参数；</p>
+<h5 id="2-6-1-运行-java-命令时打印参数-XX-PrintFlagsFinal"><a class="header-anchor" href="#2-6-1-运行-java-命令时打印参数-XX-PrintFlagsFinal">¶</a>2.6.1 运行 java 命令时打印参数<code>-XX:+PrintFlagsFinal</code></h5>
+<p>运行 java 命令时打印参数，需要添加 - XX:+PrintFlagsFinal 参数即可。</p>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# java -XX:+PrintFlagsFinal -version 
+[Global flags]
+    uintx AdaptiveSizeDecrementScaleFactor          &#x3D; 4                                   &#123;product&#125;
+    uintx AdaptiveSizeMajorGCDecayTimeScale         &#x3D; 10                                  &#123;product&#125;
+    uintx AdaptiveSizePausePolicy                   &#x3D; 0                                   &#123;product&#125;
+    uintx AdaptiveSizePolicyCollectionCostMargin    &#x3D; 50                                  &#123;product&#125;
+    uintx AdaptiveSizePolicyInitializingSteps       &#x3D; 20                                  &#123;product&#125;
+    uintx AdaptiveSizePolicyOutputInterval          &#x3D; 0                                   &#123;product&#125;
+    uintx AdaptiveSizePolicyWeight                  &#x3D; 10                                  &#123;product&#125;
+    uintx AdaptiveSizeThroughPutPolicy              &#x3D; 0                                   &#123;product&#125;
+    uintx AdaptiveTimeWeight                        &#x3D; 25                                  &#123;product&#125;
+     bool AdjustConcurrency                         &#x3D; false                               &#123;product&#125;
+     bool AggressiveOpts                            &#x3D; false                               &#123;product&#125;
+     intx AliasLevel                                &#x3D; 3                                   &#123;C2 product&#125;
+     bool AlignVector                               &#x3D; true                                &#123;C2 product&#125;
+     intx AllocateInstancePrefetchLines             &#x3D; 1                                   &#123;product&#125;
+     intx AllocatePrefetchDistance                  &#x3D; 256                                 &#123;product&#125;
+     intx AllocatePrefetchInstr                     &#x3D; 0                                   &#123;product&#125;
+     intx AllocatePrefetchLines                     &#x3D; 3                                   &#123;product&#125;
+     intx AllocatePrefetchStepSize                  &#x3D; 64                                  &#123;product&#125;
+     intx AllocatePrefetchStyle                     &#x3D; 1                                   &#123;product&#125;
+     bool AllowJNIEnvProxy                          &#x3D; false                               &#123;product&#125;
+     bool AllowNonVirtualCalls                      &#x3D; false                               &#123;product&#125;
+     bool AllowParallelDefineClass                  &#x3D; false                               &#123;product&#125;
+     bool AllowUserSignalHandlers                   &#x3D; false                               &#123;product&#125;
+     bool AlwaysActAsServerClassMachine             &#x3D; false                               &#123;product&#125;
+     bool AlwaysCompileLoopMethods                  &#x3D; false                               &#123;product&#125;
+     bool AlwaysLockClassLoader                     &#x3D; false                               &#123;product&#125;
+     bool AlwaysPreTouch                            &#x3D; false                               &#123;product&#125;
+     bool AlwaysRestoreFPU                          &#x3D; false                               &#123;product&#125;
+     bool AlwaysTenure                              &#x3D; false                               &#123;product&#125;
+-------------略-------------
+java version &quot;1.8.0_141&quot;
+Java(TM) SE Runtime Environment (build 1.8.0_141-b15)
+Java HotSpot(TM) 64-Bit Server VM (build 25.141-b15, mixed mode)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>由上述的信息可以看出，参数有 boolean 类型和数字类型，值的操作符是 = 或:=,</p>
+<ul>
+<li>= 代表默认值</li>
+<li><code>:=</code> 代表被修改过的值。</li>
+</ul>
+<h5 id="2-6-2-查看正在运行的-jvm-参数jinfo"><a class="header-anchor" href="#2-6-2-查看正在运行的-jvm-参数jinfo">¶</a>2.6.2 查看正在运行的 jvm 参数<code>jinfo</code></h5>
+<p>如果想要查看正在运行的 jvm 就需要借助于 jinfo 命令查看。</p>
+<p>语法：</p>
+<pre class="line-numbers language-none"><code class="language-none">jinfo -flags 进程ID
+jinfo ‐flags &lt;参数名&gt; &lt;进程id&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>首先，启动一个 tomcat 用于测试，来观察下运行的 jvm 参数。</p>
+<pre class="line-numbers language-none"><code class="language-none">cd &#x2F;tmp&#x2F;
+rz 上传
+tar ‐xvf apache‐tomcat‐7.0.57.tar.gz
+cd apache‐tomcat‐7.0.57
+cd bin&#x2F;
+.&#x2F;startup.sh
+
+#http:&#x2F;&#x2F;192.168.101.130:8080&#x2F; 进行访问
+访问成功：<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">#查看所有的参数，用法：jinfo ‐flags &lt;进程id&gt;
+
+#通过jps 或者 jps ‐l 查看java进程
+root@ubuntu64:~&#x2F;test# jps
+9939 Bootstrap
+11723 Jps
+root@ubuntu64:~&#x2F;test# jps -l
+9939 org.apache.catalina.startup.Bootstrap
+11733 sun.tools.jps.Jps
+root@ubuntu64:~&#x2F;test# jinfo -flags 9939
+Attaching to process ID 9939, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.141-b15
+Non-default VM flags: -XX:CICompilerCount&#x3D;2 -XX:InitialHeapSize&#x3D;33554432  # 这里
+-XX:+ManagementServer -XX:MaxHeapSize&#x3D;520093696  #这里
+-XX:MaxNewSize&#x3D;173342720 -XX:MinHeapDeltaBytes&#x3D;196608 -XX:NewSize&#x3D;11141120 -XX:OldSize&#x3D;22413312 #这里
+-XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseFastUnorderedTimeStamps 
+Command line:  -Djava.util.logging.config.file&#x3D;&#x2F;root&#x2F;test&#x2F;apache-tomcat-7.0.57&#x2F;conf&#x2F;logging.properties -Djava.util.logging.manager&#x3D;org.apache.juli.ClassLoaderLogManager -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port&#x3D;8999 -Dcom.sun.management.jmxremote.ssl&#x3D;false -Dcom.sun.management.jmxremote.authenticate&#x3D;false -Djava.rmi.server.hostname&#x3D;192.168.101.130 -Djava.endorsed.dirs&#x3D;&#x2F;root&#x2F;test&#x2F;apache-tomcat-7.0.57&#x2F;endorsed -Dcatalina.base&#x3D;&#x2F;root&#x2F;test&#x2F;apache-tomcat-7.0.57 -Dcatalina.home&#x3D;&#x2F;root&#x2F;test&#x2F;apache-tomcat-7.0.57 -Djava.io.tmpdir&#x3D;&#x2F;root&#x2F;test&#x2F;apache-tomcat-7.0.57&#x2F;temp
+
+#查看某一参数的值，用法：jinfo ‐flag &lt;参数名&gt; &lt;进程id&gt;
+root@ubuntu64:~&#x2F;test# jinfo -flag MaxHeapSize 9939
+-XX:MaxHeapSize&#x3D;520093696<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>不成功的话输入<code>echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope</code></p>
+<blockquote>
+<p>这是因为新版的 Linux 系统加入了 <code>ptrace-scope</code> 机制. 这种机制为了防止用户访问当前正在运行的进程的内存和状态, 而一些调试软件本身就是利用 <code>ptrace</code> 来进行获取某进程的内存状态的 (包括<code>GDB</code>), 所以在新版本的 Linux 系统, 默认情况下不允许再访问了. 可以临时开启. 如:</p>
+<p>echo 0 &gt; /proc/sys/kernel/yama/ptrace_scope</p>
+<p>永久写到文件来持久化:</p>
+<pre class="line-numbers language-none"><code class="language-none">emacs &#x2F;etc&#x2F;sysctl.d&#x2F;10-ptrace.conf
+添加或修改为以下这一句:(0:允许, 1:不允许)kernel.yama.ptrace_scope &#x3D; 0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</blockquote>
+<h3 id="3-jvm-的内存模型"><a class="header-anchor" href="#3-jvm-的内存模型">¶</a>3 jvm 的内存模型</h3>
+<h4 id="3-1-jdk1-7-的堆内存模型"><a class="header-anchor" href="#3-1-jdk1-7-的堆内存模型">¶</a>3.1 jdk1.7 的堆内存模型</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190828143025659.png" alt="" loading="lazy"></p>
+<h5 id="Perm-永久区"><a class="header-anchor" href="#Perm-永久区">¶</a>Perm 永久区</h5>
+<p>​ Perm 代主要保存 class,method,filed 对象，这部分的空间一般不会溢出，除非一次性加载了很多的类，不过在涉及到热部署的应用服务器的时候，有时候会遇到 java.lang.OutOfMemoryError:PermGen space 的错误，造成这个错误的很大原因就有可能是每次都重新部署，单是重新部署后，类的 class 没有被卸载掉，这样就造成了大量的 class 对象保存在了 perm 中，这种情 况下，一般重新启动应用服务器可以解决问题。</p>
+<h5 id="Virtual-区："><a class="header-anchor" href="#Virtual-区：">¶</a>Virtual 区：</h5>
+<p>​ 最大内存和初始内存的差值，就是 Virtual 区。</p>
+<h4 id="3-2-jdk1-8-的堆内存模型"><a class="header-anchor" href="#3-2-jdk1-8-的堆内存模型">¶</a>3.2 jdk1.8 的堆内存模型</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190828144452469.png" alt="" loading="lazy"></p>
+<p>在 jdk1.8 中变化最大的是 Perm 区，用 Metaspace（元数据空间）进行了替换。</p>
+<p>需要特别说明的是：Metaspace 所占用的内存空间不是在虚拟机内部，而是在本地方法中 (逻辑在本地方法，但实际在堆)，这也是 JDK8 与 jdk1.7 的永久代最大的区别所在。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190823143557190.png" alt="" loading="lazy"></p>
+<h4 id="3-3-为什么要废弃-1-7-中的永久区"><a class="header-anchor" href="#3-3-为什么要废弃-1-7-中的永久区">¶</a>3.3 为什么要废弃 1.7 中的永久区</h4>
+<p>官网给出了解释：<a target="_blank" rel="noopener" href="http://openjdk.java.net/jeps/122">http://openjdk.java.net/jeps/122</a></p>
+<p>This is part of the JRockit and Hotspot convergence effort. JRockit customers do not need to configure the permanent generation (since JRockit does not have a permanent generation) and are accustomed to not configuring the permanent generation.</p>
+<p>移除永久代是为融合 HotSpot JVM 与 JRockit VM 而做出的努力，因为 JRockit 没有永久代，不需要配置永久代。<br>
+现实使用中，由于永久代内存经常不够用或发生内存泄露，爆出异常 java.lang.OutOfMemoryError: PermGen。</p>
+<p>基于此，将永久区废弃，而改用元空间，改为了使用本地内存空间。</p>
+<h2 id="3-4-jstat命令查看堆内存"><a class="header-anchor" href="#3-4-jstat命令查看堆内存">¶</a>3.4 <code>jstat</code>命令查看堆内存</h2>
+<p>jstat 命令可以查看堆内存各部分的使用量，以及加载类的数量。命令的格式如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">jstat [-命令选项] [vmid] [间隔时间&#x2F;毫秒] [查询次数]<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h5 id="3-4-1-查看-class-加载统计"><a class="header-anchor" href="#3-4-1-查看-class-加载统计">¶</a>3.4.1 查看 class 加载统计</h5>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# jps
+9939 Bootstrap
+11766 Jps
+
+root@ubuntu64:~&#x2F;test# jstat -class 9939
+Loaded  Bytes  Unloaded  Bytes     Time   
+2843    5562.0     28    39.6       8.16
+说明：
+
+Loaded：加载class的数量
+Bytes：所占空间大小
+Unloaded：未加载数量
+Bytes：未加载占用空间
+Time：时间<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="3-4-2-查看编译统计"><a class="header-anchor" href="#3-4-2-查看编译统计">¶</a>3.4.2 查看编译统计</h5>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# jstat -compiler 9939
+Compiled Failed Invalid   Time   FailedType FailedMethod
+    3083      1       0     9.89          1 org&#x2F;apache&#x2F;tomcat&#x2F;util&#x2F;IntrospectionUtils setProperty
+
+
+说明：
+
+Compiled ：编译数量。
+Failed：失败数量
+Invalid：不可用数量
+Time：时间
+FailedType：失败类型
+FailedType：失败类型
+FailedMethod：失败的方法<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="3-4-2-垃圾回收统计"><a class="header-anchor" href="#3-4-2-垃圾回收统计">¶</a>3.4.2 垃圾回收统计</h5>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# jstat -gc 9939
+ S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
+1088.0 1088.0  0.0   1088.0  8832.0   7367.8   21888.0    12523.7   19456.0 18703.0 2304.0 2034.2   2019    7.188  11      0.496    7.684
+
+#也可以指定打印的间隔和次数，每1秒中打印一次，共打印5次
+root@ubuntu64:~&#x2F;test# jstat -gc 9939 1000 5
+ S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT   
+1088.0 1088.0  0.0   1088.0  8832.0   7505.3   21888.0    12523.7   19456.0 18703.0 2304.0 2034.2   2019    7.188  11      0.496    7.684
+1088.0 1088.0  0.0   1088.0  8832.0   7505.3   21888.0    12523.7   19456.0 18703.0 2304.0 2034.2   2019    7.188  11      0.496    7.684
+1088.0 1088.0  0.0   1088.0  8832.0   7505.3   21888.0    12523.7   19456.0 18703.0 2304.0 2034.2   2019    7.188  11      0.496    7.684
+1088.0 1088.0  0.0   1088.0  8832.0   7505.3   21888.0    12523.7   19456.0 18703.0 2304.0 2034.2   2019    7.188  11      0.496    7.684
+1088.0 1088.0  0.0   1088.0  8832.0   7505.3   21888.0    12523.7   19456.0 18703.0 2304.0 2034.2   2019    7.188  11      0.496    7.684<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>说明：</p>
+<p>S0C：第一个 Survivor 区的大小（KB）<br>
+S1C：第二个 Survivor 区的大小（KB）<br>
+S0U：第一个 Survivor 区的使用大小（KB）<br>
+S1U：第二个 Survivor 区的使用大小（KB）<br>
+EC：Eden 区的大小（KB）<br>
+EU：Eden 区的使用大小（KB）<br>
+OC：Old 区大小（KB）<br>
+OU：Old 使用大小（KB）<br>
+MC：方法区大小（KB）<br>
+MU：方法区使用大小（KB）<br>
+CCSC：压缩类空间大小（KB）<br>
+CCSU：压缩类空间使用大小（KB）<br>
+YGC：年轻代垃圾回收次数<br>
+YGCT：年轻代垃圾回收消耗时间<br>
+FGC：老年代垃圾回收次数<br>
+FGCT：老年代垃圾回收消耗时间<br>
+GCT：垃圾回收消耗总时间</p>
+<h2 id="4-jmap-命令查看堆内存"><a class="header-anchor" href="#4-jmap-命令查看堆内存">¶</a>4 jmap 命令查看堆内存</h2>
+<p>前面通过 jstat 可以对 jvm 堆的内存进行统计，而 jmap 可以获取到更加详细的内容，如：内存使用情况的汇总、对内存溢出的定位与分析。</p>
+<pre class="line-numbers language-none"><code class="language-none">jps
+jmap -heap 进程ID<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h4 id="4-1-jmap-heap-进程ID查看内存使用情况"><a class="header-anchor" href="#4-1-jmap-heap-进程ID查看内存使用情况">¶</a>4.1 <code>jmap -heap 进程ID</code>查看内存使用情况</h4>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test# jmap -heap 9939
+Attaching to process ID 9939, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.141-b15
+
+using thread-local object allocation.
+Mark Sweep Compact GC
+
+Heap Configuration: #堆内存配置信息
+   MinHeapFreeRatio         &#x3D; 40
+   MaxHeapFreeRatio         &#x3D; 70
+   MaxHeapSize              &#x3D; 520093696 (496.0MB)
+   NewSize                  &#x3D; 11141120 (10.625MB)
+   MaxNewSize               &#x3D; 173342720 (165.3125MB)
+   OldSize                  &#x3D; 22413312 (21.375MB)
+   NewRatio                 &#x3D; 2 # 老年代新生代比
+   SurvivorRatio            &#x3D; 8
+   MetaspaceSize            &#x3D; 21807104 (20.796875MB)
+   CompressedClassSpaceSize &#x3D; 1073741824 (1024.0MB)
+   MaxMetaspaceSize         &#x3D; 17592186044415 MB
+   G1HeapRegionSize         &#x3D; 0 (0.0MB)
+
+Heap Usage: # 堆内存的使用情况
+New Generation (Eden + 1 Survivor Space):  #年轻代
+   capacity &#x3D; 10158080 (9.6875MB)
+   used     &#x3D; 9221560 (8.794364929199219MB)
+   free     &#x3D; 936520 (0.8931350708007812MB)
+   90.7805412046371% used
+Eden Space:
+   capacity &#x3D; 9043968 (8.625MB)
+   used     &#x3D; 8107456 (7.73187255859375MB)
+   free     &#x3D; 936512 (0.89312744140625MB)
+   89.64489923007247% used
+From Space:
+   capacity &#x3D; 1114112 (1.0625MB)
+   used     &#x3D; 1114104 (1.0624923706054688MB)
+   free     &#x3D; 8 (7.62939453125E-6MB)
+   99.99928193933823% used
+To Space:
+   capacity &#x3D; 1114112 (1.0625MB)
+   used     &#x3D; 0 (0.0MB)
+   free     &#x3D; 1114112 (1.0625MB)
+   0.0% used
+tenured generation: #年老代
+   capacity &#x3D; 22413312 (21.375MB)
+   used     &#x3D; 12824312 (12.230216979980469MB)
+   free     &#x3D; 9589000 (9.144783020019531MB)
+   57.21738938002559% used
+
+13973 interned Strings occupying 1903320 bytes.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-2-jmap-‐histo-pid-more查看内存中对象数量及大小"><a class="header-anchor" href="#4-2-jmap-‐histo-pid-more查看内存中对象数量及大小">¶</a>4.2 <code>jmap ‐histo &lt;pid&gt; | more</code>查看内存中对象数量及大小</h4>
+<pre class="line-numbers language-none"><code class="language-none">#查看所有对象，包括活跃以及非活跃的  # history
+jmap ‐histo &lt;pid&gt; | more
+# 因为对象很多，所以可以使用管道符
+
+#查看活跃对象 
+jmap ‐histo:live &lt;pid&gt; | more
+
+root@ubuntu64:~&#x2F;test# jmap -histo:live 11927 | more
+
+
+ num     #instances         #bytes  class name
+----------------------------------------------
+   1:         39526        7919536  [C
+   2:          3402        1497192  [I
+   3:          1383        1328576  [B
+   4:         37052         889248  java.lang.String
+   5:         18904         604928  java.util.HashMap$Node
+   6:          4019         464664  java.lang.Class
+   7:          4902         431376  java.lang.reflect.Method
+   8:          6295         387024  [Ljava.lang.Object;
+   9:          1343         231008  [Ljava.util.HashMap$Node;
+  10:          4653         148896  java.util.concurrent.ConcurrentHashMap$Node
+  11:          1426         114248  [Ljava.lang.String;
+  12:          4783         104576  [Ljava.lang.Class;
+  13:          2039          97872  java.util.HashMap
+  14:            79          86672  [Ljava.util.concurrent.ConcurrentHashMap$Node;
+  15:          2096          83840  java.util.LinkedHashMap$Entry
+  16:          2815          67560  java.util.ArrayList
+  17:          4049          64784  java.lang.Object
+  18:          1271          61008  org.apache.tomcat.util.digester.CallMethodRule
+  19:           760          60800  java.lang.reflect.Constructor
+  20:           141          53584  [Ljava.util.WeakHashMap$Entry;
+  21:          1671          53472  com.sun.org.apache.xerces.internal.xni.QName
+  22:          1624          51968  java.util.Hashtable$Entry
+
+--------------------------略---------------------------<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">#对象说明
+B byte
+C char
+D double
+F float
+I int
+J long
+Z boolean
+[ 数组，如[I表示int[]
+[L+类名 其他对象<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-3-jmap-‐dump-format-b-file-dumpFileName名字-pid进程号-将内存使用情况-dump-到文件中"><a class="header-anchor" href="#4-3-jmap-‐dump-format-b-file-dumpFileName名字-pid进程号-将内存使用情况-dump-到文件中">¶</a>4.3 <code>jmap ‐dump:format=b,file=dumpFileName名字 &lt;pid进程号&gt;</code>将内存使用情况 dump 到文件中</h4>
+<p>有些时候我们需要将当前内存中的情况 dump 到文件中，然后对它进行分析，jmap 也是支持 dump 到文件中的。</p>
+<pre class="line-numbers language-none"><code class="language-none">#用法：
+jmap ‐dump:format&#x3D;b,file&#x3D;dumpFileName名字 &lt;pid进程号&gt;
+
+#示例
+jmap ‐dump:format&#x3D;b,file&#x3D;&#x2F;tmp&#x2F;dump.dat 11927<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>已经在 / tmp 下生成了 dump.dat 的文件 jvisualvm 生成</p>
+<p>也可以使用</p>
+<h4 id="4-4-通过jhat对-dump-文件进行分析"><a class="header-anchor" href="#4-4-通过jhat对-dump-文件进行分析">¶</a>4.4 通过<code>jhat</code>对 dump 文件进行分析</h4>
+<p>在上一小节中，我们将 jvm 的内存 dump 到文件中，这个文件是一个二进制的文件，不方便查看，这时我们可以借助 jhat 工具进行查看。</p>
+<pre class="line-numbers language-none"><code class="language-none">#用法：
+jhat ‐port &lt;port&gt; &lt;file&gt;
+#示例：
+
+root@ubuntu64:&#x2F;tmp# jhat -port 9999 &#x2F;tmp&#x2F;dump.dat 
+Reading from &#x2F;tmp&#x2F;dump.dat...
+Dump file created Fri Aug 23 04:20:31 EDT 2019
+Snapshot read, resolving...
+Resolving 234190 objects...
+Chasing references, expect 46 dots..............................................
+Eliminating duplicate references..............................................
+Snapshot resolved.
+Started HTTP server on port 9999
+Server is ready.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>打开浏览器进行访问：<a target="_blank" rel="noopener" href="http://192.168.101.130:9999">http://192.168.101.130:9999</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20190828151336235.png" alt="" loading="lazy"></p>
+<p>在最后面有 OQL 查询功能。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828151815119.png" alt="" loading="lazy"></p>
+<pre class="line-numbers language-none"><code class="language-none">select s from java.lang.String s where s.value.length&gt;&#x3D;100<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="4-5-通过MAT工具对-dump-文件进行分析"><a class="header-anchor" href="#4-5-通过MAT工具对-dump-文件进行分析">¶</a>4.5 通过<code>MAT</code>工具对 dump 文件进行分析</h4>
+<p>4.5.1 MAT 工具介绍<br>
+MAT（Memery Analyzer Tool），一个基于 Eclipse 的内存分析工具，是一个快速、功能丰富的 JAVA heap 分析工具，它可以帮助我们查找内存泄漏和减少内存消耗。使用内存分析工具从众多的对象中进行分析，快速的计算出在内存中对象的占用大小，看看是谁阻止了垃圾收集器的回收工作，并可以通过报表直观的查看到可能造成这种结果的对象。可以看 GC ROOTS</p>
+<p>4.5.2 下载安装<br>
+下载地址：<a target="_blank" rel="noopener" href="https://www.eclipse.org/mat/downloads.php">https://www.eclipse.org/mat/downloads.php</a></p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152210122.png" alt="" loading="lazy"></p>
+<p>将下载得到的 MemoryAnalyzer-1.8.0.20180604-win32.win32.x86_64.zip 进行解压：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152257397.png" alt="" loading="lazy"></p>
+<p>4.5.3 使用</p>
+<p>可以在 shell 中先使用<code>sz 文件名</code>命令把文件从远程下载下来</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152324107.png" alt="" loading="lazy"></p>
+<p>这里注意点击下面 AllFiles 才能找到</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152339931.png" alt="" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152402248.png" alt="" loading="lazy"></p>
+<p>点击 Overview，点击下方 Actions/HistoGram，显示类的数量等</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152429720.png" alt="" loading="lazy"></p>
+<p>点击 Dominator_tree，查看对象以及它的依赖：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152451692.png" alt="" loading="lazy"></p>
+<p>再点击上方的<code>default_report</code>可以查看哪里错了，我们通过第 5 章分析具体。</p>
+<p>查看可能存在内存泄露的分析：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828152535272.png" alt="" loading="lazy"></p>
+<h2 id="5-内存溢出的定位与分析"><a class="header-anchor" href="#5-内存溢出的定位与分析">¶</a>5 内存溢出的定位与分析</h2>
+<p>内存溢出在实际的生产环境中经常会遇到，比如，不断的将数据写入到一个集合中，出现了死循环，读取超大的文件等等，都可能会造成内存溢出。</p>
+<p>如果出现了<strong>内存溢出</strong>，首先我们需要定位到发生内存溢出的环节，并且进行分析，是正常还是非正常情况，如果是正常的需求，就应该考虑加大内存的设置，如果是非正常需求，那么就要对代码进行修改，修复这个 bug。</p>
+<p>首先，我们得先学会如何定位问题，然后再进行分析。如何定位问题呢，我们需要借助于 jmap 和 MAT 工具进行定位分析。</p>
+<p>接下来，我们模拟内存溢出的场景。</p>
+<h4 id="5-1-模拟内存溢出"><a class="header-anchor" href="#5-1-模拟内存溢出">¶</a>5.1 模拟内存溢出</h4>
+<p>编写代码，向 List 集合中添加 100 万个字符串，每个字符串由 1000 个 UUID 组成。如果程序能够正常执行，最后打印 ok。</p>
+<pre class="line-numbers language-none"><code class="language-none">import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+public class TestJvmOutOfMemory &#123;
+    &#x2F;&#x2F;实现，向集合中添加100万个字符串，每个字符串由1000个UUID组成
+
+    public static void main(String[] args) &#123;
+        List&lt;String&gt; list &#x3D; new ArrayList&lt;&gt;();
+        for (int i &#x3D; 0; i &lt; 1000000; i++) &#123;
+            String str &#x3D; &quot;&quot;;
+            for (int j &#x3D; 0; j &lt; 1000; j++) &#123;
+                str +&#x3D; UUID.randomUUID().toString();&#x2F;&#x2F;不断new String添加到list
+            &#125;
+            list.add(str);
+        &#125;
+        System.out.println(&quot;ok&quot;);
+    &#125;
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>为了演示效果，我们将设置执行的参数，这里使用的是 IDEA 编辑器</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828153637539.png" alt="" loading="lazy"></p>
+<p>在这里我们添加 VM 参数让他输出错误信息</p>
+<pre class="line-numbers language-none"><code class="language-none">#参数如下：
+-Xms8m -Xmx8m -XX:+HeapDumpOnOutOfMemoryError<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>5.2 运行测试<br>
+测试结果如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">java.lang.OutOfMemoryError: Java heap space
+Dumping heap to java_pid15228.hprof ...
+Heap dump file created [8298009 bytes in 0.024 secs]
+Exception in thread &quot;main&quot; java.lang.OutOfMemoryError: Java heap space
+    at java.util.Arrays.copyOf(Arrays.java:3332)
+    at java.lang.AbstractStringBuilder.ensureCapacityInternal(AbstractStringBuilder.java:124)
+    at java.lang.AbstractStringBuilder.append(AbstractStringBuilder.java:448)
+    at java.lang.StringBuilder.append(StringBuilder.java:136)
+    at cn.没拿到参数.jvm.TestJvmOutOfMemory.main(TestJvmOutOfMemory.java:20)
+
+Process finished with exit code 1<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以看到，当发生内存溢出时，会 dump 文件到 java_pid15228.hprof</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828154213917.png" alt="" loading="lazy"></p>
+<h4 id="5-3-导入-hprof-文件到MAT工具中进行分析"><a class="header-anchor" href="#5-3-导入-hprof-文件到MAT工具中进行分析">¶</a>5.3 导入. hprof 文件到<code>MAT</code>工具中进行分析</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190828154254103.png" alt="" loading="lazy"></p>
+<p>可以看到，有 91.03% 的内存由 Object[] 数组占有，所以比较可疑。</p>
+<p>分析：这个可疑是正确的，因为已经有超过 90% 的内存都被它占有，这是非常有可能出现内存溢出的。</p>
+<p>查看详情：可以看到最后一列 91% 被一个 List 占据</p>
+<p><img src="https://img-blog.csdnimg.cn/201908281543407.png" alt="" loading="lazy"></p>
+<p>可以看到集合中存储了大量的 uuid 字符串。</p>
+<h2 id="6-jstack-的使用"><a class="header-anchor" href="#6-jstack-的使用">¶</a>6 jstack 的使用</h2>
+<p>有些时候我们需要查看下 jvm 中的线程执行情况，比如，发现服务器的 <strong>CPU 的负载突然增高</strong>了、出现了<strong>死锁</strong>、<strong>死循环</strong>等，我们该如何分析呢？</p>
+<p>由于程序是正常运行的，没有任何的输出，从日志方面也看不出什么问题，所以就需要看下 jvm 的内部线程的执行情况，然后再进行分析查找出原因。</p>
+<p>这个时候，就需要借助于 jstack 命令，<strong>jstack 的作用是将正在运行的 jvm 的线程情况进行快照，并且打印出来：</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">#用法：jstack &lt;pid&gt;
+
+root@ubuntu64:&#x2F;tmp# jstack 11927
+2019-08-28 03:45:11
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.141-b15 mixed mode):
+
+&quot;http-bio-8080-exec-9&quot; #31 daemon prio&#x3D;5 os_prio&#x3D;0 tid&#x3D;0x00007f357c416000 nid&#x3D;0x2f3f waiting on condition [0x00007f3548af8000]
+   java.lang.Thread.State: WAITING (parking)
+        at sun.misc.Unsafe.park(Native Method)
+        - parking to wait for  &lt;0x00000000ec0c7ac8&gt; (a java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject)
+        at java.util.concurrent.locks.LockSupport.park(LockSupport.java:175)
+        at java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:2039)
+
+----省略...
+
+&quot;VM Periodic Task Thread&quot; os_prio&#x3D;0 tid&#x3D;0x00007f357c1c9800 nid&#x3D;0x2ea3 waiting on condition 
+
+JNI global references: 233<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="6-1-线程的状态"><a class="header-anchor" href="#6-1-线程的状态">¶</a>6.1 线程的状态</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190826105334293.png" alt="" loading="lazy"></p>
+<p>阻塞与等待的区别：阻塞是获取不到锁，等待是等待其他线程通知他执行。</p>
+<ul>
+<li>等待态（WAITING）：当前线程中调用 wait、join、park 函数时，当前线程就会进入等待态。<br>
+也有一个等待队列存放所有等待态的线程。<br>
+线程处于等待态表示它需要等待其他线程的指示才能继续运行。<br>
+进入等待态的线程会释放 CPU 执行权，并释放资源（如：锁）</li>
+<li>超时等待态（TIMED_WAITING）：当运行中的线程调用 sleep（time）、wait、join、parkNanos、parkUnit 时，就会进入该状态。<br>
+它和等待态一样，并不是因为请求不到资源，而是主动进入，并且进入后需要其他线程唤醒。<br>
+进入该状态后释放 CPU 执行权和占有的资源。(错了吧，不会释放吧？)<br>
+与等待态的区别：到了超时时间后自动进入阻塞队列，开始竞争锁。</li>
+</ul>
+<h4 id="6-2-死锁问题"><a class="header-anchor" href="#6-2-死锁问题">¶</a>6.2 死锁问题</h4>
+<p>如果在生产环境发生了死锁，我们将看到的是部署的程序没有任何反应了，这个时候我们可以借助 jstack 进行分析，下面我们实战下查找死锁的原因。</p>
+<h5 id="6-2-1-构造死锁"><a class="header-anchor" href="#6-2-1-构造死锁">¶</a>6.2.1 构造死锁</h5>
+<p>编写代码，启动 2 个线程，Thread1 拿到了 obj1 锁，准备去拿 obj2 锁时，obj2 已经被 Thread2 锁定，所以发送了死锁。</p>
+<pre class="line-numbers language-none"><code class="language-none">public class TestDeadLock &#123;
+    private static Object obj1 &#x3D; new Object();
+
+    private static Object obj2 &#x3D; new Object();
+
+    public static void main(String[] args) &#123;
+        new Thread(new Thread1()).start();
+        new Thread(new Thread2()).start();
+    &#125;
+
+    private static class Thread1 implements Runnable &#123;
+
+        @Override
+        public void run() &#123;
+            synchronized (obj1) &#123;
+                System.out.println(&quot;Thread1 拿到了 obj1的锁！&quot;);
+
+                try &#123;
+                    &#x2F;&#x2F;停顿2秒的意义在于，让Thread2线程拿到obj2的锁
+                    Thread.sleep(2000);
+                &#125; catch (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+
+                synchronized (obj2) &#123;
+                    System.out.println(&quot;Thread1 拿到了 obj2的锁！&quot;);
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+
+    private static class Thread2 implements Runnable &#123;
+
+        @Override
+        public void run() &#123;
+            synchronized (obj2) &#123;
+                System.out.println(&quot;Thread2 拿到了obj2 的锁！&quot;);
+
+                try &#123;
+                    &#x2F;&#x2F;停顿2秒的意义在于，让Thread1线程拿到obj1的锁
+                    Thread.sleep(2000);
+                &#125; catch (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+
+                synchronized (obj1) &#123;
+                    System.out.println(&quot;Thread2 拿到了 obj1的锁！&quot;);
+                &#125;
+            &#125;
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="6-2-2、在-linux-上运行"><a class="header-anchor" href="#6-2-2、在-linux-上运行">¶</a>6.2.2、在 linux 上运行</h5>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:&#x2F;test# javac TestDeadLock.java 
+root@ubuntu64:&#x2F;test# ll
+total 28
+drwxr-xr-x  2 root root 4096 8月  26 02:44 .&#x2F;
+drwxr-xr-x 26 root root 4096 8月  23 04:06 ..&#x2F;
+-rw-r--r--  1 root root  184 8月  28 03:51 TestDeadLock$1.class
+-rw-r--r--  1 root root  843 8月  28 03:51 TestDeadLock.class
+-rw-r--r--  1 root root 1516 8月  26 02:43 TestDeadLock.java
+-rw-r--r--  1 root root 1076 8月  28 03:51 TestDeadLock$Thread1.class
+-rw-r--r--  1 root root 1076 8月  28 03:51 TestDeadLock$Thread2.class
+root@ubuntu64:&#x2F;test# java TestDeadLock 
+Thread1 拿到了 obj1的锁！
+Thread2 拿到了obj2 的锁！
+
+#这里发生了死锁，程序一直将等待下去<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="6-2-3-使用-jstack-进行分析jstack-进程号"><a class="header-anchor" href="#6-2-3-使用-jstack-进行分析jstack-进程号">¶</a>6.2.3 使用 jstack 进行分析<code>jstack 进程号</code></h5>
+<pre class="line-numbers language-none"><code class="language-none">root@ubuntu64:~&#x2F;test&#x2F;apache-tomcat-7.0.57&#x2F;bin# jps
+12183 Jps
+11927 Bootstrap
+12171 TestDeadLock
+root@ubuntu64:~&#x2F;test&#x2F;apache-tomcat-7.0.57&#x2F;bin# jstack 12171
+2019-08-28 03:54:46
+Full thread dump Java HotSpot(TM) 64-Bit Server VM (25.141-b15 mixed mode):
+
+&quot;Attach Listener&quot; #11 daemon prio&#x3D;9 os_prio&#x3D;0 tid&#x3D;0x00007ffb28001000 nid&#x3D;0x2fab waiting on condition [0x0000000000000000]
+   java.lang.Thread.State: RUNNABLE
+
+...省略
+
+
+Found one Java-level deadlock:
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+
+&quot;Thread-1&quot;:
+  waiting to lock monitor 0x00007ffb300062c8 (object 0x00000000e1089b38, a java.lang.Object),
+  which is held by &quot;Thread-0&quot;
+&quot;Thread-0&quot;: # 获取不到锁2
+  waiting to lock monitor 0x00007ffb30004e28 (object 0x00000000e1089b48, a java.lang.Object),
+  which is held by &quot;Thread-1&quot; # 获取不到锁1
+
+Java stack information for the threads listed above:
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+
+&quot;Thread-1&quot;:
+        at TestDeadLock$Thread2.run(TestDeadLock.java:48)
+        - waiting to lock &lt;0x00000000e1089b38&gt; (a java.lang.Object) # 获取不到锁2【38】
+        - locked &lt;0x00000000e1089b48&gt; (a java.lang.Object)
+        at java.lang.Thread.run(Thread.java:748) # 抱着锁1【48】
+&quot;Thread-0&quot;:
+        at TestDeadLock$Thread1.run(TestDeadLock.java:27)
+        - waiting to lock &lt;0x00000000e1089b48&gt; (a java.lang.Object) # 获取不到锁1【48】
+        - locked &lt;0x00000000e1089b38&gt; (a java.lang.Object)# 抱着锁2【38】
+        at java.lang.Thread.run(Thread.java:748)
+
+Found 1 deadlock. # 发现了一个死锁
+
+ 在输出的信息中，已经看到，发现了1个死锁<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以清晰的看到：</p>
+<ul>
+<li>Thread2 获取了 &lt;0x00000000e1089b48&gt; 的锁，等待获取 &lt;0x00000000e1089b38 &gt; 这个锁</li>
+<li>Thread1 获取了 &lt;0x00000000e1089b38&gt; 的锁，等待获取 &lt;0x00000000e1089b48 &gt; 这个锁</li>
+</ul>
+<p>由此可见，发生了死锁。</p>
+<h2 id="7-JVisualVM-的使用"><a class="header-anchor" href="#7-JVisualVM-的使用">¶</a>7 JVisualVM 的使用</h2>
+<p>JVisualVM，JDK 自带的工具，能够监控线程，内存情况，查看方法的 CPU 时间和内存中的对象，已被 GC 的对象，反向查看分配的堆栈（如 100 个 String 对象分别由哪几个对象分配出来的）</p>
+<p>VisualVM 使用简单，几乎 0 配置，功能还是比较丰富的，几乎囊括了其他 JDK 自带命令的所有功能。</p>
+<p>内存信息<br>
+线程信息<br>
+Dump 堆（本地进程）<br>
+Dump 线程（本地进程）<br>
+打开堆 Dump。堆 Dump 可以用 jmap 来生成。<br>
+打开线程 Dump<br>
+生成应用快照（包含内存信息、线程信息等）<br>
+性能分析。CPU 分析（各个方法调用时间，检查哪些方法耗时多），内存分析（各类对象占用的内存，检查哪些类占用内存多）<br>
+…</p>
+<h4 id="7-1-JVisualVM-介绍"><a class="header-anchor" href="#7-1-JVisualVM-介绍">¶</a>7.1 JVisualVM 介绍</h4>
+<p>在 jdk 的安装目录的 bin 目录下，找到 jvisualvm.exe，双击打开即可。（命令行直接输入<code>jvisualvm</code>）</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828160635951.png" alt="" loading="lazy"></p>
+<p>可以看到正在运行的进程</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828160706334.png" alt="" loading="lazy"></p>
+<h4 id="7-2-查看本地进程"><a class="header-anchor" href="#7-2-查看本地进程">¶</a>7.2 查看本地进程</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190828160800377.png" alt="" loading="lazy"></p>
+<h4 id="7-3-查看-CPU、内存、类、线程运行信息"><a class="header-anchor" href="#7-3-查看-CPU、内存、类、线程运行信息">¶</a>7.3 查看 CPU、内存、类、线程运行信息</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190828160840630.png" alt="" loading="lazy"></p>
+<h4 id="7-4-查看线程详情"><a class="header-anchor" href="#7-4-查看线程详情">¶</a>7.4 查看线程详情</h4>
+<p><img src="https://img-blog.csdnimg.cn/20190828160913757.png" alt="" loading="lazy"></p>
+<p>也可以点击右上角<code>Dump</code>按钮，将线程的信息导出，其实就是执行的<code>jstack</code>命令。</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828160944121.png" alt="" loading="lazy"></p>
+<p>发现，显示的内容是一样的。</p>
+<h4 id="7-5-抽样器"><a class="header-anchor" href="#7-5-抽样器">¶</a>7.5 抽样器</h4>
+<p>抽样器可以对 CPU、内存在一段时间内进行抽样，以供分析。（点击 CPU 或者内存，过几秒再点击停止，就可以看到这段时间的占用情况）</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828161049296.png" alt="" loading="lazy"></p>
+<h4 id="7-6-监控远程的-jvm"><a class="header-anchor" href="#7-6-监控远程的-jvm">¶</a>7.6 监控远程的 jvm</h4>
+<p>VisualJVM 不仅是可以监控本地 jvm 进程，还可以监控远程的 jvm 进程，需要借助于 JMX 技术实现。</p>
+<p>7.6.1 什么是 JMX？</p>
+<p>JMX（Java Management Extensions，即 Java 管理扩展）是一个为应用程序、设备、系 统等植入管理功能的框架。JMX 可以跨越一系列异构操作系统平台、系统体系结构和网络传输协议，灵活的开发无缝集成的系统、网络和服务管理应用。</p>
+<h5 id="7-6-2-监控远程的-tomcat"><a class="header-anchor" href="#7-6-2-监控远程的-tomcat">¶</a>7.6.2 监控远程的 tomcat</h5>
+<p>想要监控远程的 tomcat，就需要在远程的 tomcat 进行对 JMX 配置，方法如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">#在tomcat的bin目录下，修改catalina.sh
+
+1、在catalina.sh中添加配置如下：
+
+在其中“# ----- Execute The Requested Command -------------”之前插入一行（中间没有换行）：
+
+CATALINA_OPTS&#x3D;&quot;$CATALINA_OPTS -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port&#x3D;9999 -Dcom.sun.management.jmxremote.ssl&#x3D;false -Dcom.sun.management.jmxremote.authenticate&#x3D;false -Djava.rmi.server.host
+
+#这几个参数的意思是：
+#‐Dcom.sun.management.jmxremote ：允许使用JMX远程管理
+#‐Dcom.sun.management.jmxremote.port&#x3D;9999 ：JMX远程连接端口
+#‐Dcom.sun.management.jmxremote.authenticate&#x3D;false ：不进行身份认证，任何用户都可以连接
+#‐Dcom.sun.management.jmxremote.ssl&#x3D;false ：不使用ssl
+
+特别注意：-Djava.rmi.server.hostname&#x3D;机器IP这一行需要加上，不然可能本机能连上，远程连不上。很多帖子中的介绍配置没有这一行。
+
+
+2、关闭防火墙 sudo ufw disable
+
+3、lsof -i:8999查看端口状态<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="https://img-blog.csdnimg.cn/20190826164847907.png" alt="" loading="lazy"></p>
+<h5 id="7-6-3-使用-JVisualVM-连接远程-tomcat"><a class="header-anchor" href="#7-6-3-使用-JVisualVM-连接远程-tomcat">¶</a>7.6.3 使用 JVisualVM 连接远程 tomcat</h5>
+<p>添加远程主机：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828162053170.png" alt="" loading="lazy"></p>
+<p>在一个主机下可能会有很多的 jvm 需要监控，所以接下来要在该主机上添加需要监控的 jvm：</p>
+<p><img src="https://img-blog.csdnimg.cn/20190828162103394.png" alt="" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/20190828162109714.png" alt="" loading="lazy"></p>
+<p>连接成功。使用方法和前面就一样了，就可以和监控本地 jvm 进程一样，监控远程的 tomcat 进程。</p>
+<p>不过远程的堆 dump 需要先下载到本地，然后再打开</p>
+<h3 id="jvisualVM-查看内存溢出"><a class="header-anchor" href="#jvisualVM-查看内存溢出">¶</a>jvisualVM 查看内存溢出</h3>
+<p>OutOfMemoryError：由于内存空间不足，导致虚拟机无法为对象分配内存，垃圾回收期也不能进行回收，抛出错误。OutOfMemoryError 继承了 VirtualMachineError</p>
+<p>相当于刚才的 MAT 工具</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+修改文件运行的jvm参数：
+-Xms5m -Xmx5m -XX:+HeapDumpOnOutOfMemoryError
+打印堆转储的信息
+*&#x2F;
+public class Test1&#123;
+    public static void main(String[] args)&#123;
+        List&lt;Test1&gt; list&#x3D;new ArrayList();
+        for(;;) &#123;
+            list.add(new Test1());
+            &#x2F;&#x2F;System.gc();  &#x2F;&#x2F;主动建议垃圾回收器进行垃圾回收
+        &#125;
+    &#125;
+&#125;
+运行结果：
+java.lang.OutOfMemoryError: Java heap space
+Dumping heap to java_pid16280.hprof ... 
+Heap dump file created [9178675 bytes in 0.152 secs]
+Exception in thread &quot;main&quot; java.lang.OutOfMemoryError: Java heap space
+       at java.util.Arrays.copyOf(&lt;u&gt;Arrays.java:3210&lt;&#x2F;u&gt;)
+       at java.util.Arrays.copyOf(&lt;u&gt;Arrays.java:3181&lt;&#x2F;u&gt;)
+       at java.util.ArrayList.grow(&lt;u&gt;ArrayList.java:265&lt;&#x2F;u&gt;)
+       at java.util.ArrayList.ensureExplicitCapacity(&lt;u&gt;ArrayList.java:239&lt;&#x2F;u&gt;)
+       at java.util.ArrayList.ensureCapacityInternal(&lt;u&gt;ArrayList.java:231&lt;&#x2F;u&gt;)
+       at java.util.ArrayList.add(&lt;u&gt;ArrayList.java:462&lt;&#x2F;u&gt;)
+       at com.hisense.Test1.main(&lt;u&gt;Test1.java:11&lt;&#x2F;u&gt;)
+       java_pid51776.hprof是一个转储文件<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在 windows 终端中输入<code>jvisualvm</code>，直接打开软件， java_pid16280.hprof 转储文件（在项目根目录下），装入时候需要选择格式<code>堆dump</code>。类似下图。</p>
+<p><img src="https://img-blog.csdnimg.cn/20200307122950387.png" alt="" loading="lazy"></p>
+<pre class="line-numbers language-none"><code class="language-none">基本信息:
+    生成的日期: Wed Apr 01 20:19:16 CST 2020
+    文件: F:\JVMtest\java_pid16280.hprof
+    文件大小: 8.9 MB
+    字节总数: 6,422,862
+    类总数: 582
+    实例总数: 248,038
+    类加载器: 2
+
+    在出现 OutOfMemoryError 异常错误时进行了堆转储
+    导致 OutOfMemoryError 异常错误的线程: main&#x2F;&#x2F;这里表明了导致超存的线程是main线程
+
+  环境:...
+  系统属性:...
+  堆转储上的线程:
+  
+&quot;Finalizer&quot; daemon prio&#x3D;8 tid&#x3D;3 WAITING
+    at java.lang.Object.wait(Native Method)
+...
+
+  
+&quot;main&quot; prio&#x3D;5 tid&#x3D;1 RUNNABLE
+    at java.lang.OutOfMemoryError.&lt;init&gt;(Out
+...
+       Local Variable: JVMtest.OutOfMemory#64664
+    at JVMtest.OutOfMemory.main(OutOfMemory.java:10)
+       Local Variable: java.util.ArrayList#3
+
+  
+&quot;Signal Dispatcher&quot; daemon prio&#x3D;9 tid&#x3D;4 RUNNABLE<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>下图可以看到 Test1 类中有 97% 的对象，这个类中可能出现了内存溢出</p>
+<p><img src="https://img-blog.csdnimg.cn/20200307123008205.png" alt="" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200307123021144.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70" alt="" loading="lazy"></p>
+<p>修改设置的 VM 内存大小，然后运行程序，可以在 VisualVM 中查看进程情况。</p>
+<h3 id="jvisualVM-栈溢出"><a class="header-anchor" href="#jvisualVM-栈溢出">¶</a>jvisualVM 栈溢出</h3>
+<p>虚拟机栈：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+ * 模拟虚拟机栈溢出，StackOverFlow&#x2F;&#x2F;递归
+ * 设置虚拟机栈的大小，-Xss100k &#x2F;&#x2F;StackSize&#x2F;&#x2F;最少160k
+ *&#x2F;
+public class Test2 &#123;
+    private int length;
+    public int getLength() &#123;
+        return length;
+    &#125;
+    public void test() &#123;
+        length+&#x3D;1;
+        try&#123;
+            test();&#x2F;&#x2F;递归调用
+            Thread.sleep(300);
+        &#125;catch(Exception e) &#123;
+            e.printStackTrace();
+        &#125;
+    &#125;
+    public static void main(String[] args) &#123;
+        Test2 t2&#x3D;new Test2();
+        try &#123;
+            t2.test();
+        &#125;catch(Throwable ex) &#123;
+            System.out.println(t2.getLength());
+            ex.printStackTrace();
+        &#125;
+    &#125;
+&#125;
+&#x2F;&#x2F;要想在jvisualVM中看到状态，需要改得大一些，让他运行时间长一些。点击进程后，点击监视
+运行结果：
+
+    java.lang.StackOverflowError &#x2F;&#x2F; 显示栈溢出
+    at com.hisense.Test2.test(&lt;u&gt;Test2.java:13&lt;&#x2F;u&gt;)
+    at com.hisense.Test2.test(&lt;u&gt;Test2.java:14&lt;&#x2F;u&gt;)
+    at com.hisense.Test2.test(&lt;u&gt;Test2.java:14&lt;&#x2F;u&gt;)
+    at com.hisense.Test2.test(&lt;u&gt;Test2.java:14&lt;&#x2F;u&gt;)
+    ................<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 jvisualvm 工具 dump 主线程</p>
+<p><img src="https://img-blog.csdnimg.cn/20200307123041165.png" alt="" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200307123053755.png" alt="" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/2020030712313196.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70" alt="" loading="lazy"></p>
+<h3 id="线程死锁检测："><a class="header-anchor" href="#线程死锁检测：">¶</a>线程死锁检测：</h3>
+<pre class="line-numbers language-none"><code class="language-none">package JVMtest;
+&#x2F;&#x2F; 演示死锁
+&#x2F;&#x2F; 下面有2个线程，1,2
+&#x2F;&#x2F; 有2个资源类A,B，他们都有一个静态方法method，method方法同时被synchronized修饰。而且互相调用了另外一个类的method
+&#x2F;&#x2F; 线程1先调用A.method();，线程2先调用B.method();
+&#x2F;&#x2F; 如果线程1拿到了A.class对象，那么可以执行A.method()，他里面又调用了
+
+public class DeadThread&#123;
+    public static void main(String[] args) &#123;
+        new Thread(new Runnable() &#123;
+            @Override
+            public void run() &#123;
+                A.method();
+            &#125;
+        &#125;,&quot;A-Thread&quot;).start();
+        new Thread(new Runnable() &#123;
+            @Override
+            public void run() &#123;
+                B.method();
+            &#125;
+        &#125;,&quot;B-Thread&quot;).start();
+        &#x2F;&#x2F;Thread.sleep(40000);
+    &#125;&#x2F;&#x2F;为什么在jconsole中看不到main进程：因为执行完两个线程后，main就结束了，是那两个线程还在执行而已
+&#125;
+
+class A &#123;
+    public static synchronized void method()&#123;
+        try &#123;
+            Thread.sleep(1000);&#x2F;&#x2F;等待一会另外一个线程也拿到锁了
+        &#125; catch (InterruptedException e) &#123;e.printStackTrace();&#125;
+        B.method();
+    &#125;
+&#125;
+
+class B &#123;
+    public static synchronized void method()&#123;
+        try &#123;
+            Thread.sleep(1000);
+        &#125; catch (InterruptedException e) &#123;e.printStackTrace();&#125;
+        A.method();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>再使用 jvisualvm 工具查看线程：</p>
+<pre class="line-numbers language-none"><code class="language-none">jvisualVM直接会提示：检测到死锁！生成一个线程 Dump 以获取更多信息。
+点击右侧线程dump，可以看到如下内容：&#x2F;&#x2F;与jconsole输出内容相似
+&quot;B-Thread&quot; #13 prio&#x3D;5 os_prio&#x3D;0 tid&#x3D;0x000000001f12c000 nid&#x3D;0x430c waiting for monitor entry [0x00000000200ee000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+        at JVMtest.A.method(DeadThread.java:23)
+        - waiting to lock &lt;0x000000076bf16508&gt; (a java.lang.Class for JVMtest.A)
+        at JVMtest.B.method(DeadThread.java:37)
+        - locked &lt;0x000000076c1a09c8&gt; (a java.lang.Class for JVMtest.B)
+        at JVMtest.DeadThread$2.run(DeadThread.java:14)
+        at java.lang.Thread.run(Thread.java:748)
+
+   Locked ownable synchronizers:
+        - None
+-----------------
+&quot;A-Thread&quot; #12 prio&#x3D;5 os_prio&#x3D;0 tid&#x3D;0x000000001f129000 nid&#x3D;0x3018 waiting for monitor entry [0x000000001ffef000]
+   java.lang.Thread.State: BLOCKED (on object monitor)
+        at JVMtest.B.method(DeadThread.java:33)
+        - waiting to lock &lt;0x000000076c1a09c8&gt; (a java.lang.Class for JVMtest.B)
+        at JVMtest.A.method(DeadThread.java:27)
+        - locked &lt;0x000000076bf16508&gt; (a java.lang.Class for JVMtest.A)
+        at JVMtest.DeadThread$1.run(DeadThread.java:8)
+        at java.lang.Thread.run(Thread.java:748)
+
+   Locked ownable synchronizers:
+        - None
+
+----------------------------
+Found one Java-level deadlock:
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+&quot;B-Thread&quot;:
+  waiting to lock monitor 0x000000001d1c2188 (object 0x000000076bf16508, a java.lang.Class),
+  which is held by &quot;A-Thread&quot;
+&quot;A-Thread&quot;:
+  waiting to lock monitor 0x000000001d1c0b88 (object 0x000000076c1a09c8, a java.lang.Class),
+  which is held by &quot;B-Thread&quot;
+
+Java stack information for the threads listed above:
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+&quot;B-Thread&quot;:
+        at JVMtest.A.method(DeadThread.java:23)
+        - waiting to lock &lt;0x000000076bf16508&gt; (a java.lang.Class for JVMtest.A)
+        at JVMtest.B.method(DeadThread.java:37)
+        - locked &lt;0x000000076c1a09c8&gt; (a java.lang.Class for JVMtest.B)
+        at JVMtest.DeadThread$2.run(DeadThread.java:14)
+        at java.lang.Thread.run(Thread.java:748)
+&quot;A-Thread&quot;:
+        at JVMtest.B.method(DeadThread.java:33)
+        - waiting to lock &lt;0x000000076c1a09c8&gt; (a java.lang.Class for JVMtest.B)
+        at JVMtest.A.method(DeadThread.java:27)
+        - locked &lt;0x000000076bf16508&gt; (a java.lang.Class for JVMtest.A)
+        at JVMtest.DeadThread$1.run(DeadThread.java:8)
+        at java.lang.Thread.run(Thread.java:748)
+
+Found 1 deadlock. &#x2F;&#x2F; 发现了死锁<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>jconsole 也可以查看线程使用情况，可以 jdk 内置的。他是分进程查看的。</p>
+<p>使用 jconsole 工具查看死锁线程：线程 / 点击指定的线程，可以查看总组阻止数（阻止了多少别人的线程），等待数（等待别人的线程）。还会看到 A-Thread 持有锁，所以 B 线程阻塞。点击下面的检测死锁还可以直接检测出来死锁</p>
+<pre class="line-numbers language-none"><code class="language-none">jconsole输出内容：线程
+-------------------------------------------
+名称: A-Thread
+状态: java.lang.Class@2b12cf6上的BLOCKED, 拥有者: B-Thread&#x2F;&#x2F;2b这个类阻塞了，他的持有者是B线程
+总阻止数: 1, 总等待数: 1
+
+堆栈跟踪: 
+JVMtest.B.method(DeadThread.java:33)
+JVMtest.A.method(DeadThread.java:26)
+   - 已锁定 java.lang.Class@41fc54c4&#x2F;&#x2F;A线程持有了41class，B线程拿不到
+JVMtest.DeadThread$1.run(DeadThread.java:8)
+java.lang.Thread.run(Thread.java:748)
+
+--------------------------------------------
+名称: B-Thread
+状态: java.lang.Class@41fc54c4上的BLOCKED, 拥有者: A-Thread
+总阻止数: 1, 总等待数: 1
+
+堆栈跟踪: 
+JVMtest.A.method(DeadThread.java:24)
+JVMtest.B.method(DeadThread.java:35)
+   - 已锁定 java.lang.Class@2b12cf6
+JVMtest.DeadThread$2.run(DeadThread.java:14)
+java.lang.Thread.run(Thread.java:748)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</blockquote>
+<h3 id="元空间深度解析："><a class="header-anchor" href="#元空间深度解析：">¶</a>元空间深度解析：</h3>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+ * 方法区产生内存溢出错误
+ * ：jdk8中引入元空间，默认的初始大小为21m，如果超过21m，元空间虚拟机会进行垃圾回收，如果还不够就进行空间扩容，扩容的上限为物理内存的上限。
+ * 本次测试使用cglib进行元空间内存错误演示。
+ * 启动时，修改vm参数: -XX:MaxMetaspaceSize&#x3D;10m。
+ *&#x2F;
+public class Test4 &#123;
+       public static void main(String[] args) &#123;
+             &#x2F;&#x2F;程序在运行过程中，会不断的创建Test.class的子类，并放置到元空间中
+             for(;;) &#123;
+                    Enhancer enhancer&#x3D;new Enhancer();
+                    enhancer.setSuperclass(Test4.class);
+                    enhancer.setUseCache(false);
+                    enhancer.setCallback((MethodInterceptor)(obj,method,arg1,proxy)-&gt; 
+                                        proxy.invokeSuper(obj, arg1));
+                    System.out.println(&quot;hello world&quot;);
+                    enhancer.create();
+             &#125;
+       &#125;
+&#125;
+
+程序运行结果报错：
+java.lang.OutOfMemoryError: Metaspace     元空间内存溢出<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>使用 jvisualvm 工具观察元空间的变化</p>
+<p>元空间相关文章：<br>
+Java 永久代去哪了？<a target="_blank" rel="noopener" href="https://www.infoq.cn/article/Java-PERMGEN-Removed/">https://www.infoq.cn/article/Java-PERMGEN-Removed/</a><br>
+-XX:MaxMetaspaceSize<br>
+‑XX:MinMetaspaceFreeRatio<br>
+‑XX:MaxMetaspaceFreeRatio</p>
+<h5 id="参考"><a class="header-anchor" href="#参考">¶</a>参考</h5>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_37977218/article/details/100015785">https://blog.csdn.net/qq_37977218/article/details/100015785</a></li>
+</ul>
+<h1>原来内容</h1>
+<p>JDK 自带的工具：</p>
+<ul>
+<li>jconsole</li>
+<li>jvisualvm</li>
+</ul>
+<p>jmap -clstats PID ：打印【类加载器】数据</p>
+<pre class="line-numbers language-none"><code class="language-none">&gt; jmap -clstats 13548
+Attaching to process ID 13548, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.231-b11
+finding class loader instances ..done.
+computing per loader stat ..done.
+please wait.. computing liveness........done.
+class_loader    classes bytes   parent_loader   alive?  type
+
+&lt;bootstrap&gt;     606     1135618   null          live    &lt;internal&gt;
+0x000000076ba901b0      0       0         null          live    sun&#x2F;misc&#x2F;Launcher$ExtClassLoader@0x00000007c000fd00
+0x000000076baa4740      8       8615    0x000000076ba901b0      live    sun&#x2F;misc&#x2F;Launcher$AppClassLoader@0x00000007c000f958
+0x000000076c3710a8      0       0       0x000000076baa4740      live    java&#x2F;util&#x2F;ResourceBundle$RBClassLoader@0x00000007c00650a8
+
+total &#x3D; 4       614     1144233     N&#x2F;A         alive&#x3D;4, dead&#x3D;0     N&#x2F;A<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>jmap -heap PID 打印堆空间数据</p>
+<pre class="line-numbers language-none"><code class="language-none">C:\Users\HAN&gt;jmap -heap 13548
+Attaching to process ID 13548, please wait...
+Debugger attached successfully.
+Server compiler detected.
+JVM version is 25.231-b11
+
+using thread-local object allocation.
+Parallel GC with 8 thread(s)
+
+Heap Configuration:
+   MaxHeapSize              &#x3D; 4246732800 (4050.0MB)
+   OldSize                  &#x3D; 177733632 (169.5MB)
+   MetaspaceSize            &#x3D; 21807104 (20.796875MB)
+   ...
+
+Heap Usage:...
+PS Young Generation
+Eden Space:
+   capacity &#x3D; 66584576 (63.5MB)
+   used     &#x3D; 10654120 (10.160560607910156MB)
+   free     &#x3D; 55930456 (53.339439392089844MB)
+   16.00088284710261% used
+From Space:...
+To Space:...
+PS Old Generation...
+
+3164 interned Strings occupying 259664 bytes.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>jstat -gc LVMID 用来打印元空间的信息</p>
+<pre class="line-numbers language-none"><code class="language-none">C:\Users\HAN&gt;jstat -gc 13548
+ S0C    S1C    S0U    S1U      EC       EU        OC         OU       MC     MU    CCSC   CCSU   YGC     YGCT    FGC    FGCT     GCT
+10752.0 10752.0  0.0    0.0   65024.0  10404.4   173568.0     0.0     4480.0 776.7  384.0   76.6       0    0.000   0      0.000    0.000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>其中：MC: Current Metaspace Capacity (KB); MU: Metaspace Utilization (KB)<br>
+如果使用 cgilib 不断在运行期生成 class，则 MC 和 MU 会不断的增加，如下图：</p>
+<p><img src="https://img-blog.csdnimg.cn/20200307123400520.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70" alt="" loading="lazy"></p>
+<p>jps ：查看 Java 进程的启动类、传入参数和 Java 虚拟机参数等信息</p>
+<pre class="line-numbers language-none"><code class="language-none">C:\Users\HAN&gt;jps
+13548 DeadThread
+7148 Launcher
+7340 Jps
+
+C:\Users\HAN&gt;jps -l
+2360 sun.tools.jps.Jps
+13548 JVMtest.DeadThread
+7148 org.jetbrains.jps.cmdline.Launcher<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>jcmd PID GC.class_stats 从 jdk1.7 出现的新命令，用来连接到运行的 JVM 并输出详尽的类元数据的柱状图。</p>
+<p>jcmd -l</p>
+<pre class="line-numbers language-none"><code class="language-none">C:\Users\HAN&gt;jcmd -l
+1328 sun.tools.jcmd.JCmd -l
+13548 JVMtest.DeadThread
+7148 org.jetbrains.jps.cmdline.Launcher
+....<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>jcmd pid VM.flags ：查看虚拟机启动参数</p>
+<pre class="line-numbers language-none"><code class="language-none">C:\Users\HAN&gt;jcmd 13548 VM.flags
+13548:
+-XX:CICompilerCount&#x3D;4 -XX:InitialHeapSize&#x3D;266338304 -XX:MaxHeapSize&#x3D;4246732800 -XX:MaxNewSize&#x3D;1415577600 -XX:MinHeapDeltaBytes&#x3D;524288 -XX:NewSize&#x3D;88604672 -XX:OldSize&#x3D;177733632 -XX:+UseCompressedClassPointers -XX:+UseCompressedOops -XX:+UseFastUnorderedTimeStamps -XX:-UseLargePagesIndividualAllocation -XX:+UseParallelGC<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>jcmd pid help 列出当前的 java 进程可以进行的操作</p>
+<p>jcmd pid help JFR.dump ：查看具体命令的选项.</p>
+<pre class="line-numbers language-none"><code class="language-none">C:\Users\HAN&gt;jcmd 13548 help
+13548:
+The following commands are available:
+JFR.stop
+JFR.start
+JFR.dump
+...
+
+For more information about a specific command use &#39;help &lt;command&gt;&#39;.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>jcmd pid ProfCounter.print : 查看当前进程性能相关的参数</p>
+<p>jcmd pid VM.uptime : 查看 jvm 的启动时长</p>
+<p>jcmd pid GC.class_histogram ：查看系统中类的统计信息</p>
+<p>jcmd pid Thread.print : 查看线程堆栈信息</p>
+<p>jcmd pid GC.heap_dump C:\Users\Administrator\Desktop 导出 heap dump 文件，可以使用 jvisualvm 查看</p>
+<p>jcmd pid VM.system_properties ： 查看 JVM 的属性信息</p>
+<p>jcmd pid VM.version : 查看目标 JVM 进程的版本信息</p>
+<p>jcmd pid VM.command_line : 查看 JVM 启动的命令行参数信息</p>
+<p>jstack : 查看或者导出 java 应用程序中线程的堆栈信息</p>
+<p>另外一个图形化界面工具 jmc(Java Mission Control)</p>
+<h3 id="JMC"><a class="header-anchor" href="#JMC">¶</a>JMC</h3>
+<p>JMC 中有一个 Java 飞行记录器（JFR）：Java Flight Recorder（其中 MBean 与飞行记录器很有用）</p>
+<p><img src="https://img-blog.csdnimg.cn/20200307123717513.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70" alt="" loading="lazy"></p>
+<p><img src="https://img-blog.csdnimg.cn/20200307123741753.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODQwNTM1NA==,size_16,color_FFFFFF,t_70" alt="" loading="lazy"></p>
+<p>jhat：利用 web 打开转储文件</p>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/JVM%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%B0%83%E4%BC%98/" title="JVM压力测试与调优">https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/JVM%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95%E4%B8%8E%E8%B0%83%E4%BC%98/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2020/12/11/CollectionNote/%E6%94%B6%E8%97%8F%E9%93%BE%E6%8E%A5/java/%E7%BA%BF%E7%A8%8B%E6%94%B6%E8%97%8F%E9%93%BE%E6%8E%A5/" rel="prev" title="线程收藏链接"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">线程收藏链接</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/JVM%E7%AC%94%E8%AE%B0(%E9%BB%91%E9%A9%AC+%E5%B0%9A%E7%A1%85%E8%B0%B7+%E5%BC%A0%E9%BE%99%E6%95%B4%E5%90%88%E7%AC%94%E8%AE%B0)/" rel="next" title="JVM笔记(黑马+尚硅谷+张龙整合笔记)"><span class="post-nav-text">JVM笔记(黑马+尚硅谷+张龙整合笔记)</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>

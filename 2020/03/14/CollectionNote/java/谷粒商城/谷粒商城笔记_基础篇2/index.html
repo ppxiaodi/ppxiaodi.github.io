@@ -1,0 +1,3025 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>谷粒商城笔记_基础篇2 | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="谷粒商城笔记_基础篇2   本文由 简悦 SimpRead 转码， 原文地址 blog.csdn.net   本文重点记录老师讲的话 和 一些配置流程，耗时良久，视频文档内容基本都已文字识别后放到本文档。   springcloud 笔记：https:&#x2F;&#x2F;blog.csdn.net&#x2F;hancoder&#x2F;article&#x2F;details&#x2F;109063671   笔记 - 基础篇 - 1(P1-P28)：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谷粒商城笔记_基础篇2">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="谷粒商城笔记_基础篇2   本文由 简悦 SimpRead 转码， 原文地址 blog.csdn.net   本文重点记录老师讲的话 和 一些配置流程，耗时良久，视频文档内容基本都已文字识别后放到本文档。   springcloud 笔记：https:&#x2F;&#x2F;blog.csdn.net&#x2F;hancoder&#x2F;article&#x2F;details&#x2F;109063671   笔记 - 基础篇 - 1(P1-P28)：">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/32b60921764c7d53b0c86dacab4ed1d0.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/e32a42ca2c4fc97ba9fc364c1e8b7127.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/70d3467fa4f9c2138c721c8c9b0a5043.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/155403a040a04b0c0dae0b18c9a8de31.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/scope.row.logo">
+<meta property="article:published_time" content="2020-03-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:54.280Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="谷粒商城">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/32b60921764c7d53b0c86dacab4ed1d0.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">谷粒商城笔记_基础篇2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#node-%E4%B8%8E-data"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">node 与 data</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E8%8F%9C%E5%8D%95%E7%9A%84-controller"><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">初始化菜单的 controller</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#controller"><span class="toc-number">1.0.0.2.</span> <span class="toc-text">controller</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%88%A0%E9%99%A4"><span class="toc-number">1.0.0.3.</span> <span class="toc-text">逻辑删除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A5%E5%BF%97"><span class="toc-number">1.0.0.4.</span> <span class="toc-text">日志</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%A0%E9%99%A4%E6%95%88%E6%9E%9C-P51"><span class="toc-number">1.0.0.5.</span> <span class="toc-text">删除效果 P51</span></a></li></ol></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">谷粒商城笔记_基础篇2</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2020-03-14 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-14T00:00:00+08:00">2020-03-14</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:54" itemprop="dateModified" datetime="2021-07-11T16:54:54+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">java</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">谷粒商城</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/java/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">java</span></a><a class="tag-item" href="/tags/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">谷粒商城</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><h1>谷粒商城笔记_基础篇2</h1>
+<blockquote>
+<blockquote>
+<p>本文由 <a target="_blank" rel="noopener" href="http://ksria.com/simpread/">简悦 SimpRead</a> 转码， 原文地址 <a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/107612619">blog.csdn.net</a></p>
+</blockquote>
+</blockquote>
+<p>本文重点记录老师讲的话 和 一些配置流程，耗时良久，视频文档内容基本都已文字识别后放到本文档。</p>
+<ul>
+<li>
+<p>springcloud 笔记：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/109063671">https://blog.csdn.net/hancoder/article/details/109063671</a></p>
+</li>
+<li>
+<p>笔记 - 基础篇 - 1(P1-P28)：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/106922139">https://blog.csdn.net/hancoder/article/details/106922139</a></p>
+</li>
+<li>
+<p>笔记 - 基础篇 - 2(P28-P100)：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/107612619">https://blog.csdn.net/hancoder/article/details/107612619</a></p>
+</li>
+<li>
+<p>笔记 - 高级篇：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/107612746">https://blog.csdn.net/hancoder/article/details/107612746</a></p>
+</li>
+<li>
+<p>笔记 - 集群篇：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/107612802">https://blog.csdn.net/hancoder/article/details/107612802</a></p>
+</li>
+<li>
+<p>笔记版本说明：之前提供过笔记文档，但只有 P1-P50 的内容，2021 年 2 月版为至 P250 的内容。请点击【下面】分栏查看系列笔记</p>
+</li>
+<li>
+<p>笔记下载地址 (2021 版本)：</p>
+<ul>
+<li>离线 md 笔记为什么不开源：主要原因是笔记未整理结束，不希望广播出去 beta 版，csdn 上是最新版内容，10W 字都是在 csdn 免费开放观看的。此外笔记内图床流量等需要我续费，每打开一次离线 md 笔记我的流量就溜走几十 M，确实顶不住，请见谅</li>
+</ul>
+</li>
+<li>
+<p>sql：<a target="_blank" rel="noopener" href="https://github.com/FermHan/gulimall/sql%E6%96%87%E4%BB%B6">https://github.com/FermHan/gulimall/sql 文件</a></p>
+</li>
+<li>
+<p>启动项目顺序：<a target="_blank" rel="noopener" href="https://github.com/FermHan/gulimall/blob/main">https://github.com/FermHan/gulimall/blob/main</a> / 启动项目顺序. md</p>
+</li>
+<li>
+<p>打赏在文末</p>
+</li>
+</ul>
+<p>基础篇文档太长，就分 P 了吧</p>
+<ol start="15">
+<li>删除数据</li>
+</ol>
+<hr>
+<p>P49。删除前提：没有子菜单、没有被其他菜单引用</p>
+<ul>
+<li>使用 render-content</li>
+<li>使用 scoped slot</li>
+</ul>
+<blockquote>
+<p>可以通过两种方法进行树节点内容的自定义：<code>render-content</code>和 scoped slot。使用<code>render-content</code>指定渲染函数，该函数返回需要的节点区内容即可。渲染函数的用法请参考 Vue 文档。使用 scoped slot 会传入两个参数<code>node</code>和<code>data</code>，分别表示当前节点的 Node 对象和当前节点的数据。注意：由于 jsfiddle 不支持 JSX 语法，所以<code>render-content</code>示例在 jsfiddle 中无法运行。但是在实际的项目中，只要正确地配置了相关依赖，就可以正常运行。</p>
+</blockquote>
+<p>render-content：</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;el-tree
+      :data&#x3D;&quot;data&quot;
+      show-checkbox
+      node-key&#x3D;&quot;id&quot;
+      default-expand-all
+      :expand-on-click-node&#x3D;&quot;false&quot;
+      :render-content&#x3D;&quot;renderContent&quot;&gt; &#x2F;&#x2F; 对应到函数
+     
+     匹配到了
+     
+      renderContent(h, &#123; node, data, store &#125;) &#123;
+        return ( &#x2F;&#x2F; 返回要显示的dom元素
+          &lt;span class&#x3D;&quot;custom-tree-node&quot;&gt;
+            &lt;span&gt;&#123;node.label&#125;&lt;&#x2F;span&gt;
+            &lt;span&gt;
+              &lt;el-button size&#x3D;&quot;mini&quot; type&#x3D;&quot;text&quot; on-click&#x3D;&#123; () &#x3D;&gt; this.append(data) &#125;&gt;Append&lt;&#x2F;el-button&gt;
+              &lt;el-button size&#x3D;&quot;mini&quot; type&#x3D;&quot;text&quot; on-click&#x3D;&#123; () &#x3D;&gt; this.remove(node, data) &#125;&gt;Delete&lt;&#x2F;el-button&gt;
+            &lt;&#x2F;span&gt;
+          &lt;&#x2F;span&gt;);
+      &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>scoped slot（插槽）：在 el-tree 标签里把内容写到 span 标签栏里即可</p>
+<h4 id="node-与-data"><a class="header-anchor" href="#node-与-data">¶</a>node 与 data</h4>
+<p>在 element-ui 的 tree 中，有 2 个非常重要的数学</p>
+<ul>
+<li>node 代表当前结点（是否展开等信息，element-ui 自带属性），</li>
+<li>data 是结点数据，是自己的数据。</li>
+<li>data 从哪里来：前面 ajax 发送请求，拿到 data，赋值给 menus 属性，而 menus 属性绑定到标签的 data 属性。而 node 是 ui 的默认规则</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">&lt;div class&#x3D;&quot;block&quot;&gt;
+    &lt;p&gt;使用 scoped slot&lt;&#x2F;p&gt;
+    &lt;el-tree
+      :data&#x3D;&quot;menus&quot;
+      show-checkbox
+      node-key&#x3D;&quot;id&quot;
+      default-expand-all
+      :expand-on-click-node&#x3D;&quot;false&quot;&gt;
+        传入了2个参数，node代表当前结点（是否展开等信息），data是结点数据。data从哪里来：前面ajax发送请求，拿到data，赋值给menus属性，而menus属性绑定到标签的data属性。而node是ui的默认规则
+      &lt;span class&#x3D;&quot;custom-tree-node&quot; slot-scope&#x3D;&quot;&#123; node, data &#125;&quot;&gt;
+          结点的标签
+        &lt;span&gt;&#123;&#123; node.label &#125;&#125;&lt;&#x2F;span&gt;
+          结点后面跟的2个按钮
+        &lt;span&gt;
+          &lt;el-button
+            type&#x3D;&quot;text&quot;
+            size&#x3D;&quot;mini&quot;
+            @click&#x3D;&quot;() &#x3D;&gt; append(data)&quot;&gt;
+            Append
+          &lt;&#x2F;el-button&gt;
+          &lt;el-button
+            type&#x3D;&quot;text&quot;
+            size&#x3D;&quot;mini&quot;
+            @click&#x3D;&quot;() &#x3D;&gt; remove(node, data)&quot;&gt;
+            Delete
+          &lt;&#x2F;el-button&gt;
+        &lt;&#x2F;span&gt;
+      &lt;&#x2F;span&gt;
+    &lt;&#x2F;el-tree&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>页面加载完后，自动调用</p>
+<pre class="line-numbers language-none"><code class="language-none">created() &#123;
+    this.getMenus();
+  &#125;,
+      
+methods: &#123;
+    getMenus() &#123;
+      this.$http(&#123; &#x2F;&#x2F; http:&#x2F;&#x2F;localhost:10000&#x2F;renren-fast&#x2F;product&#x2F;category&#x2F;list&#x2F;tree
+        url: this.$http.adornUrl(&quot;&#x2F;product&#x2F;category&#x2F;list&#x2F;tree&quot;),
+        method: &quot;get&quot;
+      &#125;)
+        .then((&#123; data &#125;) &#x3D;&gt; &#123; &#x2F;&#x2F; success
+          this.menus &#x3D; data.data; &#x2F;&#x2F; 数组内容，把数据给menus，就是给了vue实例，最后绑定到视图上
+        &#125;) &#x2F;&#x2F;fail
+        .catch(() &#x3D;&gt; &#123;&#125;);
+    &#125;,
+也就是说，获取到数据后绑定到menus上 
+而&lt;el-tree
+      :data&#x3D;&quot;menus&quot;
+所以数据绑定好了
+层级怎么体现的：后端返回的时候children就封装好了
+java后端的实体类CategoryEntity由属性
+private List&lt;CategoryEntity&gt; children;
+该属性不是数据库现有的，而是在后端根据数据库信息现封装好的<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="初始化菜单的-controller"><a class="header-anchor" href="#初始化菜单的-controller">¶</a>初始化菜单的 controller</h5>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+     * 查出所有分类 以及子分类，以树形结构组装起来
+     *&#x2F;
+    @RequestMapping(&quot;&#x2F;list&#x2F;tree&quot;)
+    public R list()&#123;
+        List&lt;CategoryEntity&gt; entities &#x3D; categoryService.listWithTree();
+        &#x2F;&#x2F; 筛选出所有一级分类
+        List&lt;CategoryEntity&gt; level1Menus &#x3D; entities.stream().
+                filter((categoryEntity) -&gt; categoryEntity.getParentCid() &#x3D;&#x3D; 0)
+                .map((menu) -&gt; &#123;
+                    menu.setChildren(getChildrens(menu, entities));
+                    return menu;
+                &#125;).sorted((menu1, menu2) -&gt; &#123;
+                    return (menu1.getSort() &#x3D;&#x3D; null? 0 : menu1.getSort()) - (menu2.getSort() &#x3D;&#x3D; null? 0 : menu2.getSort());
+                &#125;)
+                .collect(Collectors.toList());
+        return R.ok().put(&quot;data&quot;, level1Menus);
+    &#125;
+    &#x2F;**
+     * 递归找所有的子菜单、中途要排序
+     *&#x2F;
+    private List&lt;CategoryEntity&gt; getChildrens(CategoryEntity root, List&lt;CategoryEntity&gt; all)&#123;
+        List&lt;CategoryEntity&gt; children &#x3D; all.stream().filter(categoryEntity -&gt;
+                categoryEntity.getParentCid() &#x3D;&#x3D; root.getCatId()
+        ).map(categoryEntity -&gt; &#123;
+            categoryEntity.setChildren(getChildrens(categoryEntity, all));
+            return categoryEntity;
+        &#125;).sorted((menu1,menu2) -&gt; &#123;
+            return (menu1.getSort() &#x3D;&#x3D; null? 0 : menu1.getSort()) - (menu2.getSort() &#x3D;&#x3D; null? 0 : menu2.getSort());
+        &#125;).collect(Collectors.toList());
+        return children;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>重写 2 个按钮的事件，发送 ajax 操作数据库</p>
+<p>要调整按钮的显示情况，用 v-if=“node.level &lt;= 2”</p>
+<p>增加复选框 show-checkbox</p>
+<p>结点唯一 id：node-key=“catId”</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;el-tree
+    :data&#x3D;&quot;menus&quot;
+    show-checkbox  &#x2F;&#x2F;显示复选框
+    :props&#x3D;&quot;defaultProps&quot;  
+    :expand-on-click-node&#x3D;&quot;false&quot; &#x2F;&#x2F;设置节点点击时不展开
+    node-key&#x3D;&quot;catId&quot;   
+  &gt;
+    &lt;span class&#x3D;&quot;custom-tree-node&quot; slot-scope&#x3D;&quot;&#123; node, data &#125;&quot;&gt;
+      &lt;span&gt;&#123;&#123; node.label &#125;&#125;&lt;&#x2F;span&gt;
+      &lt;span&gt;
+        &lt;el-button v-if&#x3D;&quot;node.level &lt;&#x3D; 2&quot; type&#x3D;&quot;text&quot; size&#x3D;&quot;mini&quot; @click&#x3D;&quot;() &#x3D;&gt; append(data)&quot;&gt;Append&lt;&#x2F;el-button&gt;
+        &lt;el-button
+          v-if&#x3D;&quot;node.childNodes.length &#x3D;&#x3D; 0&quot;
+          type&#x3D;&quot;text&quot;
+          size&#x3D;&quot;mini&quot;
+          @click&#x3D;&quot;() &#x3D;&gt; remove(node, data)&quot;
+        &gt;Delete&lt;&#x2F;el-button&gt;
+      &lt;&#x2F;span&gt;
+    &lt;&#x2F;span&gt;
+  &lt;&#x2F;el-tree&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="controller"><a class="header-anchor" href="#controller">¶</a>controller</h4>
+<p>测试 CategoryController，</p>
+<pre class="line-numbers language-none"><code class="language-none">@RequestMapping(&quot;&#x2F;delete&quot;)
+    public R delete(@RequestBody Long[] catIds)&#123;
+		categoryService.removeByIds(Arrays.asList(catIds));
+        return R.ok();
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>测试删除数据，打开 postman 输入 “<a target="_blank" rel="noopener" href="http://localhost:88/api/product/category/delete%E2%80%9D%EF%BC%8C%E8%AF%B7%E6%B1%82%E6%96%B9%E5%BC%8F%E8%AE%BE%E7%BD%AE%E4%B8%BA">http://localhost:88/api/product/category/delete”，请求方式设置为</a> POST，为了比对效果，可以在删除之前查询数据库的 pms_category 表：</p>
+<img src="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/32b60921764c7d53b0c86dacab4ed1d0.png" class="" loading="lazy">
+<p>由于 delete 请求接收的是一个数组，所以这里使用 JSON 方式，传入了一个数组：</p>
+<img src="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/e32a42ca2c4fc97ba9fc364c1e8b7127.png" class="" loading="lazy">
+<p>再次查询数据库能够看到 cat_id 为 1000 的数据已经被删除了。</p>
+<p>但是我们需要修改检查当前菜单是否被引用</p>
+<p>修改 CategoryController 类，添加如下代码：</p>
+<pre class="line-numbers language-none"><code class="language-none">@RequestMapping(&quot;&#x2F;delete&quot;)
+    public R delete(@RequestBody Long[] catIds)&#123;
+        &#x2F;&#x2F;删除之前需要判断待删除的菜单那是否被别的地方所引用。
+&#x2F;&#x2F;		categoryService.removeByIds(Arrays.asList(catIds));
+
+        categoryService.removeMenuByIds(Arrays.asList(catIds));
+        return R.ok();
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>.product.service.impl.CategoryServiceImpl</p>
+<pre class="line-numbers language-none"><code class="language-none">@Override
+public void removeMenuByIds(List&lt;Long&gt; asList) &#123;
+    &#x2F;&#x2F;TODO 1 检查当前的菜单是否被别的地方所引用
+    &#x2F;&#x2F; 2
+    baseMapper.deleteBatchIds(asList);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="逻辑删除"><a class="header-anchor" href="#逻辑删除">¶</a>逻辑删除</h4>
+<p>然而多数时候，我们并不希望删除数据，而是标记它被删除了，这就是逻辑删除；</p>
+<blockquote>
+<p>逻辑删除是 mybatis-plus 的内容，会在项目中配置一些内容，告诉此项目执行 delete 语句时并不删除，只是标志位</p>
+</blockquote>
+<p>可以设置 show_status 为 0，标记它已经被删除。</p>
+<img src="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/70d3467fa4f9c2138c721c8c9b0a5043.png" class="" loading="lazy">
+<p>mybatis-plus 的逻辑删除：</p>
+<img src="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/155403a040a04b0c0dae0b18c9a8de31.png" class="" loading="lazy">
+<p>配置全局的逻辑删除规则，在 “src/main/resources/application.yml” 文件中添加如下内容：</p>
+<pre class="line-numbers language-none"><code class="language-none">mybatis-plus:
+  mapper-locations: classpath:&#x2F;mapper&#x2F;**&#x2F;*.xml
+  global-config:
+    db-config:
+      id-type: auto
+      logic-delete-value: 1
+      logic-not-delete-value: 0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>修改 product.entity.CategoryEntity 实体类，添加上 @TableLogic，表明使用逻辑删除：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+	 * 是否显示[0-不显示，1显示]
+	 *&#x2F;
+	@TableLogic(value &#x3D; &quot;1&quot;,delval &#x3D; &quot;0&quot;)
+	private Integer showStatus;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后在 POSTMan 中测试一下是否能够满足需要。</p>
+<h4 id="日志"><a class="header-anchor" href="#日志">¶</a>日志</h4>
+<p>另外在 “src/main/resources/application.yml” 文件中，设置日志级别，打印出 SQL 语句：</p>
+<pre class="line-numbers language-none"><code class="language-none">logging:
+  level:
+    com.atguigu.gulimall.product: debug<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>打印的日志：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x3D;&#x3D;&gt;  Preparing: UPDATE pms_category SET show_status&#x3D;0 WHERE cat_id IN ( ? ) AND show_status&#x3D;1 
+ &#x3D;&#x3D;&gt; Parameters: 1431(Long)
+ &lt;&#x3D;&#x3D;    Updates: 1
+ get changedGroupKeys:[]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="删除效果-P51"><a class="header-anchor" href="#删除效果-P51">¶</a>删除效果 P51</h4>
+<pre class="line-numbers language-none"><code class="language-none">&lt;!-- slot --&gt;
+      &lt;span class&#x3D;&quot;custom-tree-node&quot; slot-scope&#x3D;&quot;&#123; node, data &#125;&quot;&gt;
+        &lt;span&gt;&#123;&#123; node.label &#125;&#125;&lt;&#x2F;span&gt;
+        &lt;span&gt;
+          &lt;el-button v-if&#x3D;&quot;node.level &lt;&#x3D;2&quot; type&#x3D;&quot;text&quot; size&#x3D;&quot;mini&quot; @click&#x3D;&quot;() &#x3D;&gt; append(data)&quot;&gt;添加&lt;&#x2F;el-button&gt;
+          &lt;el-button type&#x3D;&quot;text&quot; size&#x3D;&quot;mini&quot; @click&#x3D;&quot;edit(data)&quot;&gt;编辑&lt;&#x2F;el-button&gt;
+          &lt;el-button
+            v-if&#x3D;&quot;node.childNodes.length&#x3D;&#x3D;0&quot;
+            type&#x3D;&quot;text&quot;
+            size&#x3D;&quot;mini&quot;
+            @click&#x3D;&quot;() &#x3D;&gt; remove(node, data)&quot;
+          &gt;删除&lt;&#x2F;el-button&gt;
+        &lt;&#x2F;span&gt;
+      &lt;&#x2F;span&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>
+<p>发送的请求：delete</p>
+</li>
+<li>
+<p>发送的数据：<code>this.$http.adornData(ids, false)</code></p>
+<ul>
+<li>
+<p>util/httpRequest.js 中，封装了一些拦截器</p>
+</li>
+<li>
+<p>http.adornParams 是封装 get 请求的数据</p>
+</li>
+<li>
+<p>http.adornData 封装 post 请求的数据</p>
+</li>
+<li>
+<ul>
+<li>
+<p>ajax 的 get 请求会被缓存，就不会请求服务器了。</p>
+</li>
+<li>
+<p>所以我们在 url 后面拼接个 date，让他每次都请求服务器</p>
+</li>
+</ul>
+</li>
+<li>
+<pre><code>// 定义http对象，后面定义他的请求拦截器
+const http = axios.create(&#123;
+  timeout: 1000 * 30,
+  withCredentials: true,
+  headers: &#123;
+    'Content-Type': 'application/json; charset=utf-8'
+  &#125;
+&#125;)
+
+/**
+ * 请求地址处理
+ * @param &#123;*&#125; actionName action方法名称
+ */
+http.adornUrl = (actionName) =&gt; &#123;
+  // 非生产环境 &amp;&amp; 开启代理, 接口前缀统一使用[/proxyApi/]前缀做代理拦截!
+  return (process.env.NODE_ENV !== 'production' &amp;&amp; process.env.OPEN_PROXY ? '/proxyApi/' : window.SITE_CONFIG.baseUrl) + actionName
+&#125;
+
+/**
+ * 请求地址处理
+ * @param &#123;*&#125; actionName action方法名称
+ */
+http.adornUrl = (actionName) =&gt; &#123;
+  // 非生产环境 &amp;&amp; 开启代理, 接口前缀统一使用[/proxyApi/]前缀做代理拦截!
+  return (process.env.NODE_ENV !== 'production' &amp;&amp; process.env.OPEN_PROXY ? '/proxyApi/' : window.SITE_CONFIG.baseUrl) + actionName
+&#125;
+
+/**
+ * get请求参数处理
+ * @param &#123;*&#125; params 参数对象
+ * @param &#123;*&#125; openDefultParams 是否开启默认参数?
+ */
+http.adornParams = (params = &#123;&#125;, openDefultParams = true) =&gt; &#123;
+  var defaults = &#123;
+    't': new Date().getTime()
+  &#125;
+  return openDefultParams ? merge(defaults, params) : params
+&#125;
+
+/**
+ * post请求数据处理
+ * @param &#123;*&#125; data 数据对象
+ * @param &#123;*&#125; openDefultdata 是否开启默认数据?
+ * @param &#123;*&#125; contentType 数据格式
+ *  json: 'application/json; charset=utf-8'
+ *  form: 'application/x-www-form-urlencoded; charset=utf-8'
+ */
+http.adornData = (data = &#123;&#125;, openDefultdata = true, contentType = 'json') =&gt; &#123;
+  var defaults = &#123;
+    't': new Date().getTime()
+  &#125;
+  data = openDefultdata ? merge(defaults, data) : data
+  return contentType === 'json' ? JSON.stringify(data) : qs.stringify(data)
+&#125;
+<pre class="line-numbers language-none"><code class="language-none">        
+
+抽取代码片段 vue.code-snippets
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+</code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<p>{<br>
+“http-get请求”:{<br>
+“prefix”:“httpget”,<br>
+“body”:[<br>
+“this.\$http({”,<br>
+“url:this,\$http.adornUrl(‘’),”,<br>
+“method:‘get’,”,<br>
+“params:this.\$http.adornParams({})”,<br>
+“}).then({data})=&gt;{”,<br>
+“})”<br>
+],<br>
+“description”:“httpGET请求”<br>
+},</p>
+<p>“http-post请求”:{<br>
+“prefix”:“httppost”,<br>
+“body”:[<br>
+“this.\$http({”,<br>
+“url:this,\$http.adornUrl(‘’),”,<br>
+“method:‘post’,”,<br>
+“data: this.\$http.adornData(data, false)”,<br>
+“}).then({data})=&gt;{ })”<br>
+],<br>
+“description”:“httpPOST请求”<br>
+}<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+*   删除弹窗
+    
+*   删除成功弹窗
+    
+*   删除后重新展开父节点：重新 ajax 请求数据，指定展开的基准是: default-expanded-keys&#x3D;“expandedKey”，返回数据后刷新 this.expandedKey &#x3D; [node.parent.data.catId];
+    
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>remove(node, data) {<br>
+var ids = [data.catId];<br>
+// 弹窗 确认<br>
+this.$confirm(<code>是否删除【$&#123;data.name&#125;】菜单?</code>, “提示”, {<br>
+confirmButtonText: “确定”,<br>
+cancelButtonText: “取消”,<br>
+type: “warning”<br>
+})<br>
+.then(() =&gt; { // 确定<br>
+this.$http({<br>
+// 给delete发送<br>
+url: this.$http.adornUrl(“/product/category/delete”),<br>
+method: “post”,<br>
+data: this.$http.adornData(ids, false)<br>
+}).then(({ data }) =&gt; {<br>
+// 删除成功$message<br>
+this.$message({<br>
+message: “菜单删除成功”,<br>
+type: “success”<br>
+});<br>
+//刷新出新的菜单<br>
+this.getMenus();<br>
+//设置需要默认展开的菜单<br>
+this.expandedKey = [node.parent.data.catId];<br>
+});<br>
+})<br>
+.catch(// 取消<br>
+() =&gt; {});<br>
+}<br>
+},<br>
+//生命周期 - 创建完成（可以访问当前this实例）<br>
+created() {<br>
+this.getMenus();<br>
+},<br>
+//生命周期 - 挂载完成（可以访问DOM元素）<br>
+mounted() {},<br>
+beforeCreate() {}, //生命周期 - 创建之前<br>
+beforeMount() {}, //生命周期 - 挂载之前<br>
+beforeUpdate() {}, //生命周期 - 更新之前<br>
+updated() {}, //生命周期 - 更新之后<br>
+beforeDestroy() {}, //生命周期 - 销毁之前<br>
+destroyed() {}, //生命周期 - 销毁完成<br>
+activated() {} //如果页面有keep-alive缓存功能，这个函数会触发<br>
+};</p>
+<pre class="line-numbers language-none"><code class="language-none">
+#### dialog 对话框
+
+P52：新增
+
+https:&#x2F;&#x2F;element.eleme.cn&#x2F;#&#x2F;zh-CN&#x2F;component&#x2F;dialog
+
+*   一个 button 的单击函数为 @click&#x3D;“dialogVisible &#x3D; true”
+*   一个会话的属性为: visible.sync&#x3D;“dialogVisible”
+*   导出的 data 中 &quot;dialogVisible &#x3D; false&quot;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>&lt;el-button type=“text” @click=“dialogVisible = true”&gt;点击打开 Dialog</el-button></p>
+<p><el-dialog
+  title="提示"
+  :visible.sync="dialogVisible"
+  width="30%"
+  :before-close="handleClose"><br>
+<span>这是一段信息</span><br>
+<span slot="footer" class="dialog-footer"><br>
+&lt;el-button @click=“dialogVisible = false”&gt;取 消</el-button><br>
+&lt;el-button type=“primary” @click=“dialogVisible = false”&gt;确 定</el-button><br>
+</span><br>
+</el-dialog></p>
+<script>
+  export default {
+    data() {
+      return {
+        dialogVisible: false
+      };
+    },
+    methods: {
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {});
+      }
+    }
+  };
+</script>
+<p>before-close 仅当用户通过点击关闭图标或遮罩关闭 Dialog 时起效。如果你在 footer 具名 slot 里添加了用于关闭 Dialog 的按钮，那么可以在按钮的点击回调函数里加入 before-close 的相关逻辑。</p>
+<pre class="line-numbers language-none"><code class="language-none">
+要结合表单
+
+修改 P53
+
+*   点击修改弹出对话框，显示现有内容
+    
+*   输入新内容后确定，回显新内容
+    
+*   对话框是复用的添加的对话框，点击确定的时候回调的是同一个函数，为了区分当前对话框是单击修改还是点击添加打开的，所以添加一个&#96;dialogType&#96;、&#96;title&#96;属性。然后回调函数进行&#96;if&#96;判断
+    
+*   回显时候要发送请求获取最新数据
+    
+
+16. 菜单拖动
+--------
+
+&gt; 这一节的重要作用是了解一下 tree 组件，我觉得看懂视频即可，实际项目中还是得根据自己的情况来
+
+element-ui：https:&#x2F;&#x2F;element.eleme.cn&#x2F;#&#x2F;zh-CN&#x2F;component&#x2F;tree
+
+*   allow-drop 拖拽时判定目标节点能否被放置
+*   被拖动的当前节点以及所在的父节点总层数不能大于 3
+
+&lt;table&gt;&lt;thead&gt;&lt;tr&gt;&lt;th&gt;&lt;&#x2F;th&gt;&lt;th&gt;&lt;&#x2F;th&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;thead&gt;&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;同一个菜单内拖动&lt;&#x2F;td&gt;&lt;td&gt;正常&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;&lt;tr&gt;&lt;td&gt;拖动到父菜单的前面或后面&lt;&#x2F;td&gt;&lt;td&gt;正常&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;&lt;tr&gt;&lt;td&gt;拖动到父菜单同级的另外一个菜单中&lt;&#x2F;td&gt;&lt;td&gt;正常&lt;&#x2F;td&gt;&lt;&#x2F;tr&gt;&lt;&#x2F;tbody&gt;&lt;&#x2F;table&gt;
+
+关注的焦点在于，拖动到目标节点中，使得目标节点的 catlevel+deep 小于 3 即可。
+
+### 拖拽条件与修改顺序 &#x2F; 级别
+
+1）拖拽与数据库关联的内容：
+
+*   catLevel
+*   parentCid
+*   sort
+
+2）拖拽相关函数：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>&lt;el-tree<br>
+:data=“menus”  绑定的变量<br>
+:props=“defaultProps” 配置选项<br>
+:expand-on-click-node=“false”  只有点击箭头才会展开收缩<br>
+show-checkbox 显示多选框<br>
+node-key=“catId” 数据库的id作为node id<br>
+:default-expanded-keys=“expandedKey” 默认展开的数组<br>
+:draggable=“draggable” 开启拖拽功能<br>
+:allow-drop=“allowDrop”  是否允许拖拽到目标结点，函数为Function(draggingNode源结点, dropNode目标结点, type前中后类型)<br>
+@node-drop=“handleDrop”  拖拽成功处理函数，函数为Function(draggingNode源结点, dropNode拖拽成功后的父结点, type前中后类型)<br>
+ref=“menuTree”<br>
+&gt;</p>
+<pre class="line-numbers language-none"><code class="language-none">
+3）函数参数：
+
+*   &#96;draggingNode&#96;：正在拖拽的结点
+*   &#96;dropNode&#96;：拓展成功后的父节点，我们把他称为**目的父节点**
+*   &#96;type&#96;：分为 before、after、inner。拖拽到某个结点上还是两个结点之间
+
+4）先了解一下如何获取结点的深度
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在拖拽的时候首先会自动调用allowDrop()函数，他在第一句就调用了this.countNodeLevel(draggingNode);<br>
+-----------------------------------------;<br>
+countNodeLevel()函数的作用是遍历拖拽结点的【子节点】，找到其中的最大层级<br>
+countNodeLevel(node) {<br>
+//找到所有子节点，求出最大深度<br>
+if (node.childNodes != null &amp;&amp; node.childNodes.length &gt; 0) {<br>
+for (let i = 0; i &lt; node.childNodes.length; i++) {<br>
+if (node.childNodes[i].level &gt; this.maxLevel) {<br>
+// 是赋值给了共享变量maxLevel<br>
+this.maxLevel = node.childNodes[i].level;<br>
+}<br>
+// 递归子节点<br>
+this.countNodeLevel(node.childNodes[i]);<br>
+}<br>
+}<br>
+}<br>
+----------------------------------------;<br>
+找到了拖拽结点的最大层级(深度)，那么就可以计算拖拽结点作为根节点的子树深度deep。;<br>
+另外注意maxLevel每次拖拽都会更新，是拖拽结点的最大层级;<br>
+let deep = Math.abs(this.maxLevel - draggingNode.level) + 1;<br>
+// draggingNode为正在拖拽的结点</p>
+<pre class="line-numbers language-none"><code class="language-none">
+5）拖拽合法性
+
+我们得到了子树的深度 deep，就可以判断这个拖拽合不合法：
+
+拖拽类型：以拖拽后新的父结点为基准分为：
+
+*   结点前、后（两个结点之间）：
+    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre><code>deep + dropNode.parent.level &lt;= 3;
+<pre class="line-numbers language-none"><code class="language-none">    
+*   中（结点上）：
+    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+deep + dropNode.level &lt;= 3;
+<pre class="line-numbers language-none"><code class="language-none">    
+
+6）拖拽合法后的操作
+
+*   先得到拖拽成功后的父节点 id、父节点新的子结点（包含了拖拽结点）
+*   准备一个 update[] 数组，有变化的保存到里面，最后提交到数据库。（会变化的有新兄弟结点和拖拽子节点）
+*   遍历子节点 for i
+    *   非 draggingNode 结点直接 push(兄弟结点 id，排序)：this.updateNodes.push(&#123; catId: siblings[i].data.catId, sort: i &#125;);
+    *   是 draggingNode 结点更新其父节点和 sort
+        *   还需要更新子节点的 level，因为 element-ui 已经提供了 level，我们只需将新的 level 保存到 update 中，最后也发送到数据库中即可。
+*   保存提交到数据库，弹出成功窗口。
+*   刷新菜单，展开对于层级。只需要赋值给 expandedKey 即可
+*   为了防止下次拖拽还有上回的 updateNodes 信息，所以操作完应该恢复原始状态
+
+##### 7）后端提交 controller
+
+对于后端更新数据库，加入 controller。用 postman 测试，
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</code></pre>
+<p>/**<br>
+* 批量修改层级<br>
+{[“catId”:1,“sort”:0],[“catId”:2,“catLevel”:2]}<br>
+*/<br>
+@RequestMapping(“/update/sort”)<br>
+public R updateSort(@RequestBody CategoryEntity[] category){<br>
+categoryService.updateBatchById(Arrays.asList(category));<br>
+return R.ok();<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+8）拖拽开关
+
+P57
+
+为了防止误操作，我们通过 edit 把拖拽功能开启后才能进行操作。所以添加 switch 标签，操作是否可以拖拽。我们也可以体会到 el-switch 这个标签是一个开关
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<template>
+  <div>
+    <el-switch v-model="draggable" active-text="开启拖拽" inactive-text="关闭拖拽"></el-switch>
+    <el-button v-if="draggable" @click="batchSave">批量保存</el-button>
+    <el-button type="danger" @click="batchDelete">批量删除</el-button>
+    <!-- 把menus给data -->
+    <el-tree
+             :draggable="draggable"
+<pre class="line-numbers language-none"><code class="language-none">
+##### 9）批量保存
+
+但是现在存在的一个问题是每次拖拽的时候，都会发送请求，更新数据库这样频繁的与数据库交互
+
+现在想要实现一个拖拽过程中不更新数据库，拖拽完成后，统一提交拖拽后的数据。
+
+&#96;&lt;el-button v-if&#x3D;&quot;draggable&quot; @click&#x3D;&quot;batchSave&quot;&gt;批量保存&lt;&#x2F;el-button&gt;&#96;
+
+*   v-if 是指开启开关后才显示
+*   开启拖拽后应该使用的是 node 信息，而不是数据库信息，因为还没同步到数据库。把相关的信息都修改
+*   之前为了防止上次数据遗落，归零了展开列表，这样列表又不展开了
+
+现在还存在一个问题，如果是将一个菜单连续的拖拽，最终还放到了原来的位置，但是 updateNode 中却出现了很多节点更新信息，这样显然也是一个问题。
+
+##### 10）批量删除与调用内置函数
+
+&#96;&lt;el-button type&#x3D;&quot;danger&quot; @click&#x3D;&quot;batchDelete&quot;&gt;批量删除&lt;&#x2F;el-button&gt;&#96;
+
+红框
+
+getCheckedNodes() 返回当前选中的所有结点
+
+如何调用内
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<el-tree
+         。。。
+         ref="menuTree"
+         />
+然后在js里
+this.$refs.menuTree.getCheckedNodes();
+他有两个参数，默认的是我们想要用的
+<pre class="line-numbers language-none"><code class="language-none">
+*   确认框
+*   确认后发送 ajax
+*   刷新菜单
+
+17. 品牌管理菜单
+----------
+
+![](谷粒商城笔记_基础篇2&#x2F;d45f0176ce04bf904e40aaf98c0a299c.png)
+
+（2）将逆向工程 product 得到的 resources\src\views\modules\product 文件拷贝到 gulimall&#x2F;renren-fast-vue&#x2F;src&#x2F;views&#x2F;modules&#x2F;product 目录下，也就是下面的两个文件
+
+*   brand.vue ： 显示的表单
+*   brand-add-or-update.vue：添加和更改功能
+
+但是显示的页面没有新增和删除功能，这是因为权限控制的原因，
+
+![](谷粒商城笔记_基础篇2&#x2F;7c582c5abe18cce5666ae8ae9b898346.png)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<el-button v-if="isAuth('product:brand:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+<el-button v-if="isAuth('product:brand:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+<pre class="line-numbers language-none"><code class="language-none">
+查看 “isAuth” 的定义位置：
+
+![](谷粒商城笔记_基础篇2&#x2F;2ef1f85c662000cd96363bbc859e8fc2.png)
+
+它是在 “index.js” 中定义，暂时将它设置为返回值为 true，即可显示添加和删除功能。
+
+再次刷新页面能够看到，按钮已经出现了：
+
+![](谷粒商城笔记_基础篇2&#x2F;eda83774b0cd28eb5d756d601080ed73.png)
+
+进行添加 测试成功， 进行修改 也会自动回显
+
+&gt; build&#x2F;webpack.base.conf.js 中注释掉 createLintingRule() 函数体，不进行 lint 语法检查
+
+### 列:“显示状态按钮”
+
+brand.vue
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<template slot-scope="scope"> scope属性包含了一整行数据
+  定义显示效果
+  <el-switch
+    v-model="scope.row.showStatus"
+    active-color="#13ce66"
+    inactive-color="#ff4949"
+    @change="updateBrandStatus(scope.row)" 变化会调用函数
+    :active-value = "1"
+    :inactive-value	= "0"
+  ></el-switch>
+</template>
+<p>另外导入了</p>
+<script>
+import AddOrUpdate from "./brand-add-or-update";
+他作为弹窗被brand.vue使用
+<!-- 弹窗, 新增 / 修改 -->
+<add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    
+AddOrUpdate具体是个会话窗
+<template>
+  <el-dialog
+    :title="!dataForm.id ? '新增' : '修改'"
+    :close-on-click-modal="false"
+    :visible.sync="visible"
+  >
+<pre class="line-numbers language-none"><code class="language-none">
+brand-add-or-update.vue
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<el-form-item label="显示状态" prop="showStatus">
+    <el-switch v-model="dataForm.showStatus"
+               active-color="#13ce66"
+               inactive-color="#ff4949"
+               :active-value="1"
+               :inactive-value="0"
+               >
+    </el-switch>
+</el-form-item>
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+//更新开关的状态
+    updateBrandStatus(data) { // 传入了改变行的数据
+      console.log("最新状态", data);
+      let {brandId,showStatus} = data;
+      this.$http({
+        url: this.$http.adornUrl("/product/brand/update"),
+        method: "post",
+        data: this.$http.adornData({brandId,showStatus}, false)
+      }).then(({ data }) => {
+
+        this.$message({
+          message: "状态更新成功",
+          type: "success"
+        });
+
+      });
+    },
+<pre class="line-numbers language-none"><code class="language-none">
+对应的 controller
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+@RestController
+@RequestMapping("product/brand")
+public class BrandController {
+    /** * 修改 */
+    @RequestMapping("/update")
+    public R update(@RequestBody BrandEntity brand){
+        brandService.updateById(brand);
+
+        return R.ok();
+    }
+<pre class="line-numbers language-none"><code class="language-none">
+实体
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+@Data
+@TableName("pms_brand")
+public class BrandEntity implements Serializable {
+	private static final long serialVersionUID = 1L;
+
+	/* 品牌id */
+	@TableId
+	private Long brandId;
+	/*** 品牌名 */
+	private String name;
+	/*** 品牌logo地址 */
+	private String logo;
+	/*** 介绍 */
+	private String descript;
+	/**
+	 * 显示状态[0-不显示；1-显示]
+	 */
+	private Integer showStatus;
+	/** * 检索首字母 */
+	private String firstLetter;
+	/** * 排序 */
+	private Integer sort;
+}
+<pre class="line-numbers language-none"><code class="language-none">
+### 添加上传
+
+&gt; 用过图床的同学这部分会很熟悉，如我的图片就是放到阿里云图床上的 https:&#x2F;&#x2F;fermhan.oss-cn-qingdao.aliyuncs.com&#x2F;guli&#x2F;image-20200428182755992.png
+
+和传统的单体应用不同，这里我们选择将数据上传到分布式文件服务器上。
+
+这里我们选择将图片放置到阿里云上，使用对象存储。
+
+阿里云上使使用对象存储方式：
+
+![](谷粒商城笔记_基础篇2&#x2F;48f62d8e0427a5f730c75039f9c68bae.png)
+
+创建 Bucket（作为项目）
+
+![](谷粒商城笔记_基础篇2&#x2F;281c40e6bf59580ceff5d595fabcd8f0.png)
+
+上传文件：上传成功后，取得图片的 URL
+
+![](谷粒商城笔记_基础篇2&#x2F;738524d06a2bc70de12938c87b23f84d.png)
+
+这种方式是手动上传图片，实际上我们可以在程序中设置自动上传图片到阿里云对象存储。
+
+上传模型：
+
+![](谷粒商城笔记_基础篇2&#x2F;c3f1907025728bd8e20955329dd5b586.png)
+
+*   上传的账号信息存储在应用服务器
+*   上传先找应用服务器要一个 policy 上传策略，生成防伪签名
+
+### 使用代码上传
+
+查看阿里云关于文件上传的帮助： https:&#x2F;&#x2F;help.aliyun.com&#x2F;document_detail&#x2F;32009.html?spm&#x3D;a2c4g.11186623.6.768.549d59aaWuZMGJ
+
+##### 1.1）添加依赖包
+
+在 Maven 项目中加入依赖项（推荐方式）
+
+在 Maven 工程中使用 OSS Java SDK，只需在 pom.xml 中加入相应依赖即可。以 3.8.0 版本为例，在 &lt;dependencies 内加入如下内容：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<dependency>
+    <groupId>com.aliyun.oss</groupId>
+    <artifactId>aliyun-sdk-oss</artifactId>
+    <version>3.8.0</version>
+</dependency>
+<pre class="line-numbers language-none"><code class="language-none">
+##### 1.2）上传文件流
+
+以下代码用于上传文件流：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+// Endpoint以杭州为例，其它Region请按实际情况填写。
+String endpoint = "http://oss-cn-hangzhou.aliyuncs.com";
+// 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用RAM子账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建。
+String accessKeyId = "<yourAccessKeyId>";
+String accessKeySecret = "<yourAccessKeySecret>";
+
+// 创建OSSClient实例。
+OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+// 上传文件流。
+InputStream inputStream = new FileInputStream("<yourlocalFile>");
+ossClient.putObject("<yourBucketName>", "<yourObjectName>", inputStream);
+
+// 关闭OSSClient。
+ossClient.shutdown();
+<pre class="line-numbers language-none"><code class="language-none">
+上面代码的信息可以通过如下查找：
+
+*   endpoint 的取值：点击概览就可以看到你的 endpoint 信息，endpoint 在这里就是上海等地区，如 oss-cn-qingdao.aliyuncs.com
+*   bucket 域名：就是签名加上 bucket，如 gulimall-fermhan.oss-cn-qingdao.aliyuncs.com
+
+accessKeyId 和 accessKeySecret 需要创建一个 RAM 账号：
+
+![](谷粒商城笔记_基础篇2&#x2F;31c6f1b6bd5fe4638416c400a97ad384.png)
+
+*   选上&#96;编程访问&#96;
+
+创建用户完毕后，会得到一个 “AccessKey ID” 和“AccessKeySecret”，然后复制这两个值到代码的 “AccessKey ID” 和“AccessKeySecret”。
+
+另外还需要添加访问控制权限：
+
+![](谷粒商城笔记_基础篇2&#x2F;3ab3813c7d97e03b00e00423447fd19e.png)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@Test
+public void testUpload() throws FileNotFoundException {
+    // Endpoint以杭州为例，其它Region请按实际情况填写。
+    String endpoint = "oss-cn-shanghai.aliyuncs.com";
+    // 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用RAM子账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建。
+    String accessKeyId = "LTAI4G4W1RA4JXz2QhoDwHhi";
+    String accessKeySecret = "R99lmDOJumF2x43ZBKT259Qpe70Oxw";
+
+    // 创建OSSClient实例。
+    OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+    // 上传文件流。
+    InputStream inputStream = new FileInputStream("C:\\Users\\Administrator\\Pictures\\timg.jpg");
+    ossClient.putObject("gulimall-images", "time.jpg", inputStream);
+
+    // 关闭OSSClient。
+    ossClient.shutdown();
+    System.out.println("上传成功.");
+}
+<pre class="line-numbers language-none"><code class="language-none">
+2）
+
+更为简单的使用方式，是使用 SpringCloud Alibaba
+
+![](谷粒商城笔记_基础篇2&#x2F;11f1c673531e4d493e418d788d65a369.png)
+
+详细使用方法，见： https:&#x2F;&#x2F;help.aliyun.com&#x2F;knowledge_detail&#x2F;108650.html
+
+（1）添加依赖
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<dependency>
+    <groupId>com.alibaba.cloud</groupId>
+    <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
+    <version>2.2.0.RELEASE</version>
+</dependency>
+<pre class="line-numbers language-none"><code class="language-none">
+（2）创建 “AccessKey ID” 和“AccessKeySecret”
+
+（3）配置 key，secret 和 endpoint 相关信息
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+access-key: LTAI4G4W1RA4JXz2QhoDwHhi
+      secret-key: R99lmDOJumF2x43ZBKT259Qpe70Oxw
+      oss:
+        endpoint: oss-cn-shanghai.aliyuncs.com
+<pre class="line-numbers language-none"><code class="language-none">
+（4）注入 OSSClient 并进行文件上传下载等操作
+
+![](谷粒商城笔记_基础篇2&#x2F;5cc922cc54fd3aa3ea24390c71fc91c7.png)
+
+但是这样来做还是比较麻烦，如果以后的上传任务都交给 gulimall-product 来完成，显然耦合度高。最好单独新建一个 Module 来完成文件上传任务。
+
+### 其他方式
+
+### 1）gulimall-third-party 微服务项目
+
+#### 2）oss 依赖
+
+添加依赖，将原来 gulimall-common 中的 “spring-cloud-starter-alicloud-oss” 依赖移动到该项目中
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alicloud-oss</artifactId>
+            <version>2.2.0.RELEASE</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atguigu.gulimall</groupId>
+            <artifactId>gulimall-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.baomidou</groupId>
+                    <artifactId>mybatis-plus-boot-starter</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+<pre class="line-numbers language-none"><code class="language-none">
+另外也需要在 “pom.xml” 文件中，添加如下的依赖管理
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<dependencyManagement>
+
+        <dependencies>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-dependencies</artifactId>
+                <version>${spring-cloud.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>2.2.0.RELEASE</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+<pre class="line-numbers language-none"><code class="language-none">
+#### 3）主启动类 @EnableDiscoveryClient
+
+在主启动类中开启服务的注册和发现
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+@EnableDiscoveryClient
+<pre class="line-numbers language-none"><code class="language-none">
+#### 4）在 nacos 中注册
+
+（1）在 nacos 创建命名空间 “gulimall-third-party”
+
+![](谷粒商城笔记_基础篇2&#x2F;078a1c3f23104be97a2b1739f4e04c1b.png)
+
+（2）在 “gulimall-third-party” 命名空间中，创建 “ gulimall-third-party.yml” 文件
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+spring:
+  cloud:
+    alicloud:
+      access-key: LTAI4G4W1RA4JXz2QhoDwHhi
+      secret-key: R99lmDOJumF2x43ZBKT259Qpe70Oxw
+      oss:
+        endpoint: oss-cn-shanghai.aliyuncs.com
+<pre class="line-numbers language-none"><code class="language-none">
+#### 5）编写配置文件
+
+application.yml
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+server:
+  port: 30000
+
+spring:
+  application:
+    name: gulimall-third-party
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 127.0.0.1:8848
+
+logging:
+  level:
+    com.atguigu.gulimall.product: debug
+<pre class="line-numbers language-none"><code class="language-none">
+bootstrap.properties
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+spring.cloud.nacos.config.name=gulimall-third-party
+spring.cloud.nacos.config.server-addr=127.0.0.1:8848
+spring.cloud.nacos.config.namespace=9054e55c-b667-428c-b71d-0f2b42a6acff
+spring.cloud.nacos.config.extension-configs[0].data-id=oss.yml
+spring.cloud.nacos.config.extension-configs[0].group=DEFAULT_GROUP
+spring.cloud.nacos.config.extension-configs[0].refresh=true
+<pre class="line-numbers language-none"><code class="language-none">
+nacos 端新建 oss.yml
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+spring:
+    cloud:
+        alicloud:
+            access-key: LTAI4G3ewgWMxsrnaaeDuT1B
+            secret-key: Kdk4YLfj0prQOfPHzzQf9sIbdD0YeV
+            oss: 
+                endpoint: oss-cn-qingdao.aliyuncs.com
+<pre class="line-numbers language-none"><code class="language-none">
+#### 6） 编写测试类
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+package com.atguigu.gulimall.thirdparty;
+
+@SpringBootTest
+class GulimallThirdPartyApplicationTests {
+    @Autowired
+    OSSClient ossClient;
+
+    @Test
+    public void testUpload() throws FileNotFoundException {
+        // Endpoint以杭州为例，其它Region请按实际情况填写。
+        String endpoint = "oss-cn-qingdao.aliyuncs.com";
+        // 云账号AccessKey有所有API访问权限，建议遵循阿里云安全最佳实践，创建并使用RAM子账号进行API访问或日常运维，请登录 https://ram.console.aliyun.com 创建。
+        String accessKeyId = "LTAI4G4W1RA4JXz2QhoDwHhi";
+        String accessKeySecret = "R99lmDOJumF2x43ZBKT259Qpe70Oxw";
+
+        // 创建OSSClient实例。
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+         //上传文件流。
+        InputStream inputStream = new FileInputStream("C:\\Users\\HAN\\Downloads\\123.jpg");
+        ossClient.putObject("gulimall-fermhan", "333.jpg", inputStream);
+
+        // 关闭OSSClient。
+        ossClient.shutdown();
+        System.out.println("上传成功.");
+    }
+}
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+@Test
+    public void testUpload() throws FileNotFoundException {
+        FileInputStream inputStream = new FileInputStream("C:\\Users\\HAN\\Downloads\\123.jpg");
+        // 参数1位bucket  参数2位最终名字
+        ossClient.putObject("gulimall-fermhan","321.jpg",inputStream);
+        ossClient.shutdown();
+    }
+<pre class="line-numbers language-none"><code class="language-none">
+##### 改进：服务端签名后直传
+
+教程： https:&#x2F;&#x2F;help.aliyun.com&#x2F;document_detail&#x2F;31926.html?spm&#x3D;a2c4g.11186623.6.1527.228d74b8V6IZuT
+
+**背景**
+
+采用 JavaScript 客户端直接签名（参见 [JavaScript 客户端签名直传](https:&#x2F;&#x2F;help.aliyun.com&#x2F;document_detail&#x2F;31925.html#concept-frd-4gy-5db)）时，AccessKeyID 和 AcessKeySecret 会暴露在前端页面，因此存在严重的安全隐患。因此，OSS 提供了服务端签名后直传的方案。
+
+**原理介绍**
+
+[![](谷粒商城笔记_基础篇2&#x2F;d0e83da6ad9da15fa664d6e354acae48.png)](http:&#x2F;&#x2F;static-aliyun-doc.oss-cn-hangzhou.aliyuncs.com&#x2F;assets&#x2F;img&#x2F;6875011751&#x2F;p1472.png)
+
+服务端签名后直传的原理如下：
+
+1.  用户发送上传 Policy 请求到应用服务器。
+2.  应用服务器返回上传 Policy 和签名给用户。
+3.  用户直接上传数据到 OSS。
+
+![](谷粒商城笔记_基础篇2&#x2F;e0b53e05c9df7edc547c706b06b48c7d.png)
+
+java 用法：https:&#x2F;&#x2F;help.aliyun.com&#x2F;document_detail&#x2F;91868.html?spm&#x3D;a2c4g.11186623.2.10.97e17d9cfwODvA
+
+编写 “com.atguigu.gulimall.thirdparty.controller.OssController” 类：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@RestController
+public class OssController {
+
+    @Autowired
+    OSS ossClient;
+    @Value ("${spring.cloud.alicloud.oss.endpoint}")
+    String endpoint ;
+
+    @Value("${spring.cloud.alicloud.oss.bucket}")
+    String bucket ;
+
+    @Value("${spring.cloud.alicloud.access-key}")
+    String accessId ;
+    @Value("${spring.cloud.alicloud.secret-key}")
+    String accessKey ;
+    @RequestMapping("/oss/policy")
+    public Map<String, String> policy(){
+
+        String host = "https://" + bucket + "." + endpoint; // host的格式为 bucketname.endpoint
+
+        String format = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        String dir = format; // 用户上传文件时指定的前缀。
+
+        Map<String, String> respMap=null;
+        try {
+            long expireTime = 30;
+            long expireEndTime = System.currentTimeMillis() + expireTime * 1000;
+            Date expiration = new Date(expireEndTime);
+            PolicyConditions policyConds = new PolicyConditions();
+            policyConds.addConditionItem(PolicyConditions.COND_CONTENT_LENGTH_RANGE, 0, 1048576000);
+            policyConds.addConditionItem(MatchMode.StartWith, PolicyConditions.COND_KEY, dir);
+
+            String postPolicy = ossClient.generatePostPolicy(expiration, policyConds);
+            byte[] binaryData = postPolicy.getBytes("utf-8");
+            String encodedPolicy = BinaryUtil.toBase64String(binaryData);
+            String postSignature = ossClient.calculatePostSignature(postPolicy);
+
+            respMap= new LinkedHashMap<String, String>();
+            respMap.put("accessid", accessId);
+            respMap.put("policy", encodedPolicy);
+            respMap.put("signature", postSignature);
+            respMap.put("dir", dir);
+            respMap.put("host", host);
+            respMap.put("expire", String.valueOf(expireEndTime / 1000));
+
+        } catch (Exception e) {
+            // Assert.fail(e.getMessage());
+            System.out.println(e.getMessage());
+        } finally {
+            ossClient.shutdown();
+        }
+        return respMap;
+    }
+}
+<pre class="line-numbers language-none"><code class="language-none">
+测试： http:&#x2F;&#x2F;localhost:30000&#x2F;oss&#x2F;policy 返回签名
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+{
+    "accessid":"LTAI4G3ewgWMxsrnaaeDuT1B",
+    "policy":"eyJleHBpcmF0aW9uIjoiMjAyMS0wMi0xNFQxMDoyOToxMS43ODhaIiwiY29uZGl0aW9ucyI6W1siY29udGVudC1sZW5ndGgtcmFuZ2UiLDAsMTA0ODU3NjAwMF0sWyJzdGFydHMtd2l0aCIsIiRrZXkiLCIyMDIxLTAyLTE0Il1dfQ==",
+    "signature":"0OXDXrQ1vRNl61N5IaZXRFckCKM=",
+    "dir":"2021-02-14",
+    "host":"https://gulimall-fermhan.oss-cn-qingdao.aliyuncs.com",
+    "expire":"1613298551"}
+<pre class="line-numbers language-none"><code class="language-none">
+以后在上传文件时的访问路径为 “http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;thirdparty&#x2F;oss&#x2F;policy”，
+
+在 “gulimall-gateway” 中配置路由规则：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+- id: third_party_route
+          uri: lb://gulimall-gateway
+          predicates:
+            - Path=/api/thirdparty/**
+          filters:
+            - RewritePath=/api/thirdparty/(?<segment>/?.*),/$\{segment}
+<pre class="line-numbers language-none"><code class="language-none">
+测试是否能够正常跳转： http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;thirdparty&#x2F;oss&#x2F;policy
+
+### 上传组件
+
+放置项目提供的 upload 文件夹到 components &#x2F; 目录下，一个是单文件上传，另外一个是多文件上传
+
+*   policy.js 封装一个 Promise，发送 &#x2F; thirdparty&#x2F;oss&#x2F;policy 请求。vue 项目会自动加上 api 前缀
+*   multiUpload.vue 多文件上传。要改，改方式如下
+*   singleUpload.vue 单文件上传。要替换里面的 action 中的内容。action&#x3D;“http:&#x2F;&#x2F;gulimall-fermhan.oss-cn-qingdao.aliyuncs.com”
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+gulimall\renren-fast-vue\src\components\upload
+<pre class="line-numbers language-none"><code class="language-none">
+要修改 vue 项目中心品牌 logo 地址，要改成下面形式：
+
+![](谷粒商城笔记_基础篇2&#x2F;1f689ce54d55c5ea721a1ff5da46339f.png)
+
+brand-add-or-update.vue 中
+
+*   修改 el-form-item label&#x3D;&quot;品牌 logo 地址&quot; 内容。
+*   要使用文件上传组件，先导入 import SingleUpload from “@&#x2F;components&#x2F;upload&#x2F;singleUpload”;
+*   填入&#96;&lt;single-upload v-model&#x3D;&quot;dataForm.logo&quot;&gt;&lt;&#x2F;single-upload&gt;&#96;
+*   写明要使用的组件 components: &#123;SingleUpload&#125;,
+
+点击一下文件上传，发现发送了两个请求
+
+localhost:88&#x2F;api&#x2F;thirdparty&#x2F;oss&#x2F;policy?t&#x3D;1613300654238
+
+![](谷粒商城笔记_基础篇2&#x2F;a0c35b5e3eaf3720919c619324611f16.png)
+
+&gt; 注： [特立独行ベ猫](https:&#x2F;&#x2F;space.bilibili.com&#x2F;59372233) 的 vue 前端，他 policy.js 中多写了一个 &#x2F;，导致 404，去掉就好了
+&gt; 
+&gt; 正确形式：localhost:88&#x2F;api&#x2F;thirdparty&#x2F;oss&#x2F;policy?t&#x3D;1613300654238
+
+我们在后端准备好了签名 controller，那么前端是在哪里获取的呢
+
+policy.js
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+import http from '@/utils/httpRequest.js'
+export function policy() {
+   return  new Promise((resolve,reject)=>{
+        http({
+            url: http.adornUrl("/third/party/oss/policy"),
+            method: "get",
+            params: http.adornParams({})
+        }).then(({ data }) => {
+            resolve(data);
+        })
+    });
+}
+<pre class="line-numbers language-none"><code class="language-none">
+而文件上传前调用的方法： :before-upload&#x3D;“beforeUpload”
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+发现该方法返回了一个new Promise，调用了policy()，该方法是policy.js中的
+import { policy } from "./policy";
+
+....
+beforeUpload(file) {
+      let _self = this;
+      return new Promise((resolve, reject) => {
+        policy()
+          .then(response => {
+            // 意思是说policy获取到签名后，把签名信息保存起来
+            // console.log("这是什么${filename}");
+            _self.dataObj.policy = response.data.policy;
+            _self.dataObj.signature = response.data.signature;
+            _self.dataObj.ossaccessKeyId = response.data.accessid;
+            _self.dataObj.key = response.data.dir +getUUID()+"_${filename}";
+            _self.dataObj.dir = response.data.dir;
+            _self.dataObj.host = response.data.host;
+            resolve(true);
+            // 总的来说什么意思呢？
+            // 上传之前先请求签名，保存起来签名
+            // 根据action="http://gulimall-fermhan.oss-cn-qingdao.aliyuncs.com"
+            // 结合data信息，提交到云端
+          })
+          .catch(err => {
+            console.log("出错了...",err)
+            reject(false);
+          });
+      });
+    },
+<pre class="line-numbers language-none"><code class="language-none">
+在 vue 中看是 response.data.policy，在控制台看 response.policy。所以去 java 里面改返回值为 R。return R.ok().put(“data”,respMap);
+
+##### 阿里云开启跨域
+
+开始执行上传，但是在上传过程中，出现了跨域请求问题：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+Access to XMLHttpRequest at 'http://gulimall-f.oss-cn-qingdao.aliyuncs.com/' from origin 'http://localhost:8001' has been blocked by CORS policy: Response to preflight request doesn't pass access control check: No 'Access-Control-Allow-Origin' header is present on the requested resource.
+<pre class="line-numbers language-none"><code class="language-none">
+这又是一个跨域的问题，解决方法就是在阿里云上开启**跨域访问**：
+
+![](谷粒商城笔记_基础篇2&#x2F;0105ae7146c8205270e53a8b8057140e.png)
+
+再次执行文件上传。
+
+注意上传时他的 key 变成了 response.data.dir +getUUID()+&quot;_$&#123;filename&#125;&quot;;
+
+优化：上传后显示图片地址
+
+显示图片：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<el-table-column prop="logo" header-align="center" align="center" label="品牌logo地址">
+    <template slot-scope="scope">
+        <!-- 自定义表格+自定义图片 -->
+        <img :src="scope.row.logo" style="width: 100px; height: 80px" / loading="lazy">
+    </template>
+</el-table-column>
+<pre class="line-numbers language-none"><code class="language-none">
+修改 vue 项目的 element-ui 脚手架的问题，没有导入 element-ui 的 image 组件
+
+18. JSR303 校验
+-------------
+
+问题引入：填写 form 时应该有前端校验，后端也应该有校验
+
+*   前端的校验是 element-ui 表单验证 https:&#x2F;&#x2F;element.eleme.cn&#x2F;#&#x2F;zh-CN&#x2F;component&#x2F;form
+    
+    *   Form 组件提供了表单验证的功能，只需要通过 &#96;rules&#96; 属性传入约定的验证规则，并将 Form-Item 的 &#96;prop&#96; 属性设置为需校验的字段名即可。校验规则参见 [async-validator](https:&#x2F;&#x2F;github.com&#x2F;yiminghe&#x2F;async-validator)
+        
+    *   使用自定义校验规则可以解决字母限制的问题
+        <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+        var validatePass2 = (rule, value, callback) => {
+            if (value === '') {
+                callback(new Error('请再次输入密码'));
+            } else if (value !== this.ruleForm.pass) {
+                callback(new Error('两次输入密码不一致!'));
+            } else {
+                callback();
+            }
+        };
+        return {
+            rules: {
+                checkPass: [
+                    { validator: validatePass2, trigger: 'blur' }
+                ],
+        <pre class="line-numbers language-none"><code class="language-none">    
+*   后端：
+    
+
+### @NotNull 等
+
+步骤 1：使用校验注解
+
+在 Java 中提供了一系列的校验方式，它这些校验方式在 “&#96;javax.validation.constraints&#96;” 包中，提供了如 @Email，@NotNull 等注解。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<!--jsr3参数校验器-->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-validation</artifactId>
+</dependency>
+里面依赖了hibernate-validator
+<pre class="line-numbers language-none"><code class="language-none">
+在非空处理方式上提供了 @NotNull，@NotBlank 和 @NotEmpty
+
+（1）@NotNull
+
+The annotated element must not be null. Accepts any type.  
+注解元素禁止为 null，能够接收任何类型
+
+（2）@NotEmpty
+
+the annotated element must not be null nor empty.
+
+该注解修饰的字段不能为 null 或 &quot;&quot;
+
+Supported types are:
+
+支持以下几种类型
+
+*   CharSequence (length of character sequence is evaluated) 字符序列（字符序列长度的计算）
+*   Collection (collection size is evaluated)  
+    集合长度的计算
+*   Map (map size is evaluated)  
+    map 长度的计算
+*   Array (array length is evaluated)  
+    数组长度的计算
+
+（3）@NotBlank
+
+The annotated element must not be null and must contain at least one non-whitespace character. Accepts CharSequence.  
+该注解不能为 null，并且至少包含一个非空格字符。接收字符序列。
+
+### @Valid
+
+步骤 2：controller 中加校验注解 @Valid，开启校验，
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@RequestMapping("/save")
+public R save(@Valid @RequestBody BrandEntity brand){
+    brandService.save(brand);
+
+    return R.ok();
+}
+<pre class="line-numbers language-none"><code class="language-none">
+测试： http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;product&#x2F;brand&#x2F;save
+
+在 postman 种发送上面的请求
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+{
+    "timestamp": "2020-04-29T09:20:46.383+0000",
+    "status": 400,
+    "error": "Bad Request",
+    "errors": [
+        {
+            "codes": [
+                "NotBlank.brandEntity.name",
+                "NotBlank.name",
+                "NotBlank.java.lang.String",
+                "NotBlank"
+            ],
+            "arguments": [
+                {
+                    "codes": [
+                        "brandEntity.name",
+                        "name"
+                    ],
+                    "arguments": null,
+                    "defaultMessage": "name",
+                    "code": "name"
+                }
+            ],
+            "defaultMessage": "不能为空",
+            "objectName": "brandEntity",
+            "field": "name",
+            "rejectedValue": "",
+            "bindingFailure": false,
+            "code": "NotBlank"
+        }
+    ],
+    "message": "Validation failed for object='brandEntity'. Error count: 1",
+    "path": "/product/brand/save"
+}
+<pre class="line-numbers language-none"><code class="language-none">
+能够看到 &quot;defaultMessage&quot;: “不能为空”，这些错误消息定义在 “hibernate-validator” 的“\org\hibernate\validator\ValidationMessages_zh_CN.properties”文件中。在该文件中定义了很多的错误规则：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+javax.validation.constraints.AssertFalse.message     = 只能为false
+javax.validation.constraints.AssertTrue.message      = 只能为true
+javax.validation.constraints.DecimalMax.message      = 必须小于或等于{value}
+javax.validation.constraints.DecimalMin.message      = 必须大于或等于{value}
+javax.validation.constraints.Digits.message          = 数字的值超出了允许范围(只允许在{integer}位整数和{fraction}位小数范围内)
+javax.validation.constraints.Email.message           = 不是一个合法的电子邮件地址
+javax.validation.constraints.Future.message          = 需要是一个将来的时间
+javax.validation.constraints.FutureOrPresent.message = 需要是一个将来或现在的时间
+javax.validation.constraints.Max.message             = 最大不能超过{value}
+javax.validation.constraints.Min.message             = 最小不能小于{value}
+javax.validation.constraints.Negative.message        = 必须是负数
+javax.validation.constraints.NegativeOrZero.message  = 必须是负数或零
+javax.validation.constraints.NotBlank.message        = 不能为空
+javax.validation.constraints.NotEmpty.message        = 不能为空
+javax.validation.constraints.NotNull.message         = 不能为null
+javax.validation.constraints.Null.message            = 必须为null
+javax.validation.constraints.Past.message            = 需要是一个过去的时间
+javax.validation.constraints.PastOrPresent.message   = 需要是一个过去或现在的时间
+javax.validation.constraints.Pattern.message         = 需要匹配正则表达式"{regexp}"
+javax.validation.constraints.Positive.message        = 必须是正数
+javax.validation.constraints.PositiveOrZero.message  = 必须是正数或零
+javax.validation.constraints.Size.message            = 个数必须在{min}和{max}之间
+
+org.hibernate.validator.constraints.CreditCardNumber.message        = 不合法的信用卡号码
+org.hibernate.validator.constraints.Currency.message                = 不合法的货币 (必须是{value}其中之一)
+org.hibernate.validator.constraints.EAN.message                     = 不合法的{type}条形码
+org.hibernate.validator.constraints.Email.message                   = 不是一个合法的电子邮件地址
+org.hibernate.validator.constraints.Length.message                  = 长度需要在{min}和{max}之间
+org.hibernate.validator.constraints.CodePointLength.message         = 长度需要在{min}和{max}之间
+org.hibernate.validator.constraints.LuhnCheck.message               = ${validatedValue}的校验码不合法, Luhn模10校验和不匹配
+org.hibernate.validator.constraints.Mod10Check.message              = ${validatedValue}的校验码不合法, 模10校验和不匹配
+org.hibernate.validator.constraints.Mod11Check.message              = ${validatedValue}的校验码不合法, 模11校验和不匹配
+org.hibernate.validator.constraints.ModCheck.message                = ${validatedValue}的校验码不合法, ${modType}校验和不匹配
+org.hibernate.validator.constraints.NotBlank.message                = 不能为空
+org.hibernate.validator.constraints.NotEmpty.message                = 不能为空
+org.hibernate.validator.constraints.ParametersScriptAssert.message  = 执行脚本表达式"{script}"没有返回期望结果
+org.hibernate.validator.constraints.Range.message                   = 需要在{min}和{max}之间
+org.hibernate.validator.constraints.SafeHtml.message                = 可能有不安全的HTML内容
+org.hibernate.validator.constraints.ScriptAssert.message            = 执行脚本表达式"{script}"没有返回期望结果
+org.hibernate.validator.constraints.URL.message                     = 需要是一个合法的URL
+
+org.hibernate.validator.constraints.time.DurationMax.message        = 必须小于${inclusive == true ? '或等于' : ''}${days == 0 ? '' : days += '天'}${hours == 0 ? '' : hours += '小时'}${minutes == 0 ? '' : minutes += '分钟'}${seconds == 0 ? '' : seconds += '秒'}${millis == 0 ? '' : millis += '毫秒'}${nanos == 0 ? '' : nanos += '纳秒'}
+org.hibernate.validator.constraints.time.DurationMin.message        = 必须大于${inclusive == true ? '或等于' : ''}${days == 0 ? '' : days += '天'}${hours == 0 ? '' : hours += '小时'}${minutes == 0 ? '' : minutes += '分钟'}${seconds == 0 ? '' : seconds += '秒'}${millis == 0 ? '' : millis += '毫秒'}${nanos == 0 ? '' : nanos += '纳秒'}
+<pre class="line-numbers language-none"><code class="language-none">
+想要自定义错误消息，可以覆盖默认的错误提示信息，如 @NotBlank 的默认 message 是
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+public @interface NotBlank {
+
+	String message() default "{javax.validation.constraints.NotBlank.message}";
+<pre class="line-numbers language-none"><code class="language-none">
+可以在添加注解的时候，修改 message：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+@NotBlank(message = "品牌名必须非空")
+	private String name;
+<pre class="line-numbers language-none"><code class="language-none">
+当再次发送请求时，得到的错误提示信息：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+{
+    "timestamp": "2020-04-29T09:36:04.125+0000",
+    "status": 400,
+    "error": "Bad Request",
+    "errors": [
+        {
+            "codes": [
+                "NotBlank.brandEntity.name",
+                "NotBlank.name",
+                "NotBlank.java.lang.String",
+                "NotBlank"
+            ],
+            "arguments": [
+                {
+                    "codes": [
+                        "brandEntity.name",
+                        "name"
+                    ],
+                    "arguments": null,
+                    "defaultMessage": "name",
+                    "code": "name"
+                }
+            ],
+            "defaultMessage": "品牌名必须非空",
+            "objectName": "brandEntity",
+            "field": "name",
+            "rejectedValue": "",
+            "bindingFailure": false,
+            "code": "NotBlank"
+        }
+    ],
+    "message": "Validation failed for object='brandEntity'. Error count: 1",
+    "path": "/product/brand/save"
+}
+<pre class="line-numbers language-none"><code class="language-none">
+但是这种返回的错误结果并不符合我们的业务需要。
+
+### BindResult
+
+步骤 3：给校验的 Bean 后，紧跟一个 BindResult，就可以获取到校验的结果。拿到校验的结果，就可以自定义的封装。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@RequestMapping("/save")
+public R save(@Valid @RequestBody BrandEntity brand, BindingResult result){
+    if( result.hasErrors()){
+        Map<String,String> map=new HashMap<>();
+        //1.获取错误的校验结果
+        result.getFieldErrors().forEach((item)->{
+            //获取发生错误时的message
+            String message = item.getDefaultMessage();
+            //获取发生错误的字段
+            String field = item.getField();
+            map.put(field,message);
+        });
+        return R.error(400,"提交的数据不合法").put("data",map);
+    }else {
+
+    }
+    brandService.save(brand);
+
+    return R.ok();
+}
+<pre class="line-numbers language-none"><code class="language-none">
+这种是针对于该请求设置了一个内容校验，如果针对于每个请求都单独进行配置，显然不是太合适，实际上可以统一的对于异常进行处理。
+
+### 统一异常处理 @ControllerAdvice
+
+步骤 4：统一异常处理
+
+可以使用 SpringMvc 所提供的 @ControllerAdvice，通过 “basePackages” 能够说明处理哪些路径下的异常。
+
+（1）抽取一个异常处理类
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@Slf4j
+@RestControllerAdvice(basePackages = "com.atguigu.gulimall.product.controller")
+public class GulimallExceptionControllerAdvice {
+
+    @ExceptionHandler(value = Exception.class) // 也可以返回ModelAndView
+    public R handleValidException(MethodArgumentNotValidException exception){
+
+        Map<String,String> map=new HashMap<>();
+        // 获取数据校验的错误结果
+        BindingResult bindingResult = exception.getBindingResult();
+        bindingResult.getFieldErrors().forEach(fieldError -> {
+            String message = fieldError.getDefaultMessage();
+            String field = fieldError.getField();
+            map.put(field,message);
+        });
+
+        log.error("数据校验出现问题{},异常类型{}",exception.getMessage(),exception.getClass());
+
+        return R.error(400,"数据校验出现问题").put("data",map);
+    }
+}
+<pre class="line-numbers language-none"><code class="language-none">
+（2）测试： http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;product&#x2F;brand&#x2F;save
+
+![](谷粒商城笔记_基础篇2&#x2F;c3ec208fd1a00cb9d6cd9c3247dc3451.png)
+
+（3）默认异常处理
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@ExceptionHandler(value = Throwable.class)
+    public R handleException(Throwable throwable){
+        log.error("未知异常{},异常类型{}",throwable.getMessage(),throwable.getClass());
+        return R.error(BizCodeEnum.UNKNOW_EXEPTION.getCode(),BizCodeEnum.UNKNOW_EXEPTION.getMsg());
+    }
+<pre class="line-numbers language-none"><code class="language-none">
+（4）错误状态码
+
+上面代码中，针对于错误状态码，是我们进行随意定义的，然而正规开发过程中，错误状态码有着严格的定义规则，如该在项目中我们的错误状态码定义
+
+![](谷粒商城笔记_基础篇2&#x2F;cab104e3b889e86ac9b0f9e9dc75cee0.png)
+
+为了定义这些错误状态码，我们可以单独定义一个常量类，用来存储这些错误状态码
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+package com.atguigu.common.exception;
+
+/***
+ * 错误码和错误信息定义类
+ * 1. 错误码定义规则为5为数字
+ * 2. 前两位表示业务场景，最后三位表示错误码。例如：100001。10:通用 001:系统未知异常
+ * 3. 维护错误码后需要维护错误描述，将他们定义为枚举形式
+ * 错误码列表：
+ *  10: 通用
+ *      001：参数格式校验
+ *  11: 商品
+ *  12: 订单
+ *  13: 购物车
+ *  14: 物流
+ */
+public enum BizCodeEnum {
+
+    UNKNOW_EXEPTION(10000,"系统未知异常"),
+
+    VALID_EXCEPTION( 10001,"参数格式校验失败");
+
+    private int code;
+    private String msg;
+
+    BizCodeEnum(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+}
+<pre class="line-numbers language-none"><code class="language-none">
+（5）测试： http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;product&#x2F;brand&#x2F;save
+
+![](谷粒商城笔记_基础篇2&#x2F;image-20200429191830967.png)
+
+19. 分组校验功能（完成多场景的复杂校验）
+----------------------
+
+### 1、groups
+
+1、给校验注解，标注上 groups，指定什么情况下才需要进行校验
+
+如：指定在更新和添加的时候，都需要进行校验。新增时不需要带 id，修改时必须带 id
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@NotNull(message = "修改必须定制品牌id", groups = {UpdateGroup.class})
+@Null(message = "新增不能指定id", groups = {AddGroup.class})
+@TableId
+private Long brandId;
+<pre class="line-numbers language-none"><code class="language-none">
+&gt; 在这种情况下，没有指定分组的校验注解，默认是不起作用的。想要起作用就必须要加 groups。
+
+### 2、@Validated
+
+2、业务方法参数上使用 @Validated 注解
+
+@Validated 的 value 方法：
+
+Specify one or more validation groups to apply to the validation step kicked off by this annotation.  
+指定一个或多个验证组以应用于此注释启动的验证步骤。
+
+JSR-303 defines validation groups as custom annotations which an application declares for the sole purpose of using  
+them as type-safe group arguments, as implemented in SpringValidatorAdapter.
+
+JSR-303 将验证组定义为自定义注释，应用程序声明的唯一目的是将它们用作类型安全组参数，如 SpringValidatorAdapter 中实现的那样。
+
+Other SmartValidator implementations may support class arguments in other ways as well.
+
+其他 SmartValidator 实现也可以以其他方式支持类参数。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@RequestMapping("/save")
+public R save(@Validated(AddGroup.class) @RequestBody BrandEntity brand) {
+    brandService.save(brand);
+
+    return R.ok();
+}
+@RequestMapping("/delete")
+//@RequiresPermissions("${moduleNamez}:brand:delete")
+public R delete(@RequestBody Long[] brandIds) {
+    brandService.removeByIds(Arrays.asList(brandIds));
+
+    return R.ok();
+}
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+/**
+	 * 品牌logo地址 修改可以不带上logoURL
+	 */
+	@NotBlank(groups = {AddGroup.class})
+	@URL(message = "logo必须是一个合法的URL地址", groups={AddGroup.class, UpdateGroup.class})
+	private String logo;
+注意上面因为@NotBlank没有指定UpdateGroup分组，所以不生效。此时update时可以不携带，但带了一定得是url地址
+<pre class="line-numbers language-none"><code class="language-none">
+### 3、分组情况下，校验注解生效问题
+
+3、默认情况下，在分组校验情况下，没有指定指定分组的校验注解，将不会生效，它只会在不分组的情况下生效。
+
+20. 自定义校验功能
+-----------
+
+场景：要校验 showStatus 的 01 状态，可以用正则，但我们可以利用其他方式解决复杂场景。比如我们想要下面的场景
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+/**
+	 * 显示状态[0-不显示；1-显示]
+	 */
+@NotNull(groups = {AddGroup.class, UpdateStatusGroup.class})
+@ListValue(vals = {0,1}, groups = {AddGroup.class, UpdateGroup.class, UpdateStatusGroup.class})
+private Integer showStatus;
+<pre class="line-numbers language-none"><code class="language-none">
+如何做：
+
+添加依赖
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<dependency>
+    <groupId>javax.validation</groupId>
+    <artifactId>validation-api</artifactId>
+    <version>2.0.1.Final</version>
+</dependency>
+<pre class="line-numbers language-none"><code class="language-none">
+### 1、编写自定义的校验注解
+
+必须有 3 个属性
+
+*   message() 错误信息
+*   groups() 分组校验
+*   payload() 自定义负载信息
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@Documented
+@Constraint(validatedBy = { ListValueConstraintValidator.class})
+@Target({ METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE })
+@Retention(RUNTIME)
+public @interface ListValue {
+    // 使用该属性去Validation.properties中取
+    String message() default "{com.atguigu.common.valid.ListValue.message}";
+
+    Class<?>[] groups() default { };
+
+    Class<? extends Payload>[] payload() default { };
+
+    int[] value() default {};
+}
+
+该属性值取哪里取呢？
+    common创建文件ValidationMessages.properties
+    里面写上com.atguigu.common.valid.ListValue.message=必须提交指定的值 [0,1]
+<pre class="line-numbers language-none"><code class="language-none">
+### 2、编写自定义的校验器
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+public class ListValueConstraintValidator implements ConstraintValidator<ListValue,Integer> {
+    private Set<Integer> set=new HashSet<>();
+    @Override
+    public void initialize(ListValue constraintAnnotation) {
+        int[] value = constraintAnnotation.value();
+        for (int i : value) {
+            set.add(i);
+        }
+
+    }
+
+    @Override
+    public boolean isValid(Integer value, ConstraintValidatorContext context) {
+
+
+        return  set.contains(value);
+    }
+}
+<pre class="line-numbers language-none"><code class="language-none">
+### 3、关联校验器和校验注解
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+@Constraint(validatedBy = { ListValueConstraintValidator.class})
+<pre class="line-numbers language-none"><code class="language-none">
+一个校验注解可以匹配多个校验器
+
+### 4、使用实例
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+/**
+	 * 显示状态[0-不显示；1-显示]
+	 */
+	@ListValue(value = {0,1},groups ={AddGroup.class})
+	private Integer showStatus;
+<pre class="line-numbers language-none"><code class="language-none">
+21. 商品 SPU 和 SKU 管理
+-------------------
+
+重新执行 “sys_menus.sql”
+
+*   SPU：standard product unit(标准化产品单元)：是商品信息聚合的最小单位，是一组可复用、易检索的标准化信息的集合，该集合描述了一个产品的特性。
+    *   如 iphoneX 是 SPU
+*   SKU：stock keeping unit(库存量单位)：库存进出计量的基本单元，可以是件 &#x2F; 盒 &#x2F; 托盘等单位。SKU 是对于大型连锁超市 DC 配送中心物流管理的一个必要的方法。现在已经被引申为产品统一编号的简称，每种产品对应有唯一的 SKU 号。
+    *   如 iphoneX 64G 黑色 是 SKU
+
+。
+
+同一个 SPU 拥有的特性叫**基本属性**。如机身长度，这个是手机共用的属性。而每款手机的属性值不同
+
+能决定库存量的叫**销售属性**。如颜色
+
+3、基本属性〖规格参数〗与销售属性  
+每个分类下的商品共享规格参，与销售属性。只是有些商品不一定要用这个分类下全部的属性；
+
+*   属性是以三级分类组织起来的
+*   规格参数中有些是可以提供检索的
+*   **规格参数**也是**基本属性**，他们具有自己的分组
+*   属性的分组也是以三级分类组织起来的
+*   属性名确定的，但是值是每一个商品不同来决定的
+
+#### 数据库表
+
+pms 数据库下的 attr 属性表，attr-group 表
+
+*   attr-group-id：几号分组
+*   catelog-id：什么类别下的，比如手机
+
+根据商品找到 spu-id，attr-id
+
+属性关系 - 规格参数 - 销售属性 - 三级分类 关联关系
+
+![](谷粒商城笔记_基础篇2&#x2F;fe2f951a6554c1105732e62ea00e99a3.png)
+
+SPU-SKU 属性表
+
+![](https:&#x2F;&#x2F;img-blog.csdnimg.cn&#x2F;img_convert&#x2F;9f66b3989f3fa31091786551aad7da23.png)
+
+荣耀 V20 有两个属性，网络和像素，但是这两个属性的 spu 是同一个，代表是同款手机。
+
+sku 表里保存 spu 是同一手机，sku 可能相同可能不同，相同代表是同一款，不同代表是不同款。
+
+![](谷粒商城笔记_基础篇2&#x2F;a4086a86431f72b240c51a70fc1774ac.png)
+
+属性表说明每个属性的 枚举值
+
+分类表有所有的分类，但有父子关系
+
+22. 父子组件
+--------
+
+点击子组件，父组件触发事件
+
+&gt; 前端代码不自己编写了，复制 &#x2F; 代码 &#x2F; 前端 &#x2F; modules &#x2F; 文件夹里面的内容复制到 vs 中
+&gt; 
+&gt; 如果左侧显示没有视频全，是因为没有执行 sys_menus.sql
+
+##### 接口文档地址
+
+https:&#x2F;&#x2F;easydoc.xyz&#x2F;s&#x2F;78237135
+
+#### 属性分组
+
+现在想要实现点击菜单的左边，能够实现在右边展示数据
+
+![](谷粒商城笔记_基础篇2&#x2F;b54bb02ae813a74fed74f6236ac40fdf.png)
+
+根据其他的请求地址 http:&#x2F;&#x2F;localhost:8001&#x2F;#&#x2F;product-attrgroup
+
+所以应该有 product&#x2F;attrgroup.vue。我们之前写过 product&#x2F;cateory.vue，现在我们要抽象到 common&#x2F;&#x2F;cateory.vue
+
+1）左侧内容：
+
+要在左面显示菜单，右面显示表格复制&#96;&lt;el-row :gutter&#x3D;&quot;20&quot;&gt;。。。&#96;，放到 attrgroup.vue 的&#96;&lt;template&gt;&#96;。20 表示列间距
+
+去 element-ui 文档里找到布局，
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<el-row :gutter="20">
+    <el-col :span="6"><div class="grid-content bg-purple"></div></el-col>
+    <el-col :span="18"><div class="grid-content bg-purple"></div></el-col>
+</el-row>
+<pre class="line-numbers language-none"><code class="language-none">
+分为 2 个模块，分别占 6 列和 18 列
+
+有了布局之后，要在里面放内容。接下来要抽象一个分类 vue。新建 common&#x2F;category，生成 vue 模板。把之前写的 el-tree 放到&#96;&lt;template&gt;&#96;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<el-tree :data="menus" :props="defaultProps" node-key="catId" ref="menuTree" @node-click="nodeClick"	></el-tree>
+所以他把menus绑定到了菜单上，
+所以我们应该在export default {中有menus的信息
+该具体信息会随着点击等事件的发生会改变值（或比如created生命周期时），
+tree也就同步变化了
+<pre class="line-numbers language-none"><code class="language-none">
+common&#x2F;category 写好后，就可以在 attrgroup.vue 中导入使用了
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<script>
+import Category from "../common/category";
+export default {
+  //import引入的组件需要注入到对象中才能使用。组件名:自定义的名字，一致可以省略
+  components: { Category},
+<pre class="line-numbers language-none"><code class="language-none">
+导入了之后，就可以在&#96;attrgroup.vue&#96;中找合适位置放好
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<template>
+<el-row :gutter="20">
+    <el-col :span="6">
+        <category @tree-node-click="treenodeclick"></category>
+    </el-col>
+<pre class="line-numbers language-none"><code class="language-none">
+2）右侧表格内容：
+
+开始填写属性分组页面右侧的表格
+
+复制 gulimall-product\src\main\resources\src\views\modules\product\attrgroup.vue 中的部分内容 div 到&#96;attrgroup.vue&#96;
+
+批量删除是弹窗 add-or-update
+
+导入 data、结合 components
+
+#### 父子组件
+
+要实现功能：点击左侧，右侧表格对应内容显示。
+
+父子组件传递数据：category.vue 点击时，引用它的 attgroup.vue 能感知到， 然后通知到 add-or-update
+
+比如嵌套 div，里层 div 有事件后冒泡到外层 div（是指一次点击调用了两个 div 的点击函数）
+
+1）子组件（category）给父组件（attrgroup）传递数据，事件机制；
+
+去 element-ui 的 tree 部分找 event 事件，看 node-click()
+
+在 category 中绑定 node-click 事件，
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<el-tree :data="menus" :props="defaultProps" node-key="catId" ref="menuTree" @node-click="nodeClick"	></el-tree>
+<pre class="line-numbers language-none"><code class="language-none">
+#### this.$emit()
+
+2）子组件给父组件发送一个事件，携带上数据；
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+nodeClick(data,Node,component){
+    console.log("子组件被点击",data,Node,component);
+    this.$emit("tree-node-click",data,Node,component);
+}, 
+    第一个参数事件名字随便写，
+    后面可以写任意多的东西，事件发生时都会传出去
+<pre class="line-numbers language-none"><code class="language-none">
+this.$emit(事件名,“携带的数据”);
+
+3）父组件中的获取发送的事件
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+在attr-group中写
+<category @tree-node-click="treeNodeClick"></category>
+表明他的子组件可能会传递过来点击事件，用自定义的函数接收传递过来的参数
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+父组件中进行处理
+//获取发送的事件数据
+    treeNodeClick(data,Node,component){
+     console.log("attgroup感知到的category的节点被点击",data,Node,component);
+     console.log("刚才被点击的菜单ID",data.catId);
+    },
+<pre class="line-numbers language-none"><code class="language-none">
+23、按接口文档开发
+----------
+
+https:&#x2F;&#x2F;easydoc.xyz&#x2F;s&#x2F;78237135&#x2F;ZUqEdvA4&#x2F;OXTgKobR
+
+#### 查询功能：
+
+GET &#x2F;product&#x2F;attrgroup&#x2F;list&#x2F;&#123;catelogId&#125;
+
+按照这个 url，去 product 项目下的&#96;attrgroup-controller&#96;里修改
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+/**
+     * 列表
+     * @param  catelogId 0的话查所有
+     */
+@RequestMapping("/list/{catelogId}")
+public R list(@RequestParam Map<String, Object> params,@PathVariable Long catelogId){
+    //        PageUtils page = attrGroupService.queryPage(params);
+    PageUtils page = attrGroupService.queryPage(params,catelogId);
+    return R.ok().put("page", page);
+}
+<pre class="line-numbers language-none"><code class="language-none">
+增加接口与实现
+
+*   Query 里面就有个方法 getPage()，传入 map，将 map 解析为 mybatis-plus 的 IPage 对象
+*   自定义 PageUtils 类用于传入 IPage 对象，得到其中的分页信息
+*   AttrGroupServiceImpl extends ServiceImpl，其中 ServiceImpl 的父类中有方法 page(IPage, Wrapper)。对于 wrapper 而言，没有条件的话就是查询所有
+*   queryPage() 返回前还会 return new PageUtils(page);，把 page 对象解析好页码信息，就封装为了响应数据
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@Override // AttrGroupServiceImpl.java
+public PageUtils queryPage(Map<String, Object> params, Long catelogId) {
+    String key = (String) params.get("key");
+    QueryWrapper<AttrGroupEntity> wrapper = new QueryWrapper<>();
+    // key不为空
+    if (!StringUtils.isEmpty(key)) {
+        wrapper.and((obj) ->
+                    obj.eq("attr_group_id", key).or().like("attr_group_name", key)
+                   );
+    }
+    if (catelogId == 0) {
+        // Query可以把map封装为IPage
+        IPage<AttrGroupEntity> page =
+            this.page(new Query<AttrGroupEntity>().getPage(params),
+                      wrapper);
+        return new PageUtils(page);
+    } else {
+        // 增加id信息
+        wrapper.eq("catelog_id", catelogId);
+
+        IPage<AttrGroupEntity> page =
+            this.page(new Query<AttrGroupEntity>().getPage(params),
+                      wrapper);
+        return new PageUtils(page);
+    }
+}
+<pre class="line-numbers language-none"><code class="language-none">
+测试
+
+localhost:88&#x2F;api&#x2F;product&#x2F;attrgroup&#x2F;list&#x2F;1
+
+localhost:88&#x2F;api&#x2F;product&#x2F;attrgroup&#x2F;list&#x2F;1?page&#x3D;1&amp;key&#x3D;aa
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+{
+    "msg": "success",
+    "code": 0,
+    "page": {
+        "totalCount": 0,
+        "pageSize": 10,
+        "totalPage": 0,
+        "currPage": 1,
+        "list": []
+    }
+}
+<pre class="line-numbers language-none"><code class="language-none">
+然后调整前端
+
+发送请求时 url 携带 id 信息，$&#123;this.catId&#125;，get 参数携带 page 信息
+
+打击第 3 级分类时才查，修改 attr-group.vue 中的函数即可
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+//感知树节点被点击
+treenodeclick(data, node, component) {
+    if (node.level == 3) {
+        this.catId = data.catId;
+        this.getDataList(); //重新查询
+    }
+},
+    
+// 获取数据列表
+getDataList() {
+    this.dataListLoading = true;
+    this.$http({
+        url: this.$http.adornUrl(`/product/attrgroup/list/${this.catId}`),
+        method: "get",
+        params: this.$http.adornParams({
+            page: this.pageIndex,
+            limit: this.pageSize,
+            key: this.dataForm.key
+        })
+    }).then(({ data }) => {
+        if (data && data.code === 0) {
+            this.dataList = data.page.list;
+            this.totalPage = data.page.totalCount;
+        } else {
+            this.dataList = [];
+            this.totalPage = 0;
+        }
+        this.dataListLoading = false;
+    });
+},
+<pre class="line-numbers language-none"><code class="language-none">
+#### 新增功能
+
+上面演示了查询功能，下面写 insert 分类
+
+但是想要下面这个效果：
+
+![](谷粒商城笔记_基础篇2&#x2F;c0eb356dc6c8fa20003ac0eacf3d226d.png)
+
+下拉菜单应该是手机一级分类的，这个功能是级联选择器
+
+#### 级联选择器 &lt; el-cascader
+
+级联选择：https:&#x2F;&#x2F;element.eleme.cn&#x2F;#&#x2F;zh-CN&#x2F;component&#x2F;cascader
+
+级联选择的下拉同样是个 options 数组，多级的话用 children 属性即可
+
+&gt; 只需为 Cascader 的&#96;options&#96;属性指定选项数组即可渲染出一个级联选择器。通过&#96;props.expandTrigger&#96;可以定义展开子级菜单的触发方式。
+
+去 vue 里找 src\views\modules\product\attrgroup-add-or-update.vue
+
+修改对应的位置为&#96;&lt;el-cascader 。。。&gt;&#96;
+
+把 data() 里的数组 categorys 绑定到 options 上即可，更详细的设置可以用 props 绑定
+
+##### @JsonInclude 去空字段
+
+优化：没有下级菜单时不要有下一级空菜单，在 java 端把 children 属性空值去掉，空集合时去掉字段，
+
+可以用&#96;@JsonInclude(Inlcude.NON_EMPTY)&#96;注解标注在实体类的属性上，
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+@TableField(exist =false)
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+private List<CategoryEntity> children;
+<pre class="line-numbers language-none"><code class="language-none">
+提交完后返回页面也刷新了，是用到了父子组件。在&#96;$message&#96;弹窗结束回调&#96;$this.emit&#96;
+
+接下来要解决的问题是，修改了该 vue 后，新增是可以用，修改回显就有问题了，应该回显 3 级
+
+P73 完
+
+##### 修改
+
+要的效果如图所示
+
+![](谷粒商城笔记_基础篇2&#x2F;281a417f46ec3c8d6778a4921d1ef477.png)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<el-button
+           type="text"
+           size="small"
+           @click="addOrUpdateHandle(scope.row.attrGroupId)"
+           >修改</el-button>
+
+<script>
+    // 新增 / 修改
+    addOrUpdateHandle(id) {
+        // 先显示弹窗
+        this.addOrUpdateVisible = true;
+        // .$nextTick(代表渲染结束后再接着执行
+        this.$nextTick(() => {
+            // this是attrgroup.vue
+            // $refs是它里面的所有组件。在本vue里使用的时候，标签里会些ref=""
+            // addOrUpdate这个组件
+            // 组件的init(id);方法
+            this.$refs.addOrUpdate.init(id);
+        });
+    },
+</script>
+<p>在init方法里进行回显<br>
+但是分类的id还是不对，应该是用数组封装的路径</p>
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>init(id) {<br>
+this.dataForm.attrGroupId = id || 0;<br>
+this.visible = true;<br>
+this.$nextTick(() =&gt; {<br>
+this.$refs[“dataForm”].resetFields();<br>
+if (this.dataForm.attrGroupId) {<br>
+this.$http({<br>
+url: this.$http.adornUrl(<br>
+<code>/product/attrgroup/info/$&#123;this.dataForm.attrGroupId&#125;</code><br>
+),<br>
+method: “get”,<br>
+params: this.$http.adornParams()<br>
+}).then(({ data }) =&gt; {<br>
+if (data &amp;&amp; data.code === 0) {<br>
+this.dataForm.attrGroupName = data.attrGroup.attrGroupName;<br>
+this.dataForm.sort = data.attrGroup.sort;<br>
+this.dataForm.descript = data.attrGroup.descript;<br>
+this.dataForm.icon = data.attrGroup.icon;<br>
+this.dataForm.catelogId = data.attrGroup.catelogId;<br>
+//查出catelogId的完整路径<br>
+this.catelogPath =  data.attrGroup.catelogPath;<br>
+}<br>
+});<br>
+}<br>
+});</p>
+<pre class="line-numbers language-none"><code class="language-none">
+修改 AttrGroupEntity
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>/**<br>
+* 三级分类修改的时候回显路径<br>
+*/<br>
+@TableField(exist = false)<br>
+private Long[] catelogPath;</p>
+<pre class="line-numbers language-none"><code class="language-none">
+修改 controller
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>/**<br>
+* 信息<br>
+*/<br>
+@RequestMapping(“/info/{attrGroupId}”)<br>
+//@RequiresPermissions(“product:attrgroup:info”)<br>
+public R info(@PathVariable(“attrGroupId”) Long attrGroupId){<br>
+AttrGroupEntity attrGroup = attrGroupService.getById(attrGroupId);<br>
+// 用当前当前分类id查询完整路径并写入 attrGroup<br>
+attrGroup.setCatelogPath(categoryService.findCateLogPath(attrGroup.getCatelogId()));<br>
+return R.ok().put(“attrGroup”, attrGroup);<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+添加 service
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>@Override // CategoryServiceImpl<br>
+public Long[] findCateLogPath(Long catelogId) {<br>
+List<Long> paths = new ArrayList&lt;&gt;();<br>
+paths = findParentPath(catelogId, paths);<br>
+// 收集的时候是顺序 前端是逆序显示的 所以用集合工具类给它逆序一下<br>
+Collections.reverse(paths);<br>
+return paths.toArray(new Long[paths.size()]);<br>
+}<br>
+/**<br>
+* 递归收集所有父节点<br>
+*/<br>
+private List<Long> findParentPath(Long catlogId, List<Long> paths) {<br>
+// 1、收集当前节点id<br>
+paths.add(catlogId);<br>
+CategoryEntity byId = this.getById(catlogId);<br>
+if (byId.getParentCid() != 0) {<br>
+findParentPath(byId.getParentCid(), paths);<br>
+}<br>
+return paths;<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+优化：会话关闭时清空内容，防止下次开启还遗留数据
+
+##### bug 解决：三级菜单只显示一级的问题
+
+这个大概是因为你复制了别人的 github 代码，而 CategoryController 他的 controller 没有写好。我当然图省事复制了一段代码，结果 controller 和 service 层都写了重复的逻辑。
+
+正确方法是把 controller 逻辑去掉，直接返回即可。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>@Override // service层<br>
+public List<CategoryEntity> listWithTree() {<br>
+// 怎么拿categoryDao？<br>
+/*<br>
+* 继承了ServiceImpl&lt;CategoryDao, CategoryEntity&gt;<br>
+有个属性baseMapper，自动注入<br>
+* */</p>
+<pre><code>    // 1 查出所有分类
+    List&lt;CategoryEntity&gt; categoryEntities = baseMapper.selectList(null);
+    // 2 组装成父子的树型结构
+    // 2.1 找到所有一级分类
+    List&lt;CategoryEntity&gt; level1Menus = categoryEntities.stream().filter(
+            // 找到一级
+            categoryEntity -&gt; categoryEntity.getParentCid() == 0
+    ).map(menu-&gt;&#123;
+        // 把当前的child属性改了之后重新返回
+        menu.setChildren(getChildren(menu,categoryEntities));
+        return menu;
+    &#125;).sorted((menu1,menu2)-&gt;
+            menu1.getSort()-menu2.getSort()).collect(Collectors.toList());
+
+    return level1Menus;
+</code></pre>
+<p>//        return categoryEntities;<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>@RequestMapping(“/list/tree”)<br>
+public R list(){<br>
+List<CategoryEntity> entities = categoryService.listWithTree();</p>
+<pre><code>return R.ok().put(&quot;data&quot;, entities);
+</code></pre>
+<p>}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+24、分页插件
+-------
+
+P75
+
+#### mybatis-plus 用法
+
+官网：https:&#x2F;&#x2F;mp.baomidou.com&#x2F;guide&#x2F;page.html
+
+个人简要 mybatis-plus 笔记：https:&#x2F;&#x2F;blog.csdn.net&#x2F;hancoder&#x2F;article&#x2F;details&#x2F;113787197
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<dependency>
+    <groupId>com.baomidou</groupId>
+    <artifactId>mybatis-plus-boot-starter</artifactId>
+    <version>Latest Version</version>
+</dependency>
+<pre class="line-numbers language-none"><code class="language-none">
+在 Spring Boot 启动类中添加 &#96;@MapperScan&#96; 注解，扫描 Mapper 文件夹：
+
+新建 mapper 类
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+public interface UserMapper extends BaseMapper<User> {
+<p>}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+执行查询
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>@RunWith(SpringRunner.class)<br>
+@SpringBootTest<br>
+public class SampleTest {</p>
+<pre><code>@Autowired
+private UserMapper userMapper;
+
+@Test
+public void testSelect() &#123;
+    // 方法是mp自动生成的
+    List&lt;User&gt; userList = userMapper.selectList(null);
+    Assert.assertEquals(5, userList.size());
+    userList.forEach(System.out::println);
+&#125;
+</code></pre>
+<p>}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+##### mp 常用注解
+
+比如 @TableName，标注在实体类上，使用的时候定义 mapper 接口指定实体类泛型即可
+
+也可以使用 @TableField 映射属性和数据库字段
+
+@TableLogic 用于逻辑删除
+
+##### wrapper
+
+查询条件用 QueryWrapper 包装
+
+wrapper.allEq(map); 用于指定字段值
+
+wrapper.gt(“age”,2);&#x2F;&#x2F; 大于 &#x2F;&#x2F; 用于指定字段与常数关系
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>QueryWrapper wrapper = new QueryWrapper();<br>
+wrapper.orderByDesc(“age”);<br>
+wrapper.orderByAsc(“age”);<br>
+wrapper.having(“id &gt; 8”);<br>
+mapper.selectList(wrapper).forEach(System.out::println);</p>
+<p>mapper.selectBatchIds(Arrays.asList(7,8,9))</p>
+<pre class="line-numbers language-none"><code class="language-none">
+#### mp 分页使用
+
+需要先添加个 mybatis 的拦截器
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>package com.atguigu.gulimall.product.config;</p>
+<p>@EnableTransactionManagement<br>
+@MapperScan(“com.atguigu.gulimall.product.dao”)<br>
+@Configuration<br>
+public class MybatisConfig {</p>
+<pre><code>@Bean
+public PaginationInterceptor paginationInterceptor() &#123;
+    PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+    // 设置请求的页面大于最大页后操作， true调回到首页，false 继续请求  默认false
+    paginationInterceptor.setOverflow(true);
+    // 设置最大单页限制数量，默认 500 条，-1 不受限制
+    paginationInterceptor.setLimit(1000);
+    return paginationInterceptor;
+&#125;
+</code></pre>
+<p>}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+*   接口&#96;IPage&lt;User&gt; selectPageVo(Page&lt;?&gt; page, Integer state);&#96;
+*   xml：不变
+*   接收的返回值&#96;IPage&lt;T&gt;&#96;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Page page = new Page&lt;&gt;(2,2);<br>
+Page result = mapper.selectPage(page,null);<br>
+result.getRecords()</p>
+<pre class="line-numbers language-none"><code class="language-none">
+&gt; 如果要自定义 SQL，在接口里单独写 @Select 注解或者在 xml 里写好即可
+
+在 Service 实现层 this.page(Page,QueryWrapper)
+
+#### 常规用法：XML 自定义分页
+
+&gt; 这种用法其实是 mybatis 的内容
+
+*   UserMapper.java 方法内容
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>public interface UserMapper {//可以继承或者不继承BaseMapper<br>
+/**<br>
+* @param page 分页对象,xml中可以从里面进行取值,传递参数 Page 即自动分页,必须放在第一位(你可以继承Page实现自己的分页对象)<br>
+* @param state 状态<br>
+* @return 分页对象<br>
+*/<br>
+IPage<User> selectPageVo(Page&lt;?&gt; page, Integer state);<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+*   UserMapper.xml 等同于编写一个普通 list 查询，mybatis-plus 自动替你分页
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<select id="selectPageVo" resultType="com.baomidou.cloud.entity.UserVo">
+    SELECT id,name FROM user WHERE state=#{state}
+</select>
+<pre class="line-numbers language-none"><code class="language-none">
+*   UserServiceImpl.java 调用分页方法
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+public IPage<User> selectUserPage(Page<User> page, Integer state) {
+    // 不进行 count sql 优化，解决 MP 无法自动优化 SQL 问题，这时候你需要自己查询 count 部分
+    // page.setOptimizeCountSql(false);
+    // 当 total 为小于 0 或者设置 setSearchCount(false) 分页插件不会进行 count 查询
+    // 要点!! 分页返回的对象与传入的对象是同一个
+    return userMapper.selectPageVo(page, state);
+}
+<pre class="line-numbers language-none"><code class="language-none">
+### 模糊查询
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+@Override // BrandServiceImpl
+public PageUtils queryPage(Map<String, Object> params) {
+    QueryWrapper<BrandEntity> wrapper = new QueryWrapper<>();
+    String key = (String) params.get("key");
+    if(!StringUtils.isEmpty(key)){
+        // 字段等于  or  模糊查询
+        wrapper.eq("brand_id", key).or().like("name", key);
+    }
+    // 按照分页信息和查询条件  进行查询
+    IPage<BrandEntity> page = this.page(
+        // 传入一个IPage对象，他是接口，实现类是Page
+        new Query<BrandEntity>().getPage(params),
+        wrapper
+    );
+    return new PageUtils(page);
+}
+<pre class="line-numbers language-none"><code class="language-none">
+#### Ipage
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+// Page对象指定页码和条数，其中的泛型是数据类型
+<p>// this.page()是Iservice里的方法<br>
+default &lt;E extends IPage<T>&gt; E page(E page,<br>
+Wrapper<T> queryWrapper) {<br>
+return this.getBaseMapper().selectPage(page, queryWrapper);<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+25、关联分类 &#x2F; 商品
+------------
+
+新增的华为、小米、oppo 都应该是手机下的品牌，但是可能是一对多的，比如小米对应手机和电视
+
+多对多的关系应该有 relation 表
+
+修改 CategoryBrandRelationController 的逻辑
+
+API：https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;SxysgcEF
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>/**<br>
+* 获取当前品牌的所有分类列表<br>
+*/<br>
+@GetMapping(“/catelog/list”)<br>
+public R list(@RequestParam(“brandId”) Long brandId){<br>
+List<CategoryBrandRelationEntity> data = categoryBrandRelationService.list(<br>
+new QueryWrapper<CategoryBrandRelationEntity>().eq(“brand_id”,brandId)<br>
+);<br>
+return R.ok().put(“data”, data);<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+##### 关联表的优化：
+
+分类名本可以不在 brand 表中，但因为关联查询对数据库性能有影响，在电商中大表数据从不做关联，哪怕分步查也不用关联
+
+所以像 name 这种冗余字段可以保存，优化 save，保存时用关联表存好，但 select 时不用关联
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>@RequestMapping(“/save”)<br>
+public R save(@RequestBody CategoryBrandRelationEntity categoryBrandRelation){<br>
+categoryBrandRelationService.saveDetail(categoryBrandRelation);</p>
+<pre><code>    return R.ok();
+&#125;
+</code></pre>
+<pre class="line-numbers language-none"><code class="language-none"><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>/**<br>
+* 根据获取品牌id 、三级分类id查询对应的名字保存到数据库<br>
+*/<br>
+@Override // CategoryBrandRelationServiceImpl<br>
+public void saveDetail(CategoryBrandRelationEntity categoryBrandRelation) {<br>
+// 获取品牌id 、三级分类id<br>
+Long brandId = categoryBrandRelation.getBrandId();<br>
+Long catelogId = categoryBrandRelation.getCatelogId();<br>
+// 根据id查询详细名字<br>
+BrandEntity brandEntity = brandDao.selectById(brandId);<br>
+CategoryEntity categoryEntity = categoryDao.selectById(catelogId);<br>
+categoryBrandRelation.setBrandName(brandEntity.getName());<br>
+categoryBrandRelation.setCatelogName(categoryEntity.getName());<br>
+this.save(categoryBrandRelation);<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+最终效果：
+
+![](谷粒商城笔记_基础篇2&#x2F;22c981f13b0f3db9d3c1278a99123f4d.png)
+
+##### 保持冗余字段的数据一致
+
+但是如果分类表里的 name 发送变化，那么品牌表里的分类 name 字段应该同步变化。
+
+所以应该修改 brand-controller，使之 update 时检测分类表里的 name 进行同步
+
+属性分组
+
+P76
+
+问题：查询所有时没有模糊查询
+
+还是像之前一样解决一些问题
+
+http:&#x2F;&#x2F;localhost:8001&#x2F;#&#x2F;product-baseattr 新增关联
+
+获取属性分组的关联的所有属性
+
+属性分组 API：https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;LnjzZHPj
+
+发送请求：&#x2F;product&#x2F;attrgroup&#x2F;&#123;attrgroupId&#125;&#x2F;attr&#x2F;relation
+
+获取当前属性分组所关联的属性
+
+![](谷粒商城笔记_基础篇2&#x2F;61f74200902484f55e349ddbc61112ec.png)
+
+如何查找：既然给出了 attr_group_id，那么到中间表中查询出来所关联的 attr_id，然后得到最终的所有属性即可。
+
+可能出现 null 值的问题，提前返回 null
+
+关联属性的时候让他显示未关联的属性，而且还要只显示分组内的属性 &#x2F;product&#x2F;attrgroup&#x2F;&#123;attrgroupId&#125;&#x2F;noattr&#x2F;relation
+
+26. 规格参数新增与 VO
+--------------
+
+规格参数新增时，请求的 URL：Request URL:
+
+http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;product&#x2F;attr&#x2F;base&#x2F;list&#x2F;0?t&#x3D;1588731762158&amp;page&#x3D;1&amp;limit&#x3D;10&amp;key&#x3D;
+
+当有新增字段时，我们往往会在 entity 实体类中新建一个字段，并标注数据库中不存在该字段，然而这种方式并不规范：
+
+![](谷粒商城笔记_基础篇2&#x2F;457848e9121a7d35bc85013fa62036a2.png)
+
+比较规范的做法是，新建一个 vo 文件夹，将每种不同的对象，按照它的功能进行了划分。在 java 中，涉及到了这几种类型
+
+PO、DO、TO、DTO
+
+1．PO 持久对象
+
+PO 就是对应数据库中某个表中的一条记录，多个记录可以用 PO 的集合。PO 中应该不包含任何对数据的操作。  
+2、DO（Domain 0bject) 领域对象  
+就是从现实世界中推象出来的有形或无形的业务实体。
+
+3.TO(Transfer 0bject)，数据传输对象传输的对象  
+不同的应用程序之间传输的对象。微服务
+
+4.DTO(Data Transfer Obiect) 数据传输对象
+
+这个概念来源于 J2EE 的设汁模式，原来的目的是为了 EJB 的分布式应用握供粗粒度的数据实体，以减少分布式调用的次数，从而握分布式调用的性能和降低网络负载，但在这里，泛指用于示层与服务层之间的数据传输对象。
+
+5.V0(value object) 值对象  
+通常用干业务层之闾的数据传递，和 PO 一样也是仅仅包含数据而已。但应是抽象出的业务对象，可以和表对应，也可以不，这根据业务的需要。用 new 关韃字创建，由 GC 回收的
+
+Viewobject：视图对象
+
+接受页面传递来的对象，封装对象
+
+将业务处理完成的对象，封装成页面要用的数据
+
+6.BO(business object) 业务对象
+
+从业务模型的度看．见 IJML 元 #领嵫模型的领嵫对象。封装业务逻辑的 java 对象，通过用 DAO 方法，结合 PO,VO 进行业务操作。businessobject: 业务对象主要作用是把业务逻辑封装为一个对苤。这个对象可以包括一个或多个其它的对彖。比如一个简历，有教育经历、工怍经历、社会关系等等。我们可以把教育经历对应一个 PO 工作经历
+
+7、POJO 简单无规则 java 对象
+
+8、DAO
+
+##### 新建 VO 对象
+
+Request URL: http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;product&#x2F;attr&#x2F;save，现在的情况是，它在保存的时候，只是保存了 attr，并没有保存 attrgroup，为了解决这个问题，我们新建了一个&#96;vo&#x2F;AttrVo.java&#96;，在原&#96;Attr&#96;基础上增加了 attrGroupId 字段，使得保存新增数据的时候，也保存了它们之间的关系。
+
+通过 &quot; &#96;BeanUtils.copyProperties(attr,attrEntity);&#96;&quot; 能够实现在两个 Bean 之间属性对拷
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>@Transactional<br>
+@Override<br>
+public void saveAttr(AttrVo attrVo) {<br>
+AttrEntity attrEntity = new AttrEntity();<br>
+// 重要的工具<br>
+BeanUtils.copyProperties(attrVo, attrEntity);<br>
+//1、保存基本数据<br>
+this.save(attrEntity);<br>
+//2、保存关联关系<br>
+if (attrVo.getAttrType() == ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode() &amp;&amp; attrVo.getAttrGroupId() != null) {<br>
+AttrAttrgroupRelationEntity relationEntity = new AttrAttrgroupRelationEntity();<br>
+relationEntity.setAttrGroupId(attrVo.getAttrGroupId());<br>
+relationEntity.setAttrId(attrEntity.getAttrId());<br>
+relationEntity.setAttrSort(0);<br>
+relationDao.insert(relationEntity);<br>
+}<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+问题：现在有两个查询，一个是查询部分，另外一个是查询全部，但是又必须这样来做吗？还是有必要的，但是可以在后台进行设计，两种查询是根据 catId 是否为零进行区分的。
+
+##### BeanUtils.copyProperties(attr,attrEntity);
+
+拷贝同名属性
+
+#### 属性分页
+
+先用 mp 的正常分页查出来数据，得到 Page 对象
+
+然后用 PageUtils 把分页信息得到，但里面的数据需要替换一下
+
+替换数据是为了解决 “不使用连表查询”
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>/**<br>
+* 规格参数的分页模糊查询<br>
+*/<br>
+@Override<br>
+public PageUtils queryBaseAttrPage(Map&lt;String, Object&gt; params, Long catelogId, String attrType) {<br>
+QueryWrapper<AttrEntity> waWrapper = new QueryWrapper<AttrEntity>().eq(“attr_type”, “base”.equalsIgnoreCase(attrType)?ProductConstant.AttrEnum.ATTR_TYPE_BASE.getCode():ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode());</p>
+<pre><code>if (catelogId != ProductConstant.AttrEnum.ATTR_TYPE_SALE.getCode()) &#123;
+    // 如果是 base 就是基本属性 插入1 否则插入0
+    waWrapper.eq(&quot;catelog_id&quot;, catelogId);
+&#125;
+String key = (String) params.get(&quot;key&quot;);
+if (!StringUtils.isEmpty(key)) &#123;
+    waWrapper.and((w) -&gt; &#123;
+        w.eq(&quot;attr_id&quot;, key).or().like(&quot;attr_name&quot;, key);
+    &#125;);
+&#125;
+IPage&lt;AttrEntity&gt; page = this.page(
+    new Query&lt;AttrEntity&gt;().getPage(params),
+    waWrapper
+);
+PageUtils pageUtils = new PageUtils(page);
+// 先查询三级分类名字、分组名字 再封装
+List&lt;AttrEntity&gt; records = page.getRecords();
+// attrRespVos 就是最终封装好的Vo
+List&lt;AttrRespVo&gt; attrRespVos = records.stream().map((attrEntity) -&gt; &#123;
+    AttrRespVo attrRespVo = new AttrRespVo();
+    BeanUtils.copyProperties(attrEntity, attrRespVo);
+    // 1.设置分类和分组的名字  先获取中间表对象  给attrRespVo 封装分组名字
+    if(&quot;base&quot;.equalsIgnoreCase(attrType))&#123;
+        // attr的关联关系 当它没有分组的时候就不保存了
+        AttrAttrgroupRelationEntity entity = relationDao.selectOne(new QueryWrapper&lt;AttrAttrgroupRelationEntity&gt;().eq(&quot;attr_id&quot;, attrEntity.getAttrId()));
+        if (entity != null &amp;&amp; entity.getAttrGroupId() != null) &#123;
+            AttrGroupEntity attrGroupEntity = attrGroupDao.selectById(entity);
+            attrRespVo.setGroupName(attrGroupEntity.getAttrGroupName());
+        &#125;
+    &#125;
+    // 2.查询分类id 给attrRespVo 封装三级分类名字
+    CategoryEntity categoryEntity = categoryDao.selectById(attrEntity.getCatelogId());
+    if (categoryEntity != null) &#123;
+        attrRespVo.setCatelogName(categoryEntity.getName());
+    &#125;
+    return attrRespVo;
+&#125;).collect(Collectors.toList());
+pageUtils.setList(attrRespVos);
+return pageUtils;
+</code></pre>
+<p>}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+后面还有点击属性分组的关联，进行属性和分组的关联
+
+27. 发布商品
+--------
+
+P83
+
+![](谷粒商城笔记_基础篇2&#x2F;20210218072348.png)
+
+*   基本信息
+*   规则参数
+    *   前两步都是 spu
+*   销售属性
+*   SKU 信息
+    *   根据上一步选择的录入价格、标题
+*   保存完成
+
+获取所有会员等级：&#x2F;member&#x2F;memberlevel&#x2F;list
+
+API：[https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;jCFganpf](https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;jCFganpf)
+
+开启编写 member 项目
+
+### guli-member
+
+在 “gulimall-gateway” 中修改 “” 文件，添加对于 member 的路由
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>id: gulimall-member<br>
+uri: lb://gulimall-member<br>
+predicates:<br>
+- Path=/api/member/**<br>
+filters:<br>
+- RewritePath=/api/(?<segment>/?.*),/${segment}</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">
+在 “gulimall-member” 中，创建 “bootstrap.properties” 文件，内容如下：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>spring.cloud.nacos.config.name=gulimall-member<br>
+spring.cloud.nacos.config.server-addr=192.168.137.14:8848<br>
+spring.cloud.nacos.config.namespace=795521fa-77ef-411e-a8d8-0889fdfe6964<br>
+spring.cloud.nacos.config.extension-configs[0].data-id=gulimall-member.yml<br>
+spring.cloud.nacos.config.extension-configs[0].group=DEFAULT_GROUP<br>
+spring.cloud.nacos.config.extension-configs[0].refresh=true</p>
+<pre class="line-numbers language-none"><code class="language-none">
+获取分类关联的品牌：&#x2F;product&#x2F;categorybrandrelation&#x2F;brands&#x2F;list
+
+API：[https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;HgVjlzWV](https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;HgVjlzWV)
+
+P85
+
+*   查询所有会员等级
+*   查询选中分类 关联的 品牌
+*   查询分类下的所有属性分组 list（从 attr-group 表中用分类 id 查到符合的属性分组），还有属性分组中的所有属性 list
+
+P86 如果遇到图片上传不成功的问题，
+
+*   检查第三方服务是否启动
+*   第三方服务里的 oss 信息
+*   前端 src&#x2F;components&#x2F;upload&#x2F;multiUpload.vue，有个 action 信息，要有自己的 oss
+
+![](谷粒商城笔记_基础篇2&#x2F;ea9b3cf428063fdd94a6e8efb289be54.png)
+
+![](谷粒商城笔记_基础篇2&#x2F;0e8238002a1759ae819537b8794e2014.png)
+
+![](谷粒商城笔记_基础篇2&#x2F;809d98bd2020631fffeb142e7a154f0a.png)
+
+添加 json 生成的 vo
+
+最终保存 spu 信息：观察下面的步骤与 db 表
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>/**<br>
+* 保存所有数据 [33kb左右]<br>
+*/<br>
+@Transactional<br>
+@Override<br>
+public void saveSpuInfo(SpuSaveVo vo) {</p>
+<pre><code>// 1.保存spu基本信息 pms_sku_info
+// 插入后id自动返回注入
+this.saveBatchSpuInfo(spuInfoEntity); // this.baseMapper.insert(spuInfoEntity);
+// 此处有分布式id的问题，所以要加事务
+
+// 2.保存spu的表述图片  pms_spu_info_desc
+// 3.保存spu的图片集  pms_sku_images
+
+// 先获取所有图片
+// 保存图片的时候 并且保存这个是那个spu的图片
+
+// 4.保存spu的规格属性  pms_product_attr_value
+// 5.保存当前spu对应所有sku信息
+
+// 1).spu的积分信息 sms_spu_bounds
+
+skus.forEach(item -&gt; &#123;
+    // 2).基本信息的保存 pms_sku_info
+    // skuName 、price、skuTitle、skuSubtitle 这些属性需要手动保存
+
+    // 设置spu的品牌id
+
+    // 3).保存sku的图片信息  pms_sku_images
+    // sku保存完毕 自增主键就出来了 收集所有图片
+
+    // 4).sku的销售属性  pms_sku_sale_attr_value
+    // 5.) sku的优惠、满减、会员价格等信息  [跨库]
+&#125;);
+</code></pre>
+<p>}<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+#### 商品优惠数据库
+
+*   SkuLadderEntity 买几件打几折
+    *   买几件
+    *   打几折
+    *   是否参与其他优惠
+    *   skuId
+*   SkuFullReductionEntity 满多少减多少
+    *   满多少
+    *   减多少
+    *   是否参与其他优惠
+    *   skuId
+*   MemberPriceEntity 会员价格
+    *   会员等级 id：memberLevelId
+    *   MemberPriceEntity
+    *   会员价格 memberPrice
+    *   是否参与其他优惠
+    *   skuId
+
+&gt; 遇到 PubSub 问题
+&gt; 
+&gt; 1.  首先安装 pubsub-js
+&gt; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p><code>npm install --save pubsub-js</code></p>
+<pre class="line-numbers language-none"><code class="language-none">
+2.  订阅方组件
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><code>import PubSub from 'pubsub-js'</code></p>
+<pre class="line-numbers language-none"><code class="language-none">
+该 this.PubSub 为 PubSub。
+
+获取分类下所有分组 &amp; 关联属性
+
+请求类型：&#x2F;product&#x2F;attrgroup&#x2F;&#123;catelogId&#125;&#x2F;withattr
+
+请求方式：GET
+
+请求 URL：http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;product&#x2F;attrgroup&#x2F;225&#x2F;withattr?t&#x3D;1588864569478
+
+P91
+
+debug 时，mysql 默认的隔离级别为读已提交，为了能够在调试过程中，获取到数据库中的数据信息，可以调整隔离级别为读未提交：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>SET SESSION TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;</p>
+<pre class="line-numbers language-none"><code class="language-none">
+但是它对于当前的事务窗口生效，如果想要设置全局的，需要加上 global 字段。
+
+主键不是自增的话，需要加&#96;@TableId(type&#x3D;IdType.INPUT)&#96;
+
+28. spu 商品管理
+------------
+
+#### spu 检索
+
+URL：&#x2F;product&#x2F;spuinfo&#x2F;list
+
+API：https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;9LISLvy7
+
+请求参数
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</blockquote>
+<p>{<br>
+page: 1,//当前页码<br>
+limit: 10,//每页记录数<br>
+sidx: ‘id’,//排序字段<br>
+order: ‘asc/desc’,//排序方式<br>
+key: ‘华为’,//检索关键字<br>
+catelogId: 6,//三级分类id<br>
+brandId: 1,//品牌id<br>
+status: 0,//商品状态<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+状态：
+
+*   新建 0
+*   上架 1
+*   下架 2
+
+当下架时：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>t: 1588983789089<br>
+status: 2 // 状态<br>
+key:<br>
+brandId: 0<br>
+catelogId: 0<br>
+page: 1<br>
+limit: 10</p>
+<pre class="line-numbers language-none"><code class="language-none">
+&gt; 修改日期：
+&gt; 
+&gt; 在 SPU 中，写出的日期数据都不符合规则：
+&gt; 
+&gt; ![](谷粒商城笔记_基础篇2&#x2F;9514ff315cc0f6d010816541b9e7a31a.png)
+&gt; 
+&gt; 想要符合规则，可以设置写出数据的规则：
+&gt; 
+&gt; spring.jackson
+&gt; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>spring:<br>
+jackson:<br>
+date-format: yyyy-MM-dd HH:mm:ss</p>
+<pre class="line-numbers language-none"><code class="language-none">
+#### SKU 检索：
+
+P94
+
+Request URL: http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;product&#x2F;skuinfo&#x2F;list?t&#x3D;1588989437944&amp;page&#x3D;1&amp;limit&#x3D;10&amp;key&#x3D;&amp;catelogId&#x3D;0&amp;brandId&#x3D;0&amp;min&#x3D;0&amp;max&#x3D;0
+
+请求体：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</blockquote>
+<p>t: 1588989437944<br>
+page: 1<br>
+limit: 10<br>
+key:<br>
+catelogId: 0<br>
+brandId: 0<br>
+min: 0<br>
+max: 0</p>
+<pre class="line-numbers language-none"><code class="language-none">
+API： https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;ucirLq1D
+
+29. 仓库管理
+--------
+
+库存信息表：wms_ware_info
+
+【1】仓库列表功能：
+
+【2】查询商品库存：
+
+【3】查询采购需求：
+
+【4】合并采购需求：
+
+*   采购需要可能是人为操作的，也可能是低库存时自动的
+
+合并整单选中 parcharseID：Request URL: http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;ware&#x2F;purchase&#x2F;merge
+
+请求数据：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>{purchaseId: 1, items: [1, 2]}<br>
+items: [1, 2]</p>
+<pre class="line-numbers language-none"><code class="language-none">
+合并整单未选择 parcharseID :Request URL: http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;ware&#x2F;purchase&#x2F;merge
+
+![](谷粒商城笔记_基础篇2&#x2F;ff4f6eb0fcd9dd9612631ac4fcf4086f.png)
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>items: [1, 2]</p>
+<pre class="line-numbers language-none"><code class="language-none">
+涉及到两张表：wms_purchase_detail，wms_purchase
+
+现在采购单中填写数据，然后关联用户，关联用户后，
+
+总的含义，就是根据采购单中的信息，更新**采购需求**，在**采购单**中填写采购人员，采购单号，采购的时候，更新采购细节表中的采购人员 ID 和采购状态。
+
+![](谷粒商城笔记_基础篇2&#x2F;1b51afadeb5b8433eaf9c3b0f8126d06.png)
+
+领取采购单
+
+http:&#x2F;&#x2F;localhost:88&#x2F;api&#x2F;ware&#x2F;purchase&#x2F;received
+
+某个人领取了采购单后，先看采购单是否处于未分配状态，只有采购单是新建或以领取状态时，才更新采购单的状态
+
+采购单状态：只有新建、已分配的时候才能合并采购单
+
+*   新建 0
+*   已分配 1
+*   已领取 (正在采购) 2
+*   已完成 3
+*   有异常 (采购失败) 4
+
+生成采购需求，生成采购单，分配采购员（采购员领取采购单），采购完成跟心库存
+
+【1】仓库列表功能： https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;mZgdqOWe
+
+【2】查询商品库存： https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;hwXrEXBZ
+
+【3】查询采购需求： https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;Ss4zsV7R
+
+【4】合并采购需求：https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;cUlv9QvK
+
+【5】查询未领取的采购单： https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;hI12DNrH
+
+【6】领取采购单： https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;vXMBBgw1
+
+*   采购项都完成的时候采购单为完成
+*   采购项完成时增加库存
+*   增加库存时要判断原来是否有库存以区分 insert 和 update
+*   加上分页插件
+
+完成采购增加库存时，需要涉及到设置 SKU 的 name 信息到仓库中，这是通过 feign 远程调用 “gulimall-product” 来实现根据 sku_id 查询得到 sku_name 的。只要异常被捕获，事务是不会滚的
+
+&gt; 是否还有其他的方式呢？这个问题留待以后解决。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>@Override<br>
+public void addStock(Long skuId, Long wareId, Integer skuNum) {</p>
+<pre><code>List&lt;WareSkuEntity&gt; wareSkuEntities = wareSkuDao.selectList(new QueryWrapper&lt;WareSkuEntity&gt;().eq(&quot;sku_id&quot;, skuId).eq(&quot;ware_id&quot;, wareId));
+
+if(wareSkuEntities == null || wareSkuEntities.size() ==0 )&#123;
+    //新增
+    WareSkuEntity wareSkuEntity = new WareSkuEntity();
+    wareSkuEntity.setSkuId(skuId);
+    wareSkuEntity.setWareId(wareId);
+    wareSkuEntity.setStock(skuNum);
+    wareSkuEntity.setStockLocked(0);
+
+    //远程查询SKU的name，若失败无需回滚
+    try &#123;
+        R info = productFeignService.info(skuId);
+        if(info.getCode() == 0)&#123;
+            Map&lt;String,Object&gt; data=(Map&lt;String,Object&gt;)info.get(&quot;skuInfo&quot;);
+            wareSkuEntity.setSkuName((String) data.get(&quot;skuName&quot;));
+        &#125;
+    &#125; catch (Exception e) &#123;
+
+    &#125;
+
+    wareSkuDao.insert(wareSkuEntity);
+&#125;else&#123;
+    //插入
+    wareSkuDao.addStock(skuId,wareId,skuNum);
+&#125;
+</code></pre>
+<p>}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+30. 获取 spu 规格
+-------------
+
+GET：&#x2F;product&#x2F;attr&#x2F;base&#x2F;listforspu&#x2F;&#123;spuId&#125;
+
+响应：
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>{<br>
+“msg”: “success”,<br>
+“code”: 0,<br>
+“data”: [{<br>
+“id”: 43,<br>
+“spuId”: 11,<br>
+“attrId”: 7,<br>
+“attrName”: “入网型号”,<br>
+“attrValue”: “LIO-AL00”,<br>
+“attrSort”: null,<br>
+“quickShow”: 1<br>
+}]<br>
+}</p>
+<pre class="line-numbers language-none"><code class="language-none">
+#### 修改商品规格
+
+API： https:&#x2F;&#x2F;easydoc.xyz&#x2F;doc&#x2F;75716633&#x2F;ZUqEdvA4&#x2F;GhnJ0L85
+
+URL：&#x2F;product&#x2F;attr&#x2F;update&#x2F;&#123;spuId&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>[{<br>
+“attrId”: 7,<br>
+“attrName”: “入网型号”,<br>
+“attrValue”: “LIO-AL00”,<br>
+“quickShow”: 1<br>
+}, {<br>
+“attrId”: 14,<br>
+“attrName”: “机身材质工艺”,<br>
+“attrValue”: “玻璃”,<br>
+“quickShow”: 0<br>
+}, {<br>
+“attrId”: 16,<br>
+“attrName”: “CPU型号”,<br>
+“attrValue”: “HUAWEI Kirin 980”,<br>
+“quickShow”: 1<br>
+}]</p>
+<pre><code>
+基础篇完。
+
+</code></pre>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/" title="谷粒商城笔记_基础篇2">https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%872/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%871/" rel="prev" title="谷粒商城笔记_基础篇1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">谷粒商城笔记_基础篇1</span></a></div><div class="post-nav-item"></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>

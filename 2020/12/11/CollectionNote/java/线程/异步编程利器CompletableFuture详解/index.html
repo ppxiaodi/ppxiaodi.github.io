@@ -1,0 +1,614 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>异步编程利器CompletableFuture详解 | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="异步编程利器：CompletableFuture 详解  本文由 简悦 SimpRead 转码， 原文地址 juejin.cn   我们异步执行一个任务时，一般是用线程池 Executor 去创建。如果不需要有返回值， 任务实现 Runnable 接口；如果需要有返回值，任务实现 Callable 接口，调用 Executor 的 submi  ¶前言  文正在参加「Java 主题月 - Java">
+<meta property="og:type" content="article">
+<meta property="og:title" content="异步编程利器CompletableFuture详解">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2020/12/11/CollectionNote/java/%E7%BA%BF%E7%A8%8B/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E5%88%A9%E5%99%A8CompletableFuture%E8%AF%A6%E8%A7%A3/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="异步编程利器：CompletableFuture 详解  本文由 简悦 SimpRead 转码， 原文地址 juejin.cn   我们异步执行一个任务时，一般是用线程池 Executor 去创建。如果不需要有返回值， 任务实现 Runnable 接口；如果需要有返回值，任务实现 Callable 接口，调用 Executor 的 submi  ¶前言  文正在参加「Java 主题月 - Java">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bf8ed4c2fd7a4806af26c9c6418bbe25~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0fb5ce9a8da7473ba23903a17c8beeae~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3fea04421bac41eaad6f8286d4a670a2~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/148d40ed2ee74f4a98fd3b05228eabec~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/67db247b585a48b88ec1dcd7ab37a8b4~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/38ce935a546c42c5a11c66a26d7e19e0~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2d5e83e5fc4b404d980ded354bb3420d~tplv-k3u1fbpfcp-watermark.image">
+<meta property="og:image" content="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/eafdc009ff94437ebf1d14fee9dc1e21~tplv-k3u1fbpfcp-watermark.image">
+<meta property="article:published_time" content="2020-12-10T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:54.080Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="线程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bf8ed4c2fd7a4806af26c9c6418bbe25~tplv-k3u1fbpfcp-watermark.image"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">异步编程利器：CompletableFuture 详解</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E5%9B%9E%E9%A1%BE-Future"><span class="toc-number">1.2.</span> <span class="toc-text">一个例子回顾 Future</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90%E8%B5%B0%E8%BF%9B-CompletableFuture"><span class="toc-number">1.3.</span> <span class="toc-text">一个例子走进 CompletableFuture</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CompletableFuture-%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.4.</span> <span class="toc-text">CompletableFuture 使用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%9B%E5%BB%BA%E5%BC%82%E6%AD%A5%E4%BB%BB%E5%8A%A1"><span class="toc-number">1.4.1.</span> <span class="toc-text">创建异步任务</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#supplyAsync-%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">supplyAsync 方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#runAsync-%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">runAsync 方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%BB%E5%8A%A1%E5%BC%82%E6%AD%A5%E5%9B%9E%E8%B0%83"><span class="toc-number">1.4.2.</span> <span class="toc-text">任务异步回调</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-thenRun-thenRunAsync"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">1. thenRun&#x2F;thenRunAsync</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-thenAccept-thenAcceptAsync"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">2.thenAccept&#x2F;thenAcceptAsync</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-thenApply-thenApplyAsync"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">3. thenApply&#x2F;thenApplyAsync</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-exceptionally"><span class="toc-number">1.4.2.4.</span> <span class="toc-text">4. exceptionally</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-whenComplete-%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.2.5.</span> <span class="toc-text">5. whenComplete 方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6-handle-%E6%96%B9%E6%B3%95"><span class="toc-number">1.4.2.6.</span> <span class="toc-text">6. handle 方法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E4%B8%AA%E4%BB%BB%E5%8A%A1%E7%BB%84%E5%90%88%E5%A4%84%E7%90%86"><span class="toc-number">1.4.3.</span> <span class="toc-text">多个任务组合处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#AND-%E7%BB%84%E5%90%88%E5%85%B3%E7%B3%BB"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">AND 组合关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#OR-%E7%BB%84%E5%90%88%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">OR 组合的关系</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AllOf"><span class="toc-number">1.4.4.</span> <span class="toc-text">AllOf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#AnyOf"><span class="toc-number">1.4.5.</span> <span class="toc-text">AnyOf</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#thenCompose"><span class="toc-number">1.4.6.</span> <span class="toc-text">thenCompose</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#CompletableFuture-%E4%BD%BF%E7%94%A8%E6%9C%89%E5%93%AA%E4%BA%9B%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="toc-number">1.5.</span> <span class="toc-text">CompletableFuture 使用有哪些注意点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Future-%E9%9C%80%E8%A6%81%E8%8E%B7%E5%8F%96%E8%BF%94%E5%9B%9E%E5%80%BC%EF%BC%8C%E6%89%8D%E8%83%BD%E8%8E%B7%E5%8F%96%E5%BC%82%E5%B8%B8%E4%BF%A1%E6%81%AF"><span class="toc-number">1.5.1.</span> <span class="toc-text">1. Future 需要获取返回值，才能获取异常信息</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-CompletableFuture-%E7%9A%84-get-%E6%96%B9%E6%B3%95%E6%98%AF%E9%98%BB%E5%A1%9E%E7%9A%84%E3%80%82"><span class="toc-number">1.5.2.</span> <span class="toc-text">2. CompletableFuture 的 get() 方法是阻塞的。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E9%BB%98%E8%AE%A4%E7%BA%BF%E7%A8%8B%E6%B1%A0%E7%9A%84%E6%B3%A8%E6%84%8F%E7%82%B9"><span class="toc-number">1.5.3.</span> <span class="toc-text">3. 默认线程池的注意点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E8%87%AA%E5%AE%9A%E4%B9%89%E7%BA%BF%E7%A8%8B%E6%B1%A0%E6%97%B6%EF%BC%8C%E6%B3%A8%E6%84%8F%E9%A5%B1%E5%92%8C%E7%AD%96%E7%95%A5"><span class="toc-number">1.5.4.</span> <span class="toc-text">4. 自定义线程池时，注意饱和策略</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E4%B8%8E%E6%84%9F%E8%B0%A2"><span class="toc-number">1.6.</span> <span class="toc-text">参考与感谢</span></a></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2020/12/11/CollectionNote/java/%E7%BA%BF%E7%A8%8B/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E5%88%A9%E5%99%A8CompletableFuture%E8%AF%A6%E8%A7%A3/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">异步编程利器CompletableFuture详解</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2020-12-11 00:00:00" itemprop="dateCreated datePublished" datetime="2020-12-11T00:00:00+08:00">2020-12-11</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:54" itemprop="dateModified" datetime="2021-07-11T16:54:54+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">java</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/%E7%BA%BF%E7%A8%8B/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">线程</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/java/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">java</span></a><a class="tag-item" href="/tags/%E7%BA%BF%E7%A8%8B/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">线程</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><h1>异步编程利器：CompletableFuture 详解</h1>
+<blockquote>
+<p>本文由 <a target="_blank" rel="noopener" href="http://ksria.com/simpread/">简悦 SimpRead</a> 转码， 原文地址 <a target="_blank" rel="noopener" href="https://juejin.cn/post/6970558076642394142?share_token=ed00a582-91f5-481b-96b5-2a81919f6369">juejin.cn</a></p>
+</blockquote>
+<blockquote>
+<p>我们异步执行一个任务时，一般是用线程池 Executor 去创建。如果不需要有返回值， 任务实现 Runnable 接口；如果需要有返回值，任务实现 Callable 接口，调用 Executor 的 submi</p>
+</blockquote>
+<h2 id="前言"><a class="header-anchor" href="#前言">¶</a>前言</h2>
+<blockquote>
+<p>文正在参加「Java 主题月 - Java 开发实战」，<a target="_blank" rel="noopener" href="https://juejin.cn/post/6968267217121050660">详情查看 (活动链接)</a></p>
+</blockquote>
+<p>我们异步执行一个任务时，一般是用线程池 Executor 去创建。如果不需要有返回值， 任务实现 Runnable 接口；如果需要有返回值，任务实现 Callable 接口，调用 Executor 的 submit 方法，再使用 Future 获取即可。如果多个线程存在依赖组合的话，我们怎么处理呢？可使用同步组件 CountDownLatch、CyclicBarrier 等，但是比较麻烦。其实有简单的方法，就是用 CompeletableFuture。最近刚好使用 CompeletableFuture 优化了项目中的代码，所以跟大家一起学习 CompletableFuture。</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/bf8ed4c2fd7a4806af26c9c6418bbe25~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<ul>
+<li>公众号: <strong>捡田螺的小男孩</strong></li>
+<li><a target="_blank" rel="noopener" href="https://github.com/whx123/JavaHome">github 地址</a></li>
+</ul>
+<h2 id="一个例子回顾-Future"><a class="header-anchor" href="#一个例子回顾-Future">¶</a>一个例子回顾 Future</h2>
+<p>因为 CompletableFuture 实现了 Future 接口，我们先来回顾 Future 吧。</p>
+<p>Future 是 Java5 新加的一个接口，它提供了一种异步并行计算的功能。如果主线程需要执行一个很耗时的计算任务，我们就可以通过 future 把这个任务放到异步线程中执行。主线程继续处理其他任务，处理完成后，再通过 Future 获取计算结果。</p>
+<p>来看个简单例子吧，假设我们有两个任务服务，一个查询用户基本信息，一个是查询用户勋章信息。如下，</p>
+<pre class="line-numbers language-none"><code class="language-none">public class UserInfoService &#123;
+
+    public UserInfo getUserInfo(Long userId) throws InterruptedException &#123;
+        Thread.sleep(300);&#x2F;&#x2F;模拟调用耗时
+        return new UserInfo(&quot;666&quot;, &quot;捡田螺的小男孩&quot;, 27); &#x2F;&#x2F;一般是查数据库，或者远程调用返回的
+    &#125;
+&#125;
+
+public class MedalService &#123;
+
+    public MedalInfo getMedalInfo(long userId) throws InterruptedException &#123;
+        Thread.sleep(500); &#x2F;&#x2F;模拟调用耗时
+        return new MedalInfo(&quot;666&quot;, &quot;守护勋章&quot;);
+    &#125;
+&#125;
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>接下来，我们来演示下，在主线程中是如何使用 Future 来进行异步调用的。</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureTest &#123;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        ExecutorService executorService &#x3D; Executors.newFixedThreadPool(10);
+
+        UserInfoService userInfoService &#x3D; new UserInfoService();
+        MedalService medalService &#x3D; new MedalService();
+        long userId &#x3D;666L;
+        long startTime &#x3D; System.currentTimeMillis();
+
+        &#x2F;&#x2F;调用用户服务获取用户基本信息
+        FutureTask&lt;UserInfo&gt; userInfoFutureTask &#x3D; new FutureTask&lt;&gt;(new Callable&lt;UserInfo&gt;() &#123;
+            @Override
+            public UserInfo call() throws Exception &#123;
+                return userInfoService.getUserInfo(userId);
+            &#125;
+        &#125;);
+        executorService.submit(userInfoFutureTask);
+
+        Thread.sleep(300); &#x2F;&#x2F;模拟主线程其它操作耗时
+
+        FutureTask&lt;MedalInfo&gt; medalInfoFutureTask &#x3D; new FutureTask&lt;&gt;(new Callable&lt;MedalInfo&gt;() &#123;
+            @Override
+            public MedalInfo call() throws Exception &#123;
+                return medalService.getMedalInfo(userId);
+            &#125;
+        &#125;);
+        executorService.submit(medalInfoFutureTask);
+
+        UserInfo userInfo &#x3D; userInfoFutureTask.get();&#x2F;&#x2F;获取个人信息结果
+        MedalInfo medalInfo &#x3D; medalInfoFutureTask.get();&#x2F;&#x2F;获取勋章信息结果
+
+        System.out.println(&quot;总共用时&quot; + (System.currentTimeMillis() - startTime) + &quot;ms&quot;);
+    &#125;
+&#125;
+    
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>运行结果:</p>
+<pre class="line-numbers language-none"><code class="language-none">总共用时806ms
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>如果我们不使用 Future 进行并行异步调用，而是在主线程串行进行的话，耗时大约为 300+500+300 = 1100 ms。可以发现，<strong>future + 线程池</strong>异步配合，提高了程序的执行效率。</p>
+<p>但是 Future 对于结果的获取，不是很友好，只能通过<strong>阻塞</strong>或者<strong>轮询的方式</strong>得到任务的结果。</p>
+<ul>
+<li>Future.get() 就是阻塞调用，在线程获取结果之前 <strong>get 方法会一直阻塞</strong>。</li>
+<li>Future 提供了一个 isDone 方法，可以在程序中<strong>轮询这个方法查询</strong>执行结果。</li>
+</ul>
+<p><strong>阻塞的方式和异步编程的设计理念相违背，而轮询的方式会耗费无谓的 CPU 资源</strong>。因此，JDK8 设计出 CompletableFuture。CompletableFuture 提供了一种观察者模式类似的机制，可以让任务执行完成后通知监听的一方。</p>
+<h2 id="一个例子走进-CompletableFuture"><a class="header-anchor" href="#一个例子走进-CompletableFuture">¶</a>一个例子走进 CompletableFuture</h2>
+<p>我们还是基于以上 Future 的例子，改用 CompletableFuture 来实现</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureTest &#123;
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException, TimeoutException &#123;
+
+        UserInfoService userInfoService &#x3D; new UserInfoService();
+        MedalService medalService &#x3D; new MedalService();
+        long userId &#x3D;666L;
+        long startTime &#x3D; System.currentTimeMillis();
+
+        &#x2F;&#x2F;调用用户服务获取用户基本信息
+        CompletableFuture&lt;UserInfo&gt; completableUserInfoFuture &#x3D; CompletableFuture.supplyAsync(() -&gt; userInfoService.getUserInfo(userId));
+
+        Thread.sleep(300); &#x2F;&#x2F;模拟主线程其它操作耗时
+
+        CompletableFuture&lt;MedalInfo&gt; completableMedalInfoFuture &#x3D; CompletableFuture.supplyAsync(() -&gt; medalService.getMedalInfo(userId)); 
+
+        UserInfo userInfo &#x3D; completableUserInfoFuture.get(2,TimeUnit.SECONDS);&#x2F;&#x2F;获取个人信息结果
+        MedalInfo medalInfo &#x3D; completableMedalInfoFuture.get();&#x2F;&#x2F;获取勋章信息结果
+        System.out.println(&quot;总共用时&quot; + (System.currentTimeMillis() - startTime) + &quot;ms&quot;);
+
+    &#125;
+&#125;
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>可以发现，使用 CompletableFuture，代码简洁了很多。CompletableFuture 的 supplyAsync 方法，提供了异步执行的功能，线程池也不用单独创建了。实际上，它 CompletableFuture 使用了默认线程池是 <strong>ForkJoinPool.commonPool</strong>。</p>
+<p>CompletableFuture 提供了几十种方法，辅助我们的异步任务场景。这些方法包括<strong>创建异步任务、任务异步回调、多个任务组合处理</strong>等方面。我们一起来学习吧</p>
+<h2 id="CompletableFuture-使用场景"><a class="header-anchor" href="#CompletableFuture-使用场景">¶</a>CompletableFuture 使用场景</h2>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/0fb5ce9a8da7473ba23903a17c8beeae~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h3 id="创建异步任务"><a class="header-anchor" href="#创建异步任务">¶</a>创建异步任务</h3>
+<p>CompletableFuture 创建异步任务，一般有 supplyAsync 和 runAsync 两个方法</p>
+<p><img src="https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/3fea04421bac41eaad6f8286d4a670a2~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<ul>
+<li>supplyAsync 执行 CompletableFuture 任务，支持返回值</li>
+<li>runAsync 执行 CompletableFuture 任务，没有返回值。</li>
+</ul>
+<h4 id="supplyAsync-方法"><a class="header-anchor" href="#supplyAsync-方法">¶</a>supplyAsync 方法</h4>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;使用默认内置线程池ForkJoinPool.commonPool()，根据supplier构建执行任务
+public static &lt;U&gt; CompletableFuture&lt;U&gt; supplyAsync(Supplier&lt;U&gt; supplier)
+&#x2F;&#x2F;自定义线程，根据supplier构建执行任务
+public static &lt;U&gt; CompletableFuture&lt;U&gt; supplyAsync(Supplier&lt;U&gt; supplier, Executor executor)
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="runAsync-方法"><a class="header-anchor" href="#runAsync-方法">¶</a>runAsync 方法</h4>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;使用默认内置线程池ForkJoinPool.commonPool()，根据runnable构建执行任务
+public static CompletableFuture&lt;Void&gt; runAsync(Runnable runnable) 
+&#x2F;&#x2F;自定义线程，根据runnable构建执行任务
+public static CompletableFuture&lt;Void&gt; runAsync(Runnable runnable,  Executor executor)
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>实例代码如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureTest &#123;
+
+    public static void main(String[] args) &#123;
+        &#x2F;&#x2F;可以自定义线程池
+        ExecutorService executor &#x3D; Executors.newCachedThreadPool();
+        &#x2F;&#x2F;runAsync的使用
+        CompletableFuture&lt;Void&gt; runFuture &#x3D; CompletableFuture.runAsync(() -&gt; System.out.println(&quot;run,关注公众号:捡田螺的小男孩&quot;), executor);
+        &#x2F;&#x2F;supplyAsync的使用
+        CompletableFuture&lt;String&gt; supplyFuture &#x3D; CompletableFuture.supplyAsync(() -&gt; &#123;
+                    System.out.print(&quot;supply,关注公众号:捡田螺的小男孩&quot;);
+                    return &quot;捡田螺的小男孩&quot;; &#125;, executor);
+        &#x2F;&#x2F;runAsync的future没有返回值，输出null
+        System.out.println(runFuture.join());
+        &#x2F;&#x2F;supplyAsync的future，有返回值
+        System.out.println(supplyFuture.join());
+        executor.shutdown(); &#x2F;&#x2F; 线程池需要关闭
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+run,关注公众号:捡田螺的小男孩
+null
+supply,关注公众号:捡田螺的小男孩捡田螺的小男孩
+
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="任务异步回调"><a class="header-anchor" href="#任务异步回调">¶</a>任务异步回调</h3>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/148d40ed2ee74f4a98fd3b05228eabec~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h4 id="1-thenRun-thenRunAsync"><a class="header-anchor" href="#1-thenRun-thenRunAsync">¶</a>1. thenRun/thenRunAsync</h4>
+<pre class="line-numbers language-none"><code class="language-none">public CompletableFuture&lt;Void&gt; thenRun(Runnable action);
+public CompletableFuture&lt;Void&gt; thenRunAsync(Runnable action);
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>CompletableFuture 的 thenRun 方法，通俗点讲就是，<strong>做完第一个任务后，再做第二个任务</strong>。某个任务执行完成后，执行回调方法；但是前后两个任务<strong>没有参数传递，第二个任务也没有返回值</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureThenRunTest &#123;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;String&gt; orgFuture &#x3D; CompletableFuture.supplyAsync(
+                ()-&gt;&#123;
+                    System.out.println(&quot;先执行第一个CompletableFuture方法任务&quot;);
+                    return &quot;捡田螺的小男孩&quot;;
+                &#125;
+        );
+
+        CompletableFuture thenRunFuture &#x3D; orgFuture.thenRun(() -&gt; &#123;
+            System.out.println(&quot;接着执行第二个任务&quot;);
+        &#125;);
+
+        System.out.println(thenRunFuture.get());
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+先执行第一个CompletableFuture方法任务
+接着执行第二个任务
+null
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>thenRun 和 thenRunAsync 有什么区别呢</strong>？可以看下源码哈：</p>
+<pre class="line-numbers language-none"><code class="language-none">private static final Executor asyncPool &#x3D; useCommonPool ?
+        ForkJoinPool.commonPool() : new ThreadPerTaskExecutor();
+        
+    public CompletableFuture&lt;Void&gt; thenRun(Runnable action) &#123;
+        return uniRunStage(null, action);
+    &#125;
+
+    public CompletableFuture&lt;Void&gt; thenRunAsync(Runnable action) &#123;
+        return uniRunStage(asyncPool, action);
+    &#125;
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>如果你执行第一个任务的时候，传入了一个自定义线程池：</p>
+<ul>
+<li>调用 thenRun 方法执行第二个任务时，则第二个任务和第一个任务是<strong>共用同一个线程池</strong>。</li>
+<li>调用 thenRunAsync 执行第二个任务时，则第一个任务使用的是你自己传入的线程池，<strong>第二个任务使用的是 ForkJoin 线程池</strong></li>
+</ul>
+<p><strong>TIPS:</strong> 后面介绍的 thenAccept 和 thenAcceptAsync，thenApply 和 thenApplyAsync 等，它们之间的区别也是这个哈。</p>
+<h4 id="2-thenAccept-thenAcceptAsync"><a class="header-anchor" href="#2-thenAccept-thenAcceptAsync">¶</a>2.thenAccept/thenAcceptAsync</h4>
+<p>CompletableFuture 的 thenAccept 方法表示，第一个任务执行完成后，执行第二个回调方法任务，会将该任务的执行结果，作为入参，传递到回调方法中，但是回调方法是<strong>没有返回值</strong>的。</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureThenAcceptTest &#123;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;String&gt; orgFuture &#x3D; CompletableFuture.supplyAsync(
+                ()-&gt;&#123;
+                    System.out.println(&quot;原始CompletableFuture方法任务&quot;);
+                    return &quot;捡田螺的小男孩&quot;;
+                &#125;
+        );
+
+        CompletableFuture thenAcceptFuture &#x3D; orgFuture.thenAccept((a) -&gt; &#123;
+            if (&quot;捡田螺的小男孩&quot;.equals(a)) &#123;
+                System.out.println(&quot;关注了&quot;);
+            &#125;
+
+            System.out.println(&quot;先考虑考虑&quot;);
+        &#125;);
+
+        System.out.println(thenAcceptFuture.get());
+    &#125;
+&#125;
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="3-thenApply-thenApplyAsync"><a class="header-anchor" href="#3-thenApply-thenApplyAsync">¶</a>3. thenApply/thenApplyAsync</h4>
+<p>CompletableFuture 的 thenApply 方法表示，第一个任务执行完成后，执行第二个回调方法任务，会将该任务的执行结果，作为入参，传递到回调方法中，并且回调方法是有返回值的。</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureThenApplyTest &#123;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;String&gt; orgFuture &#x3D; CompletableFuture.supplyAsync(
+                ()-&gt;&#123;
+                    System.out.println(&quot;原始CompletableFuture方法任务&quot;);
+                    return &quot;捡田螺的小男孩&quot;;
+                &#125;
+        );
+
+        CompletableFuture&lt;String&gt; thenApplyFuture &#x3D; orgFuture.thenApply((a) -&gt; &#123;
+            if (&quot;捡田螺的小男孩&quot;.equals(a)) &#123;
+                return &quot;关注了&quot;;
+            &#125;
+
+            return &quot;先考虑考虑&quot;;
+        &#125;);
+
+        System.out.println(thenApplyFuture.get());
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+原始CompletableFuture方法任务
+关注了
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="4-exceptionally"><a class="header-anchor" href="#4-exceptionally">¶</a>4. exceptionally</h4>
+<p>CompletableFuture 的 exceptionally 方法表示，某个任务执行异常时，执行的回调方法; 并且有<strong>抛出异常作为参数</strong>，传递到回调方法。</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureExceptionTest &#123;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;String&gt; orgFuture &#x3D; CompletableFuture.supplyAsync(
+                ()-&gt;&#123;
+                    System.out.println(&quot;当前线程名称：&quot; + Thread.currentThread().getName());
+                    throw new RuntimeException();
+                &#125;
+        );
+
+        CompletableFuture&lt;String&gt; exceptionFuture &#x3D; orgFuture.exceptionally((e) -&gt; &#123;
+            e.printStackTrace();
+            return &quot;你的程序异常啦&quot;;
+        &#125;);
+
+        System.out.println(exceptionFuture.get());
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+当前线程名称：ForkJoinPool.commonPool-worker-1
+java.util.concurrent.CompletionException: java.lang.RuntimeException
+	at java.util.concurrent.CompletableFuture.encodeThrowable(CompletableFuture.java:273)
+	at java.util.concurrent.CompletableFuture.completeThrowable(CompletableFuture.java:280)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1592)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.exec(CompletableFuture.java:1582)
+	at java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:289)
+	at java.util.concurrent.ForkJoinPool$WorkQueue.runTask(ForkJoinPool.java:1056)
+	at java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1692)
+	at java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:157)
+Caused by: java.lang.RuntimeException
+	at cn.eovie.future.FutureWhenTest.lambda$main$0(FutureWhenTest.java:13)
+	at java.util.concurrent.CompletableFuture$AsyncSupply.run(CompletableFuture.java:1590)
+	... 5 more
+你的程序异常啦
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="5-whenComplete-方法"><a class="header-anchor" href="#5-whenComplete-方法">¶</a>5. whenComplete 方法</h4>
+<p>CompletableFuture 的 whenComplete 方法表示，某个任务执行完成后，执行的回调方法，<strong>无返回值</strong>；并且 whenComplete 方法返回的 CompletableFuture 的 <strong>result 是上个任务的结果</strong>。</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureWhenTest &#123;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;String&gt; orgFuture &#x3D; CompletableFuture.supplyAsync(
+                ()-&gt;&#123;
+                    System.out.println(&quot;当前线程名称：&quot; + Thread.currentThread().getName());
+                    try &#123;
+                        Thread.sleep(2000L);
+                    &#125; catch (InterruptedException e) &#123;
+                        e.printStackTrace();
+                    &#125;
+                    return &quot;捡田螺的小男孩&quot;;
+                &#125;
+        );
+
+        CompletableFuture&lt;String&gt; rstFuture &#x3D; orgFuture.whenComplete((a, throwable) -&gt; &#123;
+            System.out.println(&quot;当前线程名称：&quot; + Thread.currentThread().getName());
+            System.out.println(&quot;上个任务执行完啦，还把&quot; + a + &quot;传过来&quot;);
+            if (&quot;捡田螺的小男孩&quot;.equals(a)) &#123;
+                System.out.println(&quot;666&quot;);
+            &#125;
+            System.out.println(&quot;233333&quot;);
+        &#125;);
+
+        System.out.println(rstFuture.get());
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+当前线程名称：ForkJoinPool.commonPool-worker-1
+当前线程名称：ForkJoinPool.commonPool-worker-1
+上个任务执行完啦，还把捡田螺的小男孩传过来
+捡田螺的小男孩
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="6-handle-方法"><a class="header-anchor" href="#6-handle-方法">¶</a>6. handle 方法</h4>
+<p>CompletableFuture 的 handle 方法表示，<strong>某个任务执行完成后，执行回调方法，并且是有返回值的</strong>; 并且 handle 方法返回的 CompletableFuture 的 result 是<strong>回调方法</strong>执行的结果。</p>
+<pre class="line-numbers language-none"><code class="language-none">public class FutureHandlerTest &#123;
+
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;String&gt; orgFuture &#x3D; CompletableFuture.supplyAsync(
+                ()-&gt;&#123;
+                    System.out.println(&quot;当前线程名称：&quot; + Thread.currentThread().getName());
+                    try &#123;
+                        Thread.sleep(2000L);
+                    &#125; catch (InterruptedException e) &#123;
+                        e.printStackTrace();
+                    &#125;
+                    return &quot;捡田螺的小男孩&quot;;
+                &#125;
+        );
+
+        CompletableFuture&lt;String&gt; rstFuture &#x3D; orgFuture.handle((a, throwable) -&gt; &#123;
+
+            System.out.println(&quot;上个任务执行完啦，还把&quot; + a + &quot;传过来&quot;);
+            if (&quot;捡田螺的小男孩&quot;.equals(a)) &#123;
+                System.out.println(&quot;666&quot;);
+                return &quot;关注了&quot;;
+            &#125;
+            System.out.println(&quot;233333&quot;);
+            return null;
+        &#125;);
+
+        System.out.println(rstFuture.get());
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+当前线程名称：ForkJoinPool.commonPool-worker-1
+上个任务执行完啦，还把捡田螺的小男孩传过来
+关注了
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="多个任务组合处理"><a class="header-anchor" href="#多个任务组合处理">¶</a>多个任务组合处理</h3>
+<p><img src="https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/67db247b585a48b88ec1dcd7ab37a8b4~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h4 id="AND-组合关系"><a class="header-anchor" href="#AND-组合关系">¶</a>AND 组合关系</h4>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/38ce935a546c42c5a11c66a26d7e19e0~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<p>thenCombine / thenAcceptBoth / runAfterBoth 都表示：<strong>将两个 CompletableFuture 组合起来，只有这两个都正常执行完了，才会执行某个任务</strong>。</p>
+<p>区别在于：</p>
+<ul>
+<li>thenCombine：会将两个任务的执行结果作为方法入参，传递到指定方法中，且<strong>有返回值</strong></li>
+<li>thenAcceptBoth: 会将两个任务的执行结果作为方法入参，传递到指定方法中，且<strong>无返回值</strong></li>
+<li>runAfterBoth 不会把执行结果当做方法入参，且没有返回值。</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">public class ThenCombineTest &#123;
+
+    public static void main(String[] args) throws InterruptedException, ExecutionException, TimeoutException &#123;
+
+        CompletableFuture&lt;String&gt; first &#x3D; CompletableFuture.completedFuture(&quot;第一个异步任务&quot;);
+        ExecutorService executor &#x3D; Executors.newFixedThreadPool(10);
+        CompletableFuture&lt;String&gt; future &#x3D; CompletableFuture
+                &#x2F;&#x2F;第二个异步任务
+                .supplyAsync(() -&gt; &quot;第二个异步任务&quot;, executor)
+                &#x2F;&#x2F; (w, s) -&gt; System.out.println(s) 是第三个任务
+                .thenCombineAsync(first, (s, w) -&gt; &#123;
+                    System.out.println(w);
+                    System.out.println(s);
+                    return &quot;两个异步任务的组合&quot;;
+                &#125;, executor);
+        System.out.println(future.join());
+        executor.shutdown();
+
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+第一个异步任务
+第二个异步任务
+两个异步任务的组合
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="OR-组合的关系"><a class="header-anchor" href="#OR-组合的关系">¶</a>OR 组合的关系</h4>
+<p><img src="https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/2d5e83e5fc4b404d980ded354bb3420d~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<p>applyToEither / acceptEither / runAfterEither 都表示：将两个 CompletableFuture 组合起来，只要其中一个执行完了, 就会执行某个任务。</p>
+<p>区别在于：</p>
+<ul>
+<li>applyToEither：会将已经执行完成的任务，作为方法入参，传递到指定方法中，且有返回值</li>
+<li>acceptEither: 会将已经执行完成的任务，作为方法入参，传递到指定方法中，且无返回值</li>
+<li>runAfterEither： 不会把执行结果当做方法入参，且没有返回值。</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">public class AcceptEitherTest &#123;
+    public static void main(String[] args) &#123;
+        &#x2F;&#x2F;第一个异步任务，休眠2秒，保证它执行晚点
+        CompletableFuture&lt;String&gt; first &#x3D; CompletableFuture.supplyAsync(()-&gt;&#123;
+            try&#123;
+
+                Thread.sleep(2000L);
+                System.out.println(&quot;执行完第一个异步任务&quot;);&#125;
+                catch (Exception e)&#123;
+                    return &quot;第一个任务异常&quot;;
+                &#125;
+            return &quot;第一个异步任务&quot;;
+        &#125;);
+        ExecutorService executor &#x3D; Executors.newSingleThreadExecutor();
+        CompletableFuture&lt;Void&gt; future &#x3D; CompletableFuture
+                &#x2F;&#x2F;第二个异步任务
+                .supplyAsync(() -&gt; &#123;
+                            System.out.println(&quot;执行完第二个任务&quot;);
+                            return &quot;第二个任务&quot;;&#125;
+                , executor)
+                &#x2F;&#x2F;第三个任务
+                .acceptEitherAsync(first, System.out::println, executor);
+
+        executor.shutdown();
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+执行完第二个任务
+第二个任务
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="AllOf"><a class="header-anchor" href="#AllOf">¶</a>AllOf</h3>
+<p>所有任务都执行完成后，才执行 allOf 返回的 CompletableFuture。如果任意一个任务异常，allOf 的 CompletableFuture，执行 get 方法，会抛出异常</p>
+<pre class="line-numbers language-none"><code class="language-none">public class allOfFutureTest &#123;
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;Void&gt; a &#x3D; CompletableFuture.runAsync(()-&gt;&#123;
+            System.out.println(&quot;我执行完了&quot;);
+        &#125;);
+        CompletableFuture&lt;Void&gt; b &#x3D; CompletableFuture.runAsync(() -&gt; &#123;
+            System.out.println(&quot;我也执行完了&quot;);
+        &#125;);
+        CompletableFuture&lt;Void&gt; allOfFuture &#x3D; CompletableFuture.allOf(a, b).whenComplete((m,k)-&gt;&#123;
+            System.out.println(&quot;finish&quot;);
+        &#125;);
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+我执行完了
+我也执行完了
+finish
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="AnyOf"><a class="header-anchor" href="#AnyOf">¶</a>AnyOf</h3>
+<p>任意一个任务执行完，就执行 anyOf 返回的 CompletableFuture。如果执行的任务异常，anyOf 的 CompletableFuture，执行 get 方法，会抛出异常</p>
+<pre class="line-numbers language-none"><code class="language-none">public class AnyOfFutureTest &#123;
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;Void&gt; a &#x3D; CompletableFuture.runAsync(()-&gt;&#123;
+            try &#123;
+                Thread.sleep(3000L);
+            &#125; catch (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+            System.out.println(&quot;我执行完了&quot;);
+        &#125;);
+        CompletableFuture&lt;Void&gt; b &#x3D; CompletableFuture.runAsync(() -&gt; &#123;
+            System.out.println(&quot;我也执行完了&quot;);
+        &#125;);
+        CompletableFuture&lt;Object&gt; anyOfFuture &#x3D; CompletableFuture.anyOf(a, b).whenComplete((m,k)-&gt;&#123;
+            System.out.println(&quot;finish&quot;);
+&#x2F;&#x2F;            return &quot;捡田螺的小男孩&quot;;
+        &#125;);
+        anyOfFuture.join();
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+我也执行完了
+finish
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="thenCompose"><a class="header-anchor" href="#thenCompose">¶</a>thenCompose</h3>
+<p>thenCompose 方法会在某个任务执行完成后，将该任务的执行结果, 作为方法入参, 去执行指定的方法。该方法会返回一个新的 CompletableFuture 实例</p>
+<ul>
+<li>如果该 CompletableFuture 实例的 result 不为 null，则返回一个基于该 result 新的 CompletableFuture 实例；</li>
+<li>如果该 CompletableFuture 实例为 null，然后就执行这个新任务</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">public class ThenComposeTest &#123;
+    public static void main(String[] args) throws ExecutionException, InterruptedException &#123;
+
+        CompletableFuture&lt;String&gt; f &#x3D; CompletableFuture.completedFuture(&quot;第一个任务&quot;);
+        &#x2F;&#x2F;第二个异步任务
+        ExecutorService executor &#x3D; Executors.newSingleThreadExecutor();
+        CompletableFuture&lt;String&gt; future &#x3D; CompletableFuture
+                .supplyAsync(() -&gt; &quot;第二个任务&quot;, executor)
+                .thenComposeAsync(data -&gt; &#123;
+                    System.out.println(data); return f; &#x2F;&#x2F;使用第一个任务作为返回
+                &#125;, executor);
+        System.out.println(future.join());
+        executor.shutdown();
+
+    &#125;
+&#125;
+&#x2F;&#x2F;输出
+第二个任务
+第一个任务
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="CompletableFuture-使用有哪些注意点"><a class="header-anchor" href="#CompletableFuture-使用有哪些注意点">¶</a>CompletableFuture 使用有哪些注意点</h2>
+<p>CompletableFuture 使我们的异步编程更加便利的、代码更加优雅的同时，我们也要关注下它，使用的一些注意点。</p>
+<p><img src="https://p3-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/eafdc009ff94437ebf1d14fee9dc1e21~tplv-k3u1fbpfcp-watermark.image" alt="" loading="lazy"></p>
+<h3 id="1-Future-需要获取返回值，才能获取异常信息"><a class="header-anchor" href="#1-Future-需要获取返回值，才能获取异常信息">¶</a>1. Future 需要获取返回值，才能获取异常信息</h3>
+<pre class="line-numbers language-none"><code class="language-none">ExecutorService executorService &#x3D; new ThreadPoolExecutor(5, 10, 5L,
+    TimeUnit.SECONDS, new ArrayBlockingQueue&lt;&gt;(10));
+CompletableFuture&lt;Void&gt; future &#x3D; CompletableFuture.supplyAsync(() -&gt; &#123;
+      int a &#x3D; 0;
+      int b &#x3D; 666;
+      int c &#x3D; b &#x2F; a;
+      return true;
+   &#125;,executorService).thenAccept(System.out::println);
+   
+ &#x2F;&#x2F;如果不加 get()方法这一行，看不到异常信息
+ &#x2F;&#x2F;future.get();
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Future 需要获取返回值，才能获取到异常信息。如果不加 get()/join() 方法，看不到异常信息。小伙伴们使用的时候，注意一下哈, 考虑是否加 try…catch… 或者使用 exceptionally 方法。</p>
+<h3 id="2-CompletableFuture-的-get-方法是阻塞的。"><a class="header-anchor" href="#2-CompletableFuture-的-get-方法是阻塞的。">¶</a>2. CompletableFuture 的 get() 方法是阻塞的。</h3>
+<p>CompletableFuture 的 get() 方法是阻塞的，如果使用它来获取异步调用的返回值，需要添加超时时间~</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;反例
+ CompletableFuture.get();
+&#x2F;&#x2F;正例
+CompletableFuture.get(5, TimeUnit.SECONDS);
+复制代码<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-默认线程池的注意点"><a class="header-anchor" href="#3-默认线程池的注意点">¶</a>3. 默认线程池的注意点</h3>
+<p>CompletableFuture 代码中又使用了默认的线程池，处理的线程个数是电脑 CPU 核数 - 1。在<strong>大量请求过来的时候，处理逻辑复杂的话，响应会很慢</strong>。一般建议使用自定义线程池，优化线程池配置参数。</p>
+<h3 id="4-自定义线程池时，注意饱和策略"><a class="header-anchor" href="#4-自定义线程池时，注意饱和策略">¶</a>4. 自定义线程池时，注意饱和策略</h3>
+<p>CompletableFuture 的 get() 方法是阻塞的，我们一般建议使用<code>future.get(3, TimeUnit.SECONDS)</code>。并且一般建议使用自定义线程池。</p>
+<p>但是如果线程池拒绝策略是<code>DiscardPolicy</code>或者<code>DiscardOldestPolicy</code>，当线程池饱和时，会直接丢弃任务，不会抛弃异常。因此建议，CompletableFuture 线程池策略<strong>最好使用 AbortPolicy</strong>，然后耗时的异步线程，做好<strong>线程池隔离</strong>哈。</p>
+<h2 id="参考与感谢"><a class="header-anchor" href="#参考与感谢">¶</a>参考与感谢</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_31865983/article/details/106137777">Java8 CompletableFuture 用法全解</a></li>
+<li><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/tDr9Bh0x4RiXU66VknoGOw">详解 java CompletableFuture</a></li>
+<li><a target="_blank" rel="noopener" href="https://juejin.cn/post/6902655550031413262#heading-5">基础篇：异步编程不会？我教你啊！</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/xiaolyuh123/article/details/85023269">CompletableFuture get 方法一直阻塞或抛出 TimeoutException</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/111841508">编程老司机带你玩转 CompletableFuture 异步编程</a></li>
+<li><a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_42742643/article/details/111638260">解决 CompletableFuture 异常阻塞</a></li>
+</ul>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2020/12/11/CollectionNote/java/%E7%BA%BF%E7%A8%8B/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E5%88%A9%E5%99%A8CompletableFuture%E8%AF%A6%E8%A7%A3/" title="异步编程利器CompletableFuture详解">https://ppxiaodi.gitee.io/2020/12/11/CollectionNote/java/%E7%BA%BF%E7%A8%8B/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E5%88%A9%E5%99%A8CompletableFuture%E8%AF%A6%E8%A7%A3/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2020/12/11/CollectionNote/java/%E7%BA%BF%E7%A8%8B/%E5%BC%82%E6%AD%A5%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E5%88%A9%E7%94%A8countDownLatch%E5%B0%86%E5%BC%82%E6%AD%A5%E5%A4%9A%E7%BA%BF%E7%A8%8B%E7%BB%93%E6%9E%9C%E5%90%8C%E6%AD%A5%E8%BF%94%E5%9B%9E/" rel="prev" title="异步编程——利用countDownLatch将异步多线程结果同步返回"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">异步编程——利用countDownLatch将异步多线程结果同步返回</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2020/12/11/CollectionNote/%E6%94%B6%E8%97%8F%E9%93%BE%E6%8E%A5/java/%E7%BA%BF%E7%A8%8B%E6%94%B6%E8%97%8F%E9%93%BE%E6%8E%A5/" rel="next" title="线程收藏链接"><span class="post-nav-text">线程收藏链接</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>

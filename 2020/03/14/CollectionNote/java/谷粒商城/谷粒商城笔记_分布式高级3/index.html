@@ -1,0 +1,866 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>谷粒商城笔记_分布式高级3 | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="谷粒商城笔记_分布式高级3   本文由 简悦 SimpRead 转码， 原文地址 blog.csdn.net   ES 笔记：https:&#x2F;&#x2F;blog.csdn.net&#x2F;hancoder&#x2F;article&#x2F;details&#x2F;113922398 ¶商品上架 ¶商品上架 POST &#x2F;product&#x2F;spuinfo&#x2F;{spuId}&#x2F;up @GetMapping(&quot;&#x2F;skuId&#x2F;">
+<meta property="og:type" content="article">
+<meta property="og:title" content="谷粒商城笔记_分布式高级3">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="谷粒商城笔记_分布式高级3   本文由 简悦 SimpRead 转码， 原文地址 blog.csdn.net   ES 笔记：https:&#x2F;&#x2F;blog.csdn.net&#x2F;hancoder&#x2F;article&#x2F;details&#x2F;113922398 ¶商品上架 ¶商品上架 POST &#x2F;product&#x2F;spuinfo&#x2F;{spuId}&#x2F;up @GetMapping(&quot;&#x2F;skuId&#x2F;">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/fcf668caca4ac9e1c4fee9550db9502d.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/1486da0c29522387b5c52ee774e2cd36.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/1486da0c29522387b5c52ee774e2cd36-1615734058318.png">
+<meta property="article:published_time" content="2020-03-13T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:54.258Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="java">
+<meta property="article:tag" content="谷粒商城">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/fcf668caca4ac9e1c4fee9550db9502d.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">谷粒商城笔记_分布式高级3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%86%E5%93%81%E4%B8%8A%E6%9E%B6"><span class="toc-number">1.1.</span> <span class="toc-text">商品上架</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%95%86%E5%93%81%E4%B8%8A%E6%9E%B6-v2"><span class="toc-number">1.1.1.</span> <span class="toc-text">商品上架</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%95%86%E5%93%81%E4%B8%8A%E6%9E%B6%E4%BB%A3%E7%A0%81"><span class="toc-number">1.1.1.0.1.</span> <span class="toc-text">商品上架代码</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Feign"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">Feign</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#R"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">R</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%86%E5%9F%8E%E7%B3%BB%E7%BB%9F%E9%A6%96%E9%A1%B5"><span class="toc-number">1.2.</span> <span class="toc-text">商城系统首页</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BE%9D%E8%B5%96"><span class="toc-number">1.2.0.1.</span> <span class="toc-text">依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E4%B8%80%E7%BA%A7%E5%88%86%E7%B1%BB%E8%8F%9C%E5%8D%95"><span class="toc-number">1.2.0.2.</span> <span class="toc-text">渲染一级分类菜单</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E4%B8%89%E7%BA%A7%E5%88%86%E7%B1%BB%E8%8F%9C%E5%8D%95"><span class="toc-number">1.2.0.3.</span> <span class="toc-text">渲染三级分类菜单</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Nginx"><span class="toc-number">1.3.</span> <span class="toc-text">Nginx</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx-%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6"><span class="toc-number">1.3.1.</span> <span class="toc-text">Nginx 配置文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx-%E7%BD%91%E5%85%B3"><span class="toc-number">1.3.2.</span> <span class="toc-text">Nginx + 网关</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%8B%E5%8A%9B%E6%B5%8B%E8%AF%95"><span class="toc-number">1.4.</span> <span class="toc-text">压力测试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Jmeter"><span class="toc-number">1.4.1.</span> <span class="toc-text">Jmeter</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#Jmeter-Address-Already-in-use-%E9%94%99%E8%AF%AF%E8%A7%A3%E5%86%B3"><span class="toc-number">1.4.1.0.1.</span> <span class="toc-text">Jmeter Address Already in use 错误解决</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Jconsole%E3%80%81JvisualVM"><span class="toc-number">1.4.2.</span> <span class="toc-text">Jconsole、JvisualVM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BC%98%E5%8C%96"><span class="toc-number">1.4.3.</span> <span class="toc-text">优化</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Nginx-%E5%8A%A8%E9%9D%99%E5%88%86%E7%A6%BB"><span class="toc-number">1.4.4.</span> <span class="toc-text">Nginx 动静分离</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%98%E5%8C%96%E4%B8%89%E7%BA%A7%E5%88%86%E7%B1%BB"><span class="toc-number">1.4.4.1.</span> <span class="toc-text">优化三级分类</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#redisson-%E5%88%86%E5%B8%83%E5%BC%8F%E9%94%81%E4%B8%8E%E7%BC%93%E5%AD%98"><span class="toc-number">1.5.</span> <span class="toc-text">redisson 分布式锁与缓存</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2"><span class="toc-number">1.6.</span> <span class="toc-text">检索</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E6%AD%A5%E7%BC%96%E6%8E%92"><span class="toc-number">1.7.</span> <span class="toc-text">异步编排</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%86%E5%93%81%E8%AF%A6%E6%83%85"><span class="toc-number">1.8.</span> <span class="toc-text">商品详情</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-VO"><span class="toc-number">1.8.1.</span> <span class="toc-text">(1) VO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-sql-%E6%9E%84%E5%BB%BA"><span class="toc-number">1.8.2.</span> <span class="toc-text">(2) sql 构建</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%88%86%E7%BB%84%E8%A7%84%E6%A0%BC%E5%8F%82%E6%95%B0"><span class="toc-number">1.8.2.0.1.</span> <span class="toc-text">分组规格参数</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#sku-%E5%94%AE%E5%8D%96%E5%B1%9E%E6%80%A7"><span class="toc-number">1.8.2.0.2.</span> <span class="toc-text">sku 售卖属性</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-controller-service"><span class="toc-number">1.8.3.</span> <span class="toc-text">(3) controller-service</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E4%BC%98%E5%8C%96-%E5%BC%82%E6%AD%A5%E7%BC%96%E6%8E%92"><span class="toc-number">1.8.4.</span> <span class="toc-text">(4) 优化: 异步编排</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-%E9%A1%B5%E9%9D%A2-sku-%E5%88%87%E6%8D%A2"><span class="toc-number">1.8.5.</span> <span class="toc-text">(5) 页面 sku 切换</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%AE%A4%E8%AF%81%E6%9C%8D%E5%8A%A1"><span class="toc-number">1.9.</span> <span class="toc-text">认证服务</span></a></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">谷粒商城笔记_分布式高级3</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2020-03-14 00:00:00" itemprop="dateCreated datePublished" datetime="2020-03-14T00:00:00+08:00">2020-03-14</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:54" itemprop="dateModified" datetime="2021-07-11T16:54:54+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">java</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">谷粒商城</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/java/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">java</span></a><a class="tag-item" href="/tags/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">谷粒商城</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><h1>谷粒商城笔记_分布式高级3</h1>
+<blockquote>
+<blockquote>
+<p>本文由 <a target="_blank" rel="noopener" href="http://ksria.com/simpread/">简悦 SimpRead</a> 转码， 原文地址 <a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/107612746">blog.csdn.net</a></p>
+</blockquote>
+</blockquote>
+<p>ES 笔记：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/113922398">https://blog.csdn.net/hancoder/article/details/113922398</a></p>
+<h2 id="商品上架"><a class="header-anchor" href="#商品上架">¶</a>商品上架</h2>
+<h3 id="商品上架-v2"><a class="header-anchor" href="#商品上架-v2">¶</a>商品上架</h3>
+<p>POST /product/spuinfo/{spuId}/up</p>
+<pre class="line-numbers language-none"><code class="language-none">@GetMapping(&quot;&#x2F;skuId&#x2F;&#123;id&#125;&quot;)
+public R getSkuInfoBySkuId(@PathVariable(&quot;id&quot;) Long skuId)&#123;
+
+    SpuInfoEntity entity &#x3D; spuInfoService.getSpuInfoBySkuId(skuId);
+    return R.ok().setData(entity);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>product 里组装好，search 里上架</p>
+<p><strong>商品上架 entity</strong></p>
+<p>商品上架需要在 es 中保存 spu 信息并更新 spu 的状态信息，由于<code>SpuInfoEntity</code>与索引的数据模型并不对应，所以我们要建立专门的 vo 进行数据传输</p>
+<pre class="line-numbers language-none"><code class="language-none">@Data
+public class SkuEsModel &#123; &#x2F;&#x2F;common中
+    private Long skuId;
+    private Long spuId;
+    private String skuTitle;
+    private BigDecimal skuPrice;
+    private String skuImg;
+    private Long saleCount;
+    private boolean hasStock;
+    private Long hotScore;
+    private Long brandId;
+    private Long catalogId;
+    private String brandName;
+    private String brandImg;
+    private String catalogName;
+    private List&lt;Attr&gt; attrs;
+
+    @Data
+    public static class Attr&#123;
+        private Long attrId;
+        private String attrName;
+        private String attrValue;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>商品上架 service</strong></p>
+<p>sku 的规格参数相同，因此我们要将查询规格参数提前，只查询一次</p>
+<ol>
+<li>在 ware 微服务里添加 “查询 sku 是否有库存” 的 controller</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+     * 查询sku是否有库存
+     * 返回skuId 和 stock库存量
+     *&#x2F;
+@PostMapping(&quot;&#x2F;hasStock&quot;)
+public R getSkuHasStock(@RequestBody List&lt;Long&gt; SkuIds)&#123;
+    List&lt;SkuHasStockVo&gt; vos &#x3D; wareSkuService.getSkuHasStock(SkuIds);
+    return R.ok().setData(vos);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后用 feign 调用</p>
+<ol start="2">
+<li>
+<p>设置 R 的时候最后设置成泛型的</p>
+</li>
+<li>
+<p>收集成 map 的时候，toMap() 参数为两个方法，如 SkyHasStockVo::getSkyId,item-&gt;item.getHasStock()</p>
+</li>
+</ol>
+<ol start="4">
+<li>将封装好的 SkuInfoEntity，调用 search 的 feign，保存到 es 中</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">public boolean productStatusUp(List&lt;SkuEsModel&gt; skuEsModels) throws IOException &#123;
+    &#x2F;&#x2F; 1.给ES建立一个索引 product
+    BulkRequest bulkRequest &#x3D; new BulkRequest();
+    &#x2F;&#x2F; 2.构造保存请求
+    for (SkuEsModel esModel : skuEsModels) &#123;
+        &#x2F;&#x2F; 设置索引
+        IndexRequest indexRequest &#x3D; new IndexRequest(EsConstant.PRODUCT_INDEX);
+        &#x2F;&#x2F; 设置索引id
+        indexRequest.id(esModel.getSkuId().toString());
+        String jsonString &#x3D; JSON.toJSONString(esModel);
+        indexRequest.source(jsonString, XContentType.JSON);
+        &#x2F;&#x2F; add
+        bulkRequest.add(indexRequest);
+    &#125;
+    &#x2F;&#x2F; bulk批量保存
+    BulkResponse bulk &#x3D; client.bulk(bulkRequest, GuliESConfig.COMMON_OPTIONS);
+    &#x2F;&#x2F; TODO 是否拥有错误
+    boolean hasFailures &#x3D; bulk.hasFailures();
+    if(hasFailures)&#123;
+        List&lt;String&gt; collect &#x3D; Arrays.stream(bulk.getItems()).map(item -&gt; item.getId()).collect(Collectors.toList());
+        log.error(&quot;商品上架错误：&#123;&#125;&quot;,collect);
+    &#125;
+    return hasFailures;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>5）上架失败返回 R.error(错误码, 消息)</p>
+<p>此时再定义一个错误码枚举。</p>
+<p>在接收端获取他返回的状态码</p>
+<p>6）上架后再让数据库中变为上架状态</p>
+<p>7）mybatis 为了能兼容接收 null 类型，要把 long 改为 Long</p>
+<p>debug 时很容易远程调用异常，因为超时了</p>
+<h5 id="商品上架代码"><a class="header-anchor" href="#商品上架代码">¶</a>商品上架代码</h5>
+<pre class="line-numbers language-none"><code class="language-none">public void upSpuForSearch(Long spuId) &#123;
+        &#x2F;&#x2F;1、查出当前spuId对应的所有sku信息,品牌的名字
+        List&lt;SkuInfoEntity&gt; skuInfoEntities&#x3D;skuInfoService.getSkusBySpuId(spuId);
+        &#x2F;&#x2F;TODO 4、根据spu查出当前sku的所有可以被用来检索的规格属性
+        List&lt;ProductAttrValueEntity&gt; productAttrValueEntities &#x3D; productAttrValueService.list(new QueryWrapper&lt;ProductAttrValueEntity&gt;().eq(&quot;spu_id&quot;, spuId));
+        List&lt;Long&gt; attrIds &#x3D; productAttrValueEntities.stream().map(attr -&gt; &#123;
+            return attr.getAttrId();
+        &#125;).collect(Collectors.toList());
+        List&lt;Long&gt; searchIds&#x3D;attrService.selectSearchAttrIds(attrIds);
+        Set&lt;Long&gt; ids &#x3D; new HashSet&lt;&gt;(searchIds);
+        List&lt;SkuEsModel.Attr&gt; searchAttrs &#x3D; productAttrValueEntities.stream().filter(entity -&gt; &#123;
+            return ids.contains(entity.getAttrId());
+        &#125;).map(entity -&gt; &#123;
+            SkuEsModel.Attr attr &#x3D; new SkuEsModel.Attr();
+            BeanUtils.copyProperties(entity, attr);
+            return attr;
+        &#125;).collect(Collectors.toList());
+
+
+        &#x2F;&#x2F;TODO 1、发送远程调用，库存系统查询是否有库存
+        Map&lt;Long, Boolean&gt; stockMap &#x3D; null;
+        try &#123;
+            List&lt;Long&gt; longList &#x3D; skuInfoEntities.stream().map(SkuInfoEntity::getSkuId).collect(Collectors.toList());
+            List&lt;SkuHasStockVo&gt; skuHasStocks &#x3D; wareFeignService.getSkuHasStocks(longList);
+            stockMap &#x3D; skuHasStocks.stream().collect(Collectors.toMap(SkuHasStockVo::getSkuId, SkuHasStockVo::getHasStock));
+        &#125;catch (Exception e)&#123;
+            log.error(&quot;远程调用库存服务失败,原因&#123;&#125;&quot;,e);
+        &#125;
+
+        &#x2F;&#x2F;2、封装每个sku的信息
+        Map&lt;Long, Boolean&gt; finalStockMap &#x3D; stockMap;
+        List&lt;SkuEsModel&gt; skuEsModels &#x3D; skuInfoEntities.stream().map(sku -&gt; &#123;
+            SkuEsModel skuEsModel &#x3D; new SkuEsModel();
+            BeanUtils.copyProperties(sku, skuEsModel);
+            skuEsModel.setSkuPrice(sku.getPrice());
+            skuEsModel.setSkuImg(sku.getSkuDefaultImg());
+            &#x2F;&#x2F;TODO 2、热度评分。0
+            skuEsModel.setHotScore(0L);
+            &#x2F;&#x2F;TODO 3、查询品牌和分类的名字信息
+            BrandEntity brandEntity &#x3D; brandService.getById(sku.getBrandId());
+            skuEsModel.setBrandName(brandEntity.getName());
+            skuEsModel.setBrandImg(brandEntity.getLogo());
+            CategoryEntity categoryEntity &#x3D; categoryService.getById(sku.getCatalogId());
+            skuEsModel.setCatalogName(categoryEntity.getName());
+            &#x2F;&#x2F;设置可搜索属性
+            skuEsModel.setAttrs(searchAttrs);
+            &#x2F;&#x2F;设置是否有库存
+            skuEsModel.setHasStock(finalStockMap&#x3D;&#x3D;null?false:finalStockMap.get(sku.getSkuId()));
+            return skuEsModel;
+        &#125;).collect(Collectors.toList());
+
+        &#x2F;&#x2F;TODO 5、将数据发给es进行保存：gulimall-search
+        R r &#x3D; searchFeignService.saveProductAsIndices(skuEsModels);
+        if (r.getCode()&#x3D;&#x3D;0)&#123;
+            this.baseMapper.upSpuStatus(spuId, ProductConstant.ProductStatusEnum.SPU_UP.getCode());
+        &#125;else &#123;
+            log.error(&quot;商品远程es保存失败&quot;);
+        &#125;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="Feign"><a class="header-anchor" href="#Feign">¶</a>Feign</h4>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; ReflectiveFeign
+public Object invoke(Object proxy, Method method, Object[] args) throws Throwable &#123;
+    if (!&quot;equals&quot;.equals(method.getName())) &#123;
+        if (&quot;hashCode&quot;.equals(method.getName())) &#123;
+            return this.hashCode();
+        &#125; else &#123;
+            return &quot;toString&quot;.equals(method.getName()) ? this.toString() : ((MethodHandler)this.dispatch.get(method)).invoke(args);
+        &#125;
+    &#125; else &#123;
+        try &#123;
+            Object otherHandler &#x3D; args.length &gt; 0 &amp;&amp; args[0] !&#x3D; null ? Proxy.getInvocationHandler(args[0]) : null;
+            return this.equals(otherHandler);
+        &#125; catch (IllegalArgumentException var5) &#123;
+            return false;
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; SynchronousMethodHandler.JAVA;
+
+public Object invoke(Object[] argv) throws Throwable &#123;
+    &#x2F;&#x2F; 传过来的数据，构造 RequestTemplate，里面body有数据
+    RequestTemplate template &#x3D; this.buildTemplateFromArgs.create(argv);
+    Options options &#x3D; this.findOptions(argv);
+    &#x2F;&#x2F; 重试器，要注意重复调用、接口幂等性。可以写重试器自己的实现
+    Retryer retryer &#x3D; this.retryer.clone();
+
+    while(true) &#123;
+        try &#123;
+            &#x2F;&#x2F; 执行后得到响应，解码得到bean
+            return this.executeAndDecode(template, options);
+        &#125; catch (RetryableException var9) &#123;
+            RetryableException e &#x3D; var9;
+
+            try &#123;
+                retryer.continueOrPropagate(e);
+            &#125; catch (RetryableException var8) &#123;
+                Throwable cause &#x3D; var8.getCause();
+                if (this.propagationPolicy &#x3D;&#x3D; ExceptionPropagationPolicy.UNWRAP &amp;&amp; cause !&#x3D; null) &#123;
+                    throw cause;
+                &#125;
+                throw var8;
+            &#125;
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/fcf668caca4ac9e1c4fee9550db9502d.png" class="" loading="lazy">
+<p>body 里是数据，feign 将 bean 转为了 json</p>
+<pre class="line-numbers language-none"><code class="language-none">Object executeAndDecode(RequestTemplate template, Options options) throws Throwable &#123;
+    &#x2F;&#x2F; 构造出请求
+    Request request &#x3D; this.targetRequest(template);
+    if (this.logLevel !&#x3D; Level.NONE) &#123;
+        &#x2F;&#x2F; 打印日志
+        this.logger.logRequest(this.metadata.configKey(), this.logLevel, request);
+    &#125;
+
+    long start &#x3D; System.nanoTime();
+
+    Response response;
+    try &#123;
+        &#x2F;&#x2F; 执行。client是LoadBalancerFeignClient。跳转到远程
+        response &#x3D; this.client.execute(request, options);
+        response &#x3D; response.toBuilder().request(request).requestTemplate(template).build();
+    &#125; catch (IOException var16) &#123;
+        if (this.logLevel !&#x3D; Level.NONE) &#123;
+            this.logger.logIOException(this.metadata.configKey(), this.logLevel, var16, this.elapsedTime(start));
+        &#125;
+
+        throw FeignException.errorExecuting(request, var16);
+    &#125;
+。。。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="R"><a class="header-anchor" href="#R">¶</a>R</h4>
+<p>因为是个 hashmap，所以 setData 不成功</p>
+<pre class="line-numbers language-none"><code class="language-none">public class R&lt;T&gt; extends HashMap&lt;String,Object&gt;&#123;
+    &#x2F;&#x2F;     把setData重写成PUT
+    public R setData(Object data)&#123;
+        put(&quot;data&quot;, data);
+        return this;
+    &#125;
+
+    public &lt;T&gt; T getData(TypeReference&lt;T&gt; typeReference)&#123;
+        &#x2F;&#x2F; get(&quot;data&quot;) 默认是map类型 所以再由map转成string再转json
+        Object data &#x3D; get(&quot;data&quot;);&#x2F;&#x2F;得到list，list每个值是map类型
+        &#x2F;&#x2F; list&lt;Map&gt;转json
+        String s &#x3D; JSON.toJSONString(data);
+        &#x2F;&#x2F; json转list&lt;T&gt;
+        return JSON.parseObject(s, typeReference);
+    &#125;
+&#125;
+
+在其他处是new TypeReference&lt;List&lt;T&gt;&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>data 的值对应的是 List，而 list 的每个值是 map</p>
+<h2 id="商城系统首页"><a class="header-anchor" href="#商城系统首页">¶</a>商城系统首页</h2>
+<p>P136</p>
+<p>不使用前后端分离开发了，管理后台用 vue</p>
+<p>页面在 【高级篇 - 资料源码. zip \ 代码 \ html】</p>
+<p>nginx 发给网关集群，网关再路由到微服务</p>
+<p>静态资源放到 nginx 中</p>
+<h4 id="依赖"><a class="header-anchor" href="#依赖">¶</a>依赖</h4>
+<p>导入 thymeleaf 依赖、热部署依赖 devtools 使页面实时生效</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;
+    &lt;artifactId&gt;spring-boot-devtools&lt;&#x2F;artifactId&gt;
+&lt;&#x2F;dependency&gt;
+
+&lt;dependency&gt;
+    &lt;groupId&gt;org.springframework.boot&lt;&#x2F;groupId&gt;
+    &lt;artifactId&gt;spring-boot-starter-thymeleaf&lt;&#x2F;artifactId&gt;
+&lt;&#x2F;dependency&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>html \ 首页资源 \ index 放到 gulimall-product 下的 static 文件夹</p>
+<p>把 index.html 放到 templates 中</p>
+<p>关闭 thymeleaf 缓存，方便开发实时看到更新</p>
+<pre class="line-numbers language-none"><code class="language-none">thymeleaf:
+    cache: false
+    suffix: .html
+    prefix: classpath:&#x2F;templates&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>web 开发放到 web 包下，原来的 controller 是前后分离对接手机等访问的，所以可以改成 app，对接 app 应用</p>
+<h4 id="渲染一级分类菜单"><a class="header-anchor" href="#渲染一级分类菜单">¶</a>渲染一级分类菜单</h4>
+<p>刚导入 index.html 时，里面的分类菜单都是写死的，我们要访问数据库拿到放到 model 中，然后在页面 foreach 填入</p>
+<blockquote>
+<p>thymeleaf 笔记：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/113945941">https://blog.csdn.net/hancoder/article/details/113945941</a></p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">@GetMapping(&#123;&quot;&#x2F;&quot;, &quot;index.html&quot;&#125;)
+public String getIndex(Model model) &#123;
+    &#x2F;&#x2F;获取所有的一级分类
+    List&lt;CategoryEntity&gt; catagories &#x3D; categoryService.getLevel1Catagories();
+    model.addAttribute(&quot;catagories&quot;, catagories);
+    return &quot;index&quot;;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>页面遍历菜单数据</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;li th:each&#x3D;&quot;catagory:$&#123;catagories&#125;&quot; &gt;
+    &lt;a href&#x3D;&quot;#&quot; class&#x3D;&quot;header_main_left_a&quot; ctg-data&#x3D;&quot;3&quot; th:attr&#x3D;&quot;ctg-data&#x3D;$&#123;catagory.catId&#125;&quot;&gt;&lt;b th:text&#x3D;&quot;$&#123;catagory.name&#125;&quot;&gt;&lt;&#x2F;b&gt;&lt;&#x2F;a&gt;
+&lt;&#x2F;li&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h4 id="渲染三级分类菜单"><a class="header-anchor" href="#渲染三级分类菜单">¶</a>渲染三级分类菜单</h4>
+<pre class="line-numbers language-none"><code class="language-none">@ResponseBody
+@RequestMapping(&quot;index&#x2F;catalog.json&quot;)
+public Map&lt;String, List&lt;Catelog2Vo&gt;&gt; getCatlogJson() &#123;
+
+    Map&lt;String, List&lt;Catelog2Vo&gt;&gt; map &#x3D; categoryService.getCatelogJson();
+    return map;
+&#125;
+
+
+@Override
+public Map&lt;String, List&lt;Catelog2Vo&gt;&gt; getCatelogJson() &#123;
+    List&lt;CategoryEntity&gt; entityList &#x3D; baseMapper.selectList(null);
+    &#x2F;&#x2F; 查询所有一级分类
+    List&lt;CategoryEntity&gt; level1 &#x3D; getCategoryEntities(entityList, 0L);
+    Map&lt;String, List&lt;Catelog2Vo&gt;&gt; parent_cid &#x3D; level1.stream().collect(Collectors.toMap(k -&gt; k.getCatId().toString(), v -&gt; &#123;
+        &#x2F;&#x2F; 拿到每一个一级分类 然后查询他们的二级分类
+        List&lt;CategoryEntity&gt; entities &#x3D; getCategoryEntities(entityList, v.getCatId());
+        List&lt;Catelog2Vo&gt; catelog2Vos &#x3D; null;
+        if (entities !&#x3D; null) &#123;
+            catelog2Vos &#x3D; entities.stream().map(l2 -&gt; &#123;
+                Catelog2Vo catelog2Vo &#x3D; new Catelog2Vo(v.getCatId().toString(), l2.getName(), l2.getCatId().toString(), null);
+                &#x2F;&#x2F; 找当前二级分类的三级分类
+                List&lt;CategoryEntity&gt; level3 &#x3D; getCategoryEntities(entityList, l2.getCatId());
+                &#x2F;&#x2F; 三级分类有数据的情况下
+                if (level3 !&#x3D; null) &#123;
+                    List&lt;Catalog3Vo&gt; catalog3Vos &#x3D; level3.stream().map(l3 -&gt; new Catalog3Vo(l3.getCatId().toString(), l3.getName(), l2.getCatId().toString())).collect(Collectors.toList());
+                    catelog2Vo.setCatalog3List(catalog3Vos);
+                &#125;
+                return catelog2Vo;
+            &#125;).collect(Collectors.toList());
+        &#125;
+        return catelog2Vos;
+    &#125;));
+    return parent_cid;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="Nginx"><a class="header-anchor" href="#Nginx">¶</a>Nginx</h2>
+<blockquote>
+<p>本来想把 nginx 另写一篇，csdn 不给审核，说翻墙。。。我服了</p>
+</blockquote>
+<p>在 hosts 中设置 192.168.56.10 <a target="_blank" rel="noopener" href="http://gulimall.com">gulimall.com</a></p>
+<p>利用 nginx 转到网关（记得关防火墙）</p>
+<h3 id="Nginx-配置文件"><a class="header-anchor" href="#Nginx-配置文件">¶</a>Nginx 配置文件</h3>
+<p>nginx.conf：</p>
+<ul>
+<li>全局块：配置影响 nginx 全局的指令。如：用户组，nginx 进程 pid 存放路径，日志存放路径，配置文件引入，允许生成 worker process 故障等</li>
+<li>events 块：配置影响 Nginx 服务器与用户的网络连接，常用的设置包括是否开启对多 work process 下的网络连接进行序列化，是否允许同时接收多个网络连接，选取哪种事件驱动模型来处理连接请求，每个 word process 可以同时支持的最大连接数等。</li>
+<li>http 块：
+<ul>
+<li>http 全局块：配置的指令包括文件引入、MIME-TYPE 定义、日志自定义、连接超时时间、单链接请求数上限等。错误页面等</li>
+<li>server 块：这块和虚拟主机有密切关系，虚拟主机从用户角度看，和一台独立的硬件主机是完全一样的。每个 http 块可以包括多个 server 块，而每个 server 块就相当于一个虚拟主机。
+<ul>
+<li>location1：配置请求的路由，以及各种页面的处理情况</li>
+<li>location2</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">server &#123;
+    listen       80;
+    server_name  gulimall.com;
+
+    #charset koi8-r;
+    #access_log  &#x2F;var&#x2F;log&#x2F;nginx&#x2F;log&#x2F;host.access.log  main;
+
+    location &#x2F; &#123;
+        #又转回到本机
+        proxy_pass http:&#x2F;&#x2F;192.168.56.1:10000;
+    &#125;
+
+    #error_page  404              &#x2F;404.html;
+
+    # redirect server error pages to the static page &#x2F;50x.html
+    #
+    error_page   500 502 503 504  &#x2F;50x.html;
+    location &#x3D; &#x2F;50x.html &#123;
+        root   &#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html;
+    &#125;
+
+    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
+    #
+    #location ~ \.php$ &#123;
+    #    proxy_pass   http:&#x2F;&#x2F;127.0.0.1;
+    #&#125;
+
+    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    #
+    #location ~ \.php$ &#123;
+    #    root           html;
+    #    fastcgi_pass   127.0.0.1:9000;
+    #    fastcgi_index  index.php;
+    #    fastcgi_param  SCRIPT_FILENAME  &#x2F;scripts$fastcgi_script_name;
+    #    include        fastcgi_params;
+    #&#125;
+
+    # deny access to .htaccess files, if Apache&#39;s document root
+    # concurs with nginx&#39;s one
+    #
+    #location ~ &#x2F;\.ht &#123;
+    #    deny  all;
+    #&#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Nginx-网关"><a class="header-anchor" href="#Nginx-网关">¶</a>Nginx + 网关</h3>
+<ol>
+<li>
+<p>修改 hosts，映射<code>gulimall.com</code>到 192.168.56.10。关闭防火墙</p>
+</li>
+<li>
+<p>修改 nginx/conf/nginx.conf，将<code>upstream</code>映射到我们的网关服务</p>
+<pre class="line-numbers language-none"><code class="language-none">upstream gulimall&#123;
+        # 88是网关
+        server 192.168.56.1:88;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p>修改<code>nginx/conf/conf.d/gulimall.conf</code>，接收到 <a target="_blank" rel="noopener" href="http://gulimall.com">gulimall.com</a> 的访问后，如果是 /，转交给指定的 upstream，由于 nginx 的转发会丢失<code>host</code>头，造成网关不知道原 host，所以我们添加头信息</p>
+<pre class="line-numbers language-none"><code class="language-none">location &#x2F; &#123;
+        proxy_pass http:&#x2F;&#x2F;gulimall;
+        proxy_set_header Host $host;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li>
+<p>配置 gateway 为服务器，将域名为<code>**.gulimall.com</code>转发至商品服务。配置的时候注意 网关优先匹配的原则，所以要把这个配置放到后面</p>
+<pre class="line-numbers language-none"><code class="language-none">- id: gulimall_host_route
+          uri: lb:&#x2F;&#x2F;gulimall-product
+          predicates:
+            - Host&#x3D;**.gulimall.com<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>测试：<a target="_blank" rel="noopener" href="http://gulimall.com/api/product/attrgroup/list/1">http://gulimall.com/api/product/attrgroup/list/1</a></p>
+<p><a target="_blank" rel="noopener" href="http://localhost:88/api/product/attrgroup/list/1">http://localhost:88/api/product/attrgroup/list/1</a></p>
+<p>请求结果相同</p>
+<p>此时请求接口和请求页面都是 <a target="_blank" rel="noopener" href="http://gulimall.com">gulimall.com</a></p>
+</li>
+</ol>
+<h2 id="压力测试"><a class="header-anchor" href="#压力测试">¶</a>压力测试</h2>
+<p>JVM 参数、工具、调优笔记：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/108312012">https://blog.csdn.net/hancoder/article/details/108312012</a></p>
+<h3 id="Jmeter"><a class="header-anchor" href="#Jmeter">¶</a>Jmeter</h3>
+<p>下载：<a target="_blank" rel="noopener" href="https://jmeter.apache.org/download_jmeter.cgi">https://jmeter.apache.org/download_jmeter.cgi</a></p>
+<p>创建测试计划，添加线程组</p>
+<p>线程数 == 用户</p>
+<p>ramp-up 多长时间内发送完</p>
+<p>添加 - 取样器 - HTTP 请求</p>
+<p>添加 - 监听器 - 查看结果树</p>
+<p>添加 - 监听器 - 汇总报告</p>
+<h5 id="Jmeter-Address-Already-in-use-错误解决"><a class="header-anchor" href="#Jmeter-Address-Already-in-use-错误解决">¶</a>Jmeter Address Already in use 错误解决</h5>
+<p>报错原因：</p>
+<p>1、windows 系统为了保护本机，限制了其他机器到本机的连接数.<br>
+2、TCP/IP 可释放已关闭连接并重用其资源前，必须经过的时间。关闭和释放之间的此时间间隔通称 TIME_WAIT 状态或两倍最大段生命周期（2MSL）状态。此时间期间，重新打开到客户机和服务器的连接的成本少于建立新连接。减少此条目的值允许 TCP/IP 更快地释放已关闭的连接，为新连接提供更多资源。如果运行的应用程序需要快速释放和创建新连接，而且由于 TIME_WAIT 中存在很多连接，导致低吞吐量，则调整此参数。</p>
+<p>修改操作系统注册表<br>
+1、打开注册表：运行 - regedit<br>
+2、直接输入找到 HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Services\TCPIP\Parameters<br>
+3、右击 Parameters 新建 DWORD32 值，name：TcpTimedWaitDelay，value：30（十进制） ——&gt; 设置为 30 秒回收（默认 240）<br>
+4、新建 DWORD 值，name：MaxUserPort，value：65534（十进制） ——&gt; 设置最大连接数 65534<br>
+注意：修改时先选择十进制，再填写数字。<br>
+5、重启系统</p>
+<h3 id="Jconsole、JvisualVM"><a class="header-anchor" href="#Jconsole、JvisualVM">¶</a>Jconsole、JvisualVM</h3>
+<blockquote>
+<p>JVM 写到别处：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/105210258">https://blog.csdn.net/hancoder/article/details/105210258</a></p>
+<p>看这个视频的真的有没学过 JVM 的吗。。。</p>
+<p>同样贴上之前的 JVM 学习笔记：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/108312012">https://blog.csdn.net/hancoder/article/details/108312012</a></p>
+</blockquote>
+<p>运行状态：</p>
+<ul>
+<li>运行：正在运行</li>
+<li>休眠：sleep</li>
+<li>等待：wait</li>
+<li>驻留：线程池里面的空闲线程</li>
+<li>监视：阻塞的线程，正在等待锁</li>
+</ul>
+<p>要监控 GC，安装插件：工具 - 插件。可用插件 - 检查最新版本 报错的时候百度 “插件中心”，改个 JVM 对应的插件中心 url.xml.z</p>
+<p>安装 visual GC</p>
+<h3 id="优化"><a class="header-anchor" href="#优化">¶</a>优化</h3>
+<ul>
+<li>SQL 耗时越小越好，一般情况下微秒级别</li>
+<li>命中率越高越好，一般情况下不能低于 95%</li>
+<li>锁等待次数越低越好，等待时间越短越好</li>
+<li>中间件越多，性能损失雨大，大多都损失在网络交互了</li>
+</ul>
+<p>视频教程中的测试结果</p>
+<table><thead><tr><th align="center">压测内容</th><th align="center">压测线程数</th><th align="center">吞吐量 / s</th><th align="center">90% 响应时间</th><th align="center">99% 响应时间</th></tr></thead><tbody><tr><td align="center">Nginx（浪费 CPU）</td><td align="center">50</td><td align="center">2120</td><td align="center">10</td><td align="center">1204</td></tr><tr><td align="center">Gateway（浪费 CPU）</td><td align="center">50</td><td align="center">9200</td><td align="center">9</td><td align="center">21</td></tr><tr><td align="center">简单服务（返回字符串）</td><td align="center">50</td><td align="center">9850</td><td align="center">8</td><td align="center">48</td></tr><tr><td align="center">首页一级菜单渲染</td><td align="center">50</td><td align="center">350</td><td align="center">260</td><td align="center">491</td></tr><tr><td align="center">首页菜单渲染 (开缓存)</td><td align="center">50</td><td align="center">465</td><td align="center">119</td><td align="center">306</td></tr><tr><td align="center">首页菜单渲染 (开缓存、优化数据库、关日志)</td><td align="center">50</td><td align="center">465</td><td align="center">127</td><td align="center">304</td></tr><tr><td align="center">三级分类数据获取</td><td align="center">50</td><td align="center">4</td><td align="center">13275</td><td align="center">13756</td></tr><tr><td align="center">三级分类 (优化业务)</td><td align="center">50</td><td align="center">15</td><td align="center">4092</td><td align="center">5891</td></tr><tr><td align="center">首页全量数据获取</td><td align="center">50</td><td align="center">2.7</td><td align="center">24014</td><td align="center">26556</td></tr><tr><td align="center">首页全量数据获取 (动静分类)</td><td align="center">50</td><td align="center">4.9</td><td align="center">14913</td><td align="center">16421</td></tr><tr><td align="center">Nginx+GateWay</td><td align="center">50</td><td align="center"></td><td align="center"></td><td align="center"></td></tr><tr><td align="center">Gateway + 简单服务</td><td align="center">50</td><td align="center">3000</td><td align="center">28</td><td align="center">67</td></tr><tr><td align="center">全链路 (Nginx+GateWay + 简单服务)</td><td align="center">50</td><td align="center">650</td><td align="center">84</td><td align="center">537</td></tr></tbody></table>
+<p>product 微服务的 -Xmx1024m -Xms1024m -Xmn512m</p>
+<h3 id="Nginx-动静分离"><a class="header-anchor" href="#Nginx-动静分离">¶</a>Nginx 动静分离</h3>
+<p>由于动态资源和静态资源目前都处于服务端，所以为了减轻服务器压力，我们将 js、css、img 等静态资源放置在 Nginx 端，以减轻服务器压力</p>
+<ol>
+<li>
+<p>静态文件上传到 mydata/nginx/html/static/index/css，这种格式</p>
+</li>
+<li>
+<p>修改 index.html 的静态资源路径，加上 static 前缀<code>src=&quot;/static/index/img/img_09.png&quot;</code></p>
+</li>
+<li>
+<p>修改<code>/mydata/nginx/conf/conf.d/gulimall.conf</code></p>
+<p>如果遇到有<code>/static</code>为前缀的请求，转发至 html 文件夹</p>
+<pre class="line-numbers language-none"><code class="language-none">location &#x2F;static &#123;
+        root   &#x2F;usr&#x2F;share&#x2F;nginx&#x2F;html;
+    &#125;
+
+
+    location &#x2F; &#123;
+        proxy_pass http:&#x2F;&#x2F;gulimall;
+	proxy_set_header Host $host;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="优化三级分类"><a class="header-anchor" href="#优化三级分类">¶</a>优化三级分类</h4>
+<p><strong>优化前</strong></p>
+<p>对二级菜单的每次遍历都需要查询数据库，浪费大量资源</p>
+<p><strong>优化后</strong></p>
+<p>仅查询一次数据库，剩下的数据通过遍历得到并封装</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F;优化业务逻辑，仅查询一次数据库
+        List&lt;CategoryEntity&gt; categoryEntities &#x3D; this.list();
+        &#x2F;&#x2F;查出所有一级分类
+        List&lt;CategoryEntity&gt; level1Categories &#x3D; getCategoryByParentCid(categoryEntities, 0L);
+        Map&lt;String, List&lt;Catalog2Vo&gt;&gt; listMap &#x3D; level1Categories.stream().collect(Collectors.toMap(k-&gt;k.getCatId().toString(), v -&gt; &#123;
+            &#x2F;&#x2F;遍历查找出二级分类
+            List&lt;CategoryEntity&gt; level2Categories &#x3D; getCategoryByParentCid(categoryEntities, v.getCatId());
+            List&lt;Catalog2Vo&gt; catalog2Vos&#x3D;null;
+            if (level2Categories!&#x3D;null)&#123;
+                &#x2F;&#x2F;封装二级分类到vo并且查出其中的三级分类
+                catalog2Vos &#x3D; level2Categories.stream().map(cat -&gt; &#123;
+                    &#x2F;&#x2F;遍历查出三级分类并封装
+                    List&lt;CategoryEntity&gt; level3Catagories &#x3D; getCategoryByParentCid(categoryEntities, cat.getCatId());
+                    List&lt;Catalog2Vo.Catalog3Vo&gt; catalog3Vos &#x3D; null;
+                    if (level3Catagories !&#x3D; null) &#123;
+                        catalog3Vos &#x3D; level3Catagories.stream()
+                                .map(level3 -&gt; new Catalog2Vo.Catalog3Vo(level3.getParentCid().toString(), level3.getCatId().toString(), level3.getName()))
+                                .collect(Collectors.toList());
+                    &#125;
+                    Catalog2Vo catalog2Vo &#x3D; new Catalog2Vo(v.getCatId().toString(), cat.getCatId().toString(), cat.getName(), catalog3Vos);
+                    return catalog2Vo;
+                &#125;).collect(Collectors.toList());
+            &#125;
+            return catalog2Vos;
+        &#125;));
+        return listMap;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ol>
+<h2 id="redisson-分布式锁与缓存"><a class="header-anchor" href="#redisson-分布式锁与缓存">¶</a>redisson 分布式锁与缓存</h2>
+<p>笔记写到了别处：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/114004280">https://blog.csdn.net/hancoder/article/details/114004280</a></p>
+<h2 id="检索"><a class="header-anchor" href="#检索">¶</a>检索</h2>
+<p>建立微服务和检索相关代码写到了 <a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/113922398">https://blog.csdn.net/hancoder/article/details/113922398</a> 末尾</p>
+<h2 id="异步编排"><a class="header-anchor" href="#异步编排">¶</a>异步编排</h2>
+<p>线程基础百度吧</p>
+<p>异步编排参考网上链接即可：<a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_45762031/article/details/103519459">https://blog.csdn.net/weixin_45762031/article/details/103519459</a></p>
+<h2 id="商品详情"><a class="header-anchor" href="#商品详情">¶</a>商品详情</h2>
+<p>添加 hosts 内容 192.168.56.10 <a target="_blank" rel="noopener" href="http://item.gulimall.com">item.gulimall.com</a></p>
+<p>修改网关 使 item 路由到 product</p>
+<p>复制详情页的 html 到 product，静态文件放到 nginx</p>
+<h3 id="1-VO"><a class="header-anchor" href="#1-VO">¶</a>(1) VO</h3>
+<p>观察我们要建立怎样的 VO</p>
+<pre class="line-numbers language-none"><code class="language-none">@Data
+public class SkuItemVo &#123;
+
+    &#x2F;*** 1 sku基本信息的获取:如标题*&#x2F;
+    SkuInfoEntity info;
+
+    boolean hasStock &#x3D; true;
+
+    &#x2F;*** 2 sku的图片信息*&#x2F;
+    List&lt;SkuImagesEntity&gt; images;
+
+    &#x2F;*** 3 获取spu的销售属性组合。每个attrName对应一个value-list*&#x2F;
+    List&lt;ItemSaleAttrVo&gt; saleAttr;
+
+    &#x2F;*** 4 获取spu的介绍*&#x2F;
+    SpuInfoDescEntity desc;
+
+    &#x2F;*** 5 获取spu的规格参数信息，每个分组的包含list*&#x2F;
+    List&lt;SpuItemAttrGroup&gt; groupAttrs;
+
+    &#x2F;*** 6 秒杀信息*&#x2F;
+    SeckillInfoVo seckillInfoVo;
+&#125;
+
+@ToString
+@Data
+public class ItemSaleAttrVo&#123;
+	private Long attrId;
+	private String attrName;
+
+	&#x2F;** AttrValueWithSkuIdVo两个属性 attrValue、skuIds *&#x2F;
+	private List&lt;AttrValueWithSkuIdVo&gt; attrValues;
+&#125;
+
+@ToString
+@Data
+public class SpuItemAttrGroup&#123;
+	private String groupName;
+    
+	&#x2F;** 两个属性attrName、attrValue *&#x2F;
+	private List&lt;SpuBaseAttrVo&gt; attrs;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-sql-构建"><a class="header-anchor" href="#2-sql-构建">¶</a>(2) sql 构建</h3>
+<p>我们观察商品页面与 VO，可以大致分为 5 个部分需要封装。1 2 4 比较简单，单表就查出来了。我们分析 3、5</p>
+<p>我们在 url 中首先有 sku_id，在从 sku_info 表查标题的时候，顺便查到了 spu_id、catelog_id，这样我们就可以操作剩下表了。</p>
+<h5 id="分组规格参数"><a class="header-anchor" href="#分组规格参数">¶</a>分组规格参数</h5>
+<p>在 5 查询规格参数中</p>
+<ul>
+<li><code>pms_product_attr_value</code> 根据 spu_id 获得 spu 相关属性<br>
+<code>pms_attr_attrgroup_relation</code>根据 catelog_id 获得属性的分组</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">&lt;!-- 封装自定义结果集 --&gt;
+    &lt;resultMap id&#x3D;&quot;SpuItemAttrGroupVo&quot; type&#x3D;&quot;com.atguigu.gulimall.product.vo.SpuItemAttrGroup&quot;&gt;
+        &lt;result column&#x3D;&quot;attr_group_name&quot; property&#x3D;&quot;groupName&quot; javaType&#x3D;&quot;string&quot;&gt;&lt;&#x2F;result&gt;
+        &lt;collection property&#x3D;&quot;attrs&quot; ofType&#x3D;&quot;com.atguigu.gulimall.product.vo.SpuBaseAttrVo&quot;&gt;
+            &lt;result column&#x3D;&quot;attr_name&quot; property&#x3D;&quot;attrName&quot; javaType&#x3D;&quot;string&quot;&gt;&lt;&#x2F;result&gt;
+            &lt;result column&#x3D;&quot;attr_value&quot; property&#x3D;&quot;attrValue&quot; javaType&#x3D;&quot;string&quot;&gt;&lt;&#x2F;result&gt;
+        &lt;&#x2F;collection&gt;
+    &lt;&#x2F;resultMap&gt;
+
+    &lt;select id&#x3D;&quot;getAttrGroupWithAttrsBySpuId&quot; resultMap&#x3D;&quot;SpuItemAttrGroupVo&quot;&gt;
+
+        SELECT pav.&#96;spu_id&#96;, ag.&#96;attr_group_name&#96;, ag.&#96;attr_group_id&#96;, aar.&#96;attr_id&#96;, attr.&#96;attr_name&#96;,pav.&#96;attr_value&#96;
+        FROM &#96;pms_attr_group&#96; ag
+        LEFT JOIN &#96;pms_attr_attrgroup_relation&#96; aar ON aar.&#96;attr_group_id&#96; &#x3D; ag.&#96;attr_group_id&#96;
+        LEFT JOIN &#96;pms_attr&#96; attr ON attr.&#96;attr_id&#96; &#x3D; aar.&#96;attr_id&#96;
+        LEFT JOIN &#96;pms_product_attr_value&#96; pav ON pav.&#96;attr_id&#96; &#x3D; attr.&#96;attr_id&#96;
+        WHERE ag.catelog_id &#x3D; #&#123;catalogId&#125; AND pav.&#96;spu_id&#96; &#x3D; #&#123;spuId&#125;
+    &lt;&#x2F;select&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">@Override
+public List&lt;SpuItemAttrGroup&gt; getAttrGroupWithAttrsBySpuId(Long spuId, Long catalogId) &#123;
+
+    &#x2F;&#x2F; 1.出当前Spu对应的所有属性的分组信息 以及当前分组下所有属性对应的值
+    &#x2F;&#x2F; 1.1 查询所有分组
+    AttrGroupDao baseMapper &#x3D; this.getBaseMapper();
+
+    return baseMapper.getAttrGroupWithAttrsBySpuId(spuId, catalogId);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="sku-售卖属性"><a class="header-anchor" href="#sku-售卖属性">¶</a>sku 售卖属性</h5>
+<p>在 3 查询售卖参数中，</p>
+<blockquote>
+<p>为什么是 spu 的销售属性，而不是 sku 的销售属性：url 是 skuID，但是销售属性要显示所有 spu 的 sku[]，为了提前看有无货、快速获得其他的 sku_id。</p>
+<p>从<code>pms_sku_info</code>查出该<code>spuId</code>对应的<code>skuId</code></p>
+</blockquote>
+<p>根据 spu 获取销售属性对应的所有值。首先知道 spu 是没有销售属性的，而是 spu 对应<code>sku[]</code>的销售属性</p>
+<p>根据各种选项决定一个 sku 是如何做到的？我们可以利用一下 ES 的倒排索引。比较难想到，先正序看一下吧</p>
+<ul>
+<li><code>pms_sku_info</code>根据 spu 得到所有 sku_id[]<br>
+<code>pms_sku_sale_attr_value</code>根据 sku 得到销售属性</li>
+<li>查询出来之后需要根据属性 attr_id 分组，分组要查询的列得在 group by 之后出现过，或者查询的列是用分组函数聚合出的。
+<ul>
+<li>而<code>GROUP_CONCAT</code>就把没分组的列都聚合到一起。比如分组后 name 为 zs 的对应 id 有 1、2、3，那么<code>GROUP_CONCAT(id)</code>该列就是 123</li>
+<li>而聚合后如果有重复值，比如 id 有 1,2,2，那么就可以用<code>DISTINCT</code>聚合成 1,2</li>
+<li>最后<code>GROUP_CONCAT(DISTINCT info.sku_id) sku_ids</code></li>
+</ul>
+</li>
+</ul>
+<p>查询得到的结果特别像 ES 中的倒排索引</p>
+<img src="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/1486da0c29522387b5c52ee774e2cd36.png" class="" loading="lazy">
+<pre class="line-numbers language-none"><code class="language-none">&lt;resultMap id&#x3D;&quot;SkuItemSaleAttrVo&quot; type&#x3D;&quot;com.atguigu.gulimall.product.vo.ItemSaleAttrVo&quot;&gt;
+        &lt;result column&#x3D;&quot;attr_id&quot; property&#x3D;&quot;attrId&quot;&gt;&lt;&#x2F;result&gt;
+        &lt;result column&#x3D;&quot;attr_name&quot; property&#x3D;&quot;attrName&quot;&gt;&lt;&#x2F;result&gt;
+        &lt;collection property&#x3D;&quot;attrValues&quot; ofType&#x3D;&quot;com.atguigu.gulimall.product.vo.AttrValueWithSkuIdVo&quot;&gt;
+            &lt;result column&#x3D;&quot;attr_value&quot; property&#x3D;&quot;attrValue&quot;&gt;&lt;&#x2F;result&gt;
+            &lt;result column&#x3D;&quot;sku_ids&quot; property&#x3D;&quot;skuIds&quot;&gt;&lt;&#x2F;result&gt;
+        &lt;&#x2F;collection&gt;
+    &lt;&#x2F;resultMap&gt;
+
+    &lt;select id&#x3D;&quot;getSaleAttrsBySpuId&quot; resultMap&#x3D;&quot;SkuItemSaleAttrVo&quot;&gt;
+        SELECT ssav.&#96;attr_id&#96;,ssav.&#96;attr_name&#96;,ssav.&#96;attr_value&#96;,
+            GROUP_CONCAT(DISTINCT info.&#96;sku_id&#96;) sku_ids
+        FROM &#96;pms_sku_info&#96; info LEFT JOIN &#96;pms_sku_sale_attr_value&#96; ssav
+        ON ssav.&#96;sku_id&#96; &#x3D; info.&#96;sku_id&#96;
+        WHERE info.&#96;spu_id&#96; &#x3D; #&#123;spuId&#125;
+        GROUP BY ssav.&#96;attr_id&#96;,ssav.&#96;attr_name&#96;,ssav.&#96;attr_value&#96;
+    &lt;&#x2F;select&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-controller-service"><a class="header-anchor" href="#3-controller-service">¶</a>(3) controller-service</h3>
+<pre class="line-numbers language-none"><code class="language-none">@Controller
+public class ItemController &#123;
+
+	@Autowired
+	private SkuInfoService skuInfoService;
+
+	@RequestMapping(&quot;&#x2F;&#123;skuId&#125;.html&quot;)
+	public String skuItem(@PathVariable(&quot;skuId&quot;) Long skuId, Model model) throws ExecutionException, InterruptedException &#123;
+
+		SkuItemVo vo &#x3D; skuInfoService.item(skuId);
+
+		model.addAttribute(&quot;item&quot;, vo);
+		return &quot;item&quot;;
+	&#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">@Override &#x2F;&#x2F;SkuInfoServiceImpl  @TableName(&quot;pms_sku_info&quot;)
+public SkuItemVo item(Long skuId) &#123;
+    SkuItemVo skuItemVo &#x3D; new SkuItemVo();
+    &#x2F;&#x2F;1、sku基本信息的获取  pms_sku_info
+    SkuInfoEntity skuInfoEntity &#x3D; this.getById(skuId);
+    skuItemVo.setInfo(skuInfoEntity);
+    Long spuId &#x3D; skuInfoEntity.getSpuId();
+    Long catalogId &#x3D; skuInfoEntity.getCatalogId();
+
+
+    &#x2F;&#x2F;2、sku的图片信息    pms_sku_images
+    List&lt;SkuImagesEntity&gt; skuImagesEntities &#x3D; skuimagesService.list(new QueryWrapper&lt;SkuimagesEntity&gt;().eq(&quot;sku_id&quot;, skuId));
+    skuItemVo.setimages(skuimagesEntities);
+
+    &#x2F;&#x2F;3、获取spu的销售属性组合-&gt; 依赖1 获取spuId
+    List&lt;SkuItemSaleAttrVo&gt; saleAttrVos&#x3D;skuSaleAttrValueService.listSaleAttrs(spuId);
+    skuItemVo.setSaleAttr(saleAttrVos);
+
+    &#x2F;&#x2F;4、获取spu的介绍-&gt; 依赖1 获取spuId
+    SpuInfoDescEntity byId &#x3D; spuInfoDescService.getById(spuId);
+    skuItemVo.setDesc(byId);
+
+    &#x2F;&#x2F;5、获取spu的规格参数信息-&gt; 依赖1 获取spuId catalogId
+    List&lt;SpuItemAttrGroupVo&gt; spuItemAttrGroupVos&#x3D;productAttrValueService.getProductGroupAttrsBySpuId(spuId, catalogId);
+    skuItemVo.setGroupAttrs(spuItemAttrGroupVos);
+    &#x2F;&#x2F;TODO 6、秒杀商品的优惠信息
+
+    return skuItemVo;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="4-优化-异步编排"><a class="header-anchor" href="#4-优化-异步编排">¶</a>(4) 优化: 异步编排</h3>
+<p>因为商品详情是查多个 sql，所以可以利用线程池进行异步操作，但是因为有的步骤需要用到第一步的 spu_d 结果等想你想，所以需要使用异步编排。</p>
+<p>调用<code>thenAcceptAsync()</code>可以接受上一步的结果且没有返回值。</p>
+<p>最后调用<code>get()</code>方法使主线程阻塞到其他线程完成任务。</p>
+<pre class="line-numbers language-none"><code class="language-none">@Override &#x2F;&#x2F; SkuInfoServiceImpl
+    public SkuItemVo item(Long skuId) throws ExecutionException, InterruptedException &#123;
+        SkuItemVo skuItemVo &#x3D; new SkuItemVo();
+
+        CompletableFuture&lt;SkuInfoEntity&gt; infoFutrue &#x3D; CompletableFuture.supplyAsync(() -&gt; &#123;
+            &#x2F;&#x2F;1 sku基本信息
+            SkuInfoEntity info &#x3D; getById(skuId);
+            skuItemVo.setInfo(info);
+            return info;
+        &#125;, executor);
+
+        CompletableFuture&lt;Void&gt; ImgageFuture &#x3D; CompletableFuture.runAsync(() -&gt; &#123;
+            &#x2F;&#x2F;2 sku图片信息
+            List&lt;SkuImagesEntity&gt; images &#x3D; imagesService.getImagesBySkuId(skuId);
+            skuItemVo.setImages(images);
+        &#125;, executor);
+
+        CompletableFuture&lt;Void&gt; saleAttrFuture &#x3D;infoFutrue.thenAcceptAsync(res -&gt; &#123;
+            &#x2F;&#x2F;3 获取spu销售属性组合 list
+            List&lt;ItemSaleAttrVo&gt; saleAttrVos &#x3D; skuSaleAttrValueService.getSaleAttrsBuSpuId(res.getSpuId());
+            skuItemVo.setSaleAttr(saleAttrVos);
+        &#125;,executor);
+
+        CompletableFuture&lt;Void&gt; descFuture &#x3D; infoFutrue.thenAcceptAsync(res -&gt; &#123;
+            &#x2F;&#x2F;4 获取spu介绍
+            SpuInfoDescEntity spuInfo &#x3D; spuInfoDescService.getById(res.getSpuId());
+            skuItemVo.setDesc(spuInfo);
+        &#125;,executor);
+
+        CompletableFuture&lt;Void&gt; baseAttrFuture &#x3D; infoFutrue.thenAcceptAsync(res -&gt; &#123;
+            &#x2F;&#x2F;5 获取spu规格参数信息
+            List&lt;SpuItemAttrGroup&gt; attrGroups &#x3D; attrGroupService.getAttrGroupWithAttrsBySpuId(res.getSpuId(), res.getCatalogId());
+            skuItemVo.setGroupAttrs(attrGroups);
+        &#125;, executor);
+
+        &#x2F;&#x2F; 6.查询当前sku是否参与秒杀优惠
+        CompletableFuture&lt;Void&gt; secKillFuture &#x3D; CompletableFuture.runAsync(() -&gt; &#123;
+            R skuSeckillInfo &#x3D; seckillFeignService.getSkuSeckillInfo(skuId);
+            if (skuSeckillInfo.getCode() &#x3D;&#x3D; 0) &#123;
+                SeckillInfoVo seckillInfoVo &#x3D; skuSeckillInfo.getData(new TypeReference&lt;SeckillInfoVo&gt;() &#123;&#125;);
+                skuItemVo.setSeckillInfoVo(seckillInfoVo);
+            &#125;
+        &#125;, executor);
+
+        &#x2F;&#x2F; 等待所有任务都完成再返回
+        CompletableFuture.allOf(ImgageFuture,saleAttrFuture,descFuture,baseAttrFuture,secKillFuture).get();
+        return skuItemVo;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>线程池参数：</p>
+<ul>
+<li>20-50 核心线程，200 最大线程，1W 长度等待队列</li>
+</ul>
+<h3 id="5-页面-sku-切换"><a class="header-anchor" href="#5-页面-sku-切换">¶</a>(5) 页面 sku 切换</h3>
+<p>页面上 12 45 渲染都比较简单，我们需要看看 4 是如何渲染的。</p>
+<img src="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/1486da0c29522387b5c52ee774e2cd36-1615734058318.png" class="" loading="lazy">
+<p>之前拿到的 sku_ids 是用, 分隔的，</p>
+<p>通过控制 class 中是否包换<code>checked</code>属性来控制显示样式，因此要根据<code>skuId</code>判断</p>
+<ul>
+<li>选择的标签多个 checked class，下面有个 containers 函数是判断当前的元素是否是当前 sku 的元素</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">&lt;div class&#x3D;&quot;box-attr clear&quot; th:each&#x3D;&quot;attr : $&#123;item.saleAttr&#125;&quot;&gt;
+    &lt;dl&gt;
+        &lt;dt&gt;选择[[$&#123;attr.attrName&#125;]]&lt;&#x2F;dt&gt;
+        &lt;dd th:each&#x3D;&quot;vals : $&#123;attr.attrValues&#125;&quot;&gt;
+            &lt;a class&#x3D;&quot;sku_attr_value&quot; th:attr&#x3D;&quot;skus&#x3D;$&#123;vals.skuIds&#125;,
+                                               class&#x3D;$&#123;#lists.contains(
+                                                 		 #strings.listSplit(vals.skuIds,&#39;,&#39;),
+                                                          item.info.skuId.toString()
+                                                       )?
+                                               		  &#39;sku_attr_value checked&#39;:
+                                              		  &#39;sku_attr_value&#39;&#125;&quot;&gt;
+                &lt;!--&lt;img src&#x3D;&quot;&#x2F;static&#x2F;item&#x2F;img&#x2F;59ddfcb1Nc3edb8f1.jpg&quot; &#x2F;&gt;--&gt;
+                [[$&#123;vals.attrValue&#125;]]
+            &lt;&#x2F;a&gt;
+        &lt;&#x2F;dd&gt;
+    &lt;&#x2F;dl&gt;
+&lt;&#x2F;div&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>显示处理完了，下面编写选中某个售卖属性后如何变化页面元素</p>
+<blockquote>
+<p>实际上我觉得应该发送 ajax 请求更改页面元素。这里选用的是根据选中的售卖属性组合判断出 sku_id</p>
+<p>怎么找交集：</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">$(&quot;.sku_attr_value&quot;).click(function () &#123;
+        var skus &#x3D; new Array();
+        &#x2F;&#x2F; 1.获取所有加了checked的属性
+        &#x2F;&#x2F; 1.1 点击的元素加上自定义属性
+        $(this).addClass(&quot;clicked&quot;);
+        var curr &#x3D; $(this).attr(&quot;skus&quot;).split(&quot;,&quot;);
+        &#x2F;&#x2F; 当前被点击的所有sku组合的数组放进去
+        skus.push(curr)
+        &#x2F;&#x2F; 去掉同一行所有的checked
+        $(this).parent().parent().find(&quot;.sku_attr_value&quot;).removeClass(&quot;checked&quot;);
+
+        &#x2F;&#x2F; 注意这个a[class&#x3D;&#39;sku_attr_value checked&#39;]
+        $(&quot;a[class&#x3D;&#39;sku_attr_value checked&#39;]&quot;).each(function () &#123;
+        	&#x2F;&#x2F; 把选择的元素的[sku_id]都放到skus中
+            skus.push($(this).attr(&quot;skus&quot;).split(&quot;,&quot;));
+        &#125;);
+        &#x2F;&#x2F; 2.取出他们的交集 得到skuId 调用filter方法的一定是jQuery元素
+        var filterEle &#x3D; skus[0];
+        for (var i &#x3D; 1; i &lt; skus.length; i++) &#123;
+        	&#x2F;&#x2F; $(a).filter(b)就是求a b的交集
+            filterEle &#x3D; $(filterEle).filter(skus[i]);
+        &#125;
+        console.log(filterEle[0])
+        &#x2F;&#x2F; 3.跳转
+        location.href &#x3D; &quot;http:&#x2F;&#x2F;item.gulimall.com&#x2F;&quot; + filterEle[0] + &quot;.html&quot;;
+    &#125;);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="认证服务"><a class="header-anchor" href="#认证服务">¶</a>认证服务</h2>
+<p>认证服务的笔记写到了另外一篇：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hancoder/article/details/114242184">https://blog.csdn.net/hancoder/article/details/114242184</a></p>
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/" title="谷粒商城笔记_分布式高级3">https://ppxiaodi.gitee.io/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%88%86%E5%B8%83%E5%BC%8F%E9%AB%98%E7%BA%A73/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_ElasticSearch/" rel="prev" title="谷粒商城笔记_ElasticSearch"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">谷粒商城笔记_ElasticSearch</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2020/03/14/CollectionNote/java/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E/%E8%B0%B7%E7%B2%92%E5%95%86%E5%9F%8E%E7%AC%94%E8%AE%B0_%E5%9F%BA%E7%A1%80%E7%AF%871/" rel="next" title="谷粒商城笔记_基础篇1"><span class="post-nav-text">谷粒商城笔记_基础篇1</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>

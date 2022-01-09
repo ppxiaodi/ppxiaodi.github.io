@@ -1,0 +1,519 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="momo"><meta name="copyright" content="momo"><meta name="generator" content="Hexo 5.2.0"><meta name="theme" content="hexo-theme-yun"><title>Spark基础解析 | 我的笔记</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.1.25/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link id="light-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism.css" media="(prefers-color-scheme: light)"><link id="dark-prism-css" rel="stylesheet" href="https://cdn.jsdelivr.net/npm/prismjs@latest/themes/prism-tomorrow.css" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"ppxiaodi.gitee.io","root":"/","title":"momo的小站","version":"1.7.0","mode":"auto","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true},"local_search":{"path":"/search.xml"},"fireworks":{"colors":["102, 167, 221","62, 131, 225","33, 78, 194"]}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="Spark基础解析 ¶第1章 Spark概述 ¶1.  什么是Spark       Spark内置模块      Spark Core：实现了Spark的基本功能，包含任务调度、内存管理、错误恢复、与存储系统交互等模块。Spark Core中还包含了对弹性分布式数据集(Resilient DistributedDataSet，简称RDD)的API定义。   Spark SQL：是Spark用来操">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spark基础解析">
+<meta property="og:url" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="我的笔记">
+<meta property="og:description" content="Spark基础解析 ¶第1章 Spark概述 ¶1.  什么是Spark       Spark内置模块      Spark Core：实现了Spark的基本功能，包含任务调度、内存管理、错误恢复、与存储系统交互等模块。Spark Core中还包含了对弹性分布式数据集(Resilient DistributedDataSet，简称RDD)的API定义。   Spark SQL：是Spark用来操">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406203216370.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406203243070.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406203518445.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406205359116.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406205526724.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210034811.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210121389.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210204418.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210334107.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210406373.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210537566.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210746327.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210839001.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211114101.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211253074.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211311516.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211447253.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211516290.png">
+<meta property="og:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211538088.png">
+<meta property="article:published_time" content="2020-12-11T16:00:00.000Z">
+<meta property="article:modified_time" content="2021-07-11T08:54:53.346Z">
+<meta property="article:author" content="momo">
+<meta property="article:tag" content="大数据">
+<meta property="article:tag" content="spark">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406203216370.png"><script src="/js/ui/mode.js"></script></head><body><script defer src="https://cdn.jsdelivr.net/npm/animejs@latest"></script><script defer src="/js/ui/fireworks.js"></script><canvas class="fireworks"></canvas><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="momo"><img width="96" loading="lazy" src="/yun.png" alt="momo"></a><div class="site-author-name"><a href="/about/">momo</a></div><a class="site-name" href="/about/site.html">我的笔记</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">198</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">58</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">47</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="/atom.xml" title="RSS" target="_blank" style="color:orange"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-rss-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://qm.qq.com/cgi-bin/qm/qr?k=kZJzggTTCf4SpvEQ8lXWoi5ZjhAx0ILZ&amp;jump_from=webapi" title="QQ 群 1050458482" target="_blank" style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/YunYouJun" title="GitHub" target="_blank" style="color:#6e5494"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://weibo.com/jizhideyunyoujun" title="微博" target="_blank" style="color:#E6162D"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-weibo-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.douban.com/people/yunyoujun/" title="豆瓣" target="_blank" style="color:#007722"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-douban-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://music.163.com/#/user/home?id=247102977" title="网易云音乐" target="_blank" style="color:#C20C0C"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-netease-cloud-music-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://www.zhihu.com/people/yunyoujun/" title="知乎" target="_blank" style="color:#0084FF"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-zhihu-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://space.bilibili.com/1579790" title="哔哩哔哩" target="_blank" style="color:#FF8EB3"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-bilibili-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/about/white-qrcode-and-search.jpg" title="微信公众号" target="_blank" style="color:#1AAD19"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-2-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://twitter.com/YunYouJun" title="Twitter" target="_blank" style="color:#1da1f2"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-twitter-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://t.me/elpsycn" title="Telegram Channel" target="_blank" style="color:#0088CC"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-telegram-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="mailto:me@yunyoujun.cn" title="E-Mail" target="_blank" style="color:#8E71C1"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-mail-line"></use></svg></a><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://travellings.link" title="Travelling" target="_blank" style="color:var(--hty-text-color)"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-train-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Spark基础解析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC1%E7%AB%A0-Spark%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">第1章 Spark概述</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E4%BB%80%E4%B9%88%E6%98%AFSpark"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.  什么是Spark</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Spark%E7%89%B9%E7%82%B9"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.3 Spark特点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC2%E7%AB%A0-Spark%E8%BF%90%E8%A1%8C%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">第2章 Spark运行模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Spark%E5%AE%89%E8%A3%85%E5%9C%B0%E5%9D%80"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 Spark安装地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E9%87%8D%E8%A6%81%E8%A7%92%E8%89%B2"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 重要角色</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-Driver%EF%BC%88%E9%A9%B1%E5%8A%A8%E5%99%A8%EF%BC%89"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">2.2.1 Driver（驱动器）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-Executor%EF%BC%88%E6%89%A7%E8%A1%8C%E5%99%A8%EF%BC%89"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">2.2.2 Executor（执行器）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Local%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 Local模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">2.3.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-3-2-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">2.3.2 安装使用</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Standalone%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4 Standalone模式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">2.4.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-2-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">2.4.2 安装使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-3-JobHistoryServer%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.4.3.</span> <span class="toc-text">2.4.3 JobHistoryServer配置</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-4-4-HA%E9%85%8D%E7%BD%AE"><span class="toc-number">1.2.4.4.</span> <span class="toc-text">2.4.4 HA配置</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-Yarn%E6%A8%A1%E5%BC%8F%EF%BC%88%E9%87%8D%E7%82%B9%EF%BC%89"><span class="toc-number">1.2.5.</span> <span class="toc-text">2.5 Yarn模式（重点）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-1-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.2.5.1.</span> <span class="toc-text">2.5.1 概述</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-2-%E5%AE%89%E8%A3%85%E4%BD%BF%E7%94%A8"><span class="toc-number">1.2.5.2.</span> <span class="toc-text">2.5.2 安装使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-5-3-%E6%97%A5%E5%BF%97%E6%9F%A5%E7%9C%8B"><span class="toc-number">1.2.5.3.</span> <span class="toc-text">2.5.3 日志查看</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-Mesos%E6%A8%A1%E5%BC%8F-%E4%BA%86%E8%A7%A3"><span class="toc-number">1.2.6.</span> <span class="toc-text">2.6 Mesos模式(了解)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-%E5%87%A0%E7%A7%8D%E6%A8%A1%E5%BC%8F%E5%AF%B9%E6%AF%94"><span class="toc-number">1.2.7.</span> <span class="toc-text">2.7 几种模式对比</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC3%E7%AB%A0-%E6%A1%88%E4%BE%8B%E5%AE%9E%E6%93%8D"><span class="toc-number">1.3.</span> <span class="toc-text">第3章 案例实操</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E7%BC%96%E5%86%99WordCount%E7%A8%8B%E5%BA%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 编写WordCount程序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E6%9C%AC%E5%9C%B0%E8%B0%83%E8%AF%95"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 本地调试</span></a></li></ol></li></ol></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="momo"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="我的笔记"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Spark基础解析</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2020-12-12 00:00:00" itemprop="dateCreated datePublished" datetime="2020-12-12T00:00:00+08:00">2020-12-12</time><span class="post-meta-divider">-</span><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-2-line"></use></svg></span> <time title="修改时间：2021-07-11 16:54:53" itemprop="dateModified" datetime="2021-07-11T16:54:53+08:00">2021-07-11</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">大数据</span></a></span> > <span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/%E5%A4%A7%E6%95%B0%E6%8D%AE/spark/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">spark</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/%E5%A4%A7%E6%95%B0%E6%8D%AE/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">大数据</span></a><a class="tag-item" href="/tags/spark/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">spark</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><h1>Spark基础解析</h1>
+<h2 id="第1章-Spark概述"><a class="header-anchor" href="#第1章-Spark概述">¶</a>第1章 Spark概述</h2>
+<h3 id="1-什么是Spark"><a class="header-anchor" href="#1-什么是Spark">¶</a>1.  什么是Spark</h3>
+   <img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406203216370.png" class="" title="image-20200406203216370" loading="lazy">
+<ol start="2">
+<li>
+<p>Spark内置模块</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406203243070.png" class="" title="image-20200406203243070" loading="lazy">
+</li>
+</ol>
+<ul>
+<li>
+<p>Spark Core：实现了Spark的基本功能，包含任务调度、内存管理、错误恢复、与存储系统交互等模块。Spark<br>
+Core中还包含了对弹性分布式数据集(Resilient DistributedDataSet，简称RDD)的API定义。</p>
+</li>
+<li>
+<p>Spark SQL：是Spark用来操作结构化数据的程序包。通过SparkSQL，我们可以使用 SQL或者Apache Hive版本的SQL方言(HQL)来查询数据。SparkSQL支持多种数据源，比如Hive表、Parquet以及JSON等。</p>
+</li>
+<li>
+<p>Spark Streaming：是Spark提供的对实时数据进行流式计算的组件。提供了用来操作数据流的API，并且与Spark<br>
+Core中的 RDD API高度对应。</p>
+</li>
+<li>
+<p>Spark MLlib：提供常见的机器学习(ML)功能的程序库。包括分类、回归、聚类、协同过滤等，还提供了模型评估、数据导入等额外的支持功能。</p>
+</li>
+<li>
+<p>集群管理器：Spark设计为可以高效地在一个计算节点到数千个计算节点之间伸缩计算。为了实现这样的要求，同时获得最大灵活性，Spark支持在各种集群管理器(ClusterManager)上运行，包括Hadoop YARN、Apache<br>
+Mesos，以及Spark自带的一个简易调度 器，叫作独立调度器。</p>
+</li>
+</ul>
+<p>Spark得到了众多大数据公司的支持，这些公司包括Hortonworks、IBM、Intel、Cloudera、MapR、Pivotal、百度、阿里、腾讯、京东、携程、优酷土豆。当前百度的Spark已应用于大搜索、直达号、百度大数据等业务；阿里利用GraphX构建了大规模的图计算和图挖掘系统，实现了很多生产系统的推荐算法；腾讯Spark集群达到8000台的规模，是当前已知的世界上最大的Spark集群。</p>
+<h3 id="1-3-Spark特点"><a class="header-anchor" href="#1-3-Spark特点">¶</a>1.3 Spark特点</h3>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406203518445.png" class="" title="image-20200406203518445" loading="lazy">
+<h2 id="第2章-Spark运行模式"><a class="header-anchor" href="#第2章-Spark运行模式">¶</a>第2章 Spark运行模式</h2>
+<h3 id="2-1-Spark安装地址"><a class="header-anchor" href="#2-1-Spark安装地址">¶</a>2.1 Spark安装地址</h3>
+<p>1．官网地址</p>
+<p><a target="_blank" rel="noopener" href="http://spark.apache.org/">[http://spark.apache.org/]{.underline}</a></p>
+<p>2．文档查看地址</p>
+<p><a target="_blank" rel="noopener" href="https://spark.apache.org/docs/2.1.1/">[https://spark.apache.org/docs/2.1.1/]{.underline}</a></p>
+<p>3．下载地址</p>
+<p><a target="_blank" rel="noopener" href="https://spark.apache.org/downloads.html">[https://spark.apache.org/downloads.html]{.underline}</a></p>
+<h3 id="2-2-重要角色"><a class="header-anchor" href="#2-2-重要角色">¶</a>2.2 重要角色</h3>
+<h4 id="2-2-1-Driver（驱动器）"><a class="header-anchor" href="#2-2-1-Driver（驱动器）">¶</a>2.2.1 Driver（驱动器）</h4>
+<p>Spark的驱动器是执行开发程序中的main方法的进程。它负责开发人员编写的用来创建SparkContext、创建RDD，以及进行RDD的转化操作和行动操作代码的执行。如果你是用spark<br>
+shell，那么当你启动Spark<br>
+shell的时候，系统后台自启了一个Spark驱动器程序，就是在Spark<br>
+shell中预加载的一个叫作<br>
+sc的SparkContext对象。如果驱动器程序终止，那么Spark应用也就结束了。主要负责：</p>
+<p>1）把用户程序转为作业（JOB）</p>
+<p>2）跟踪Executor的运行状况</p>
+<p>3）为执行器节点调度任务</p>
+<p>4）UI展示应用运行状况</p>
+<h4 id="2-2-2-Executor（执行器）"><a class="header-anchor" href="#2-2-2-Executor（执行器）">¶</a>2.2.2 Executor（执行器）</h4>
+<p>Spark Executor是一个工作进程，负责在 Spark<br>
+作业中运行任务，任务间相互独立。Spark<br>
+应用启动时，Executor节点被同时启动，并且始终伴随着整个 Spark<br>
+应用的生命周期而存在。如果有Executor节点发生了故障或崩溃，Spark<br>
+应用也可以继续执行，会将出错节点上的任务调度到其他Executor节点上继续运行。主要负责：</p>
+<p>1）负责运行组成 Spark 应用的任务，并将结果返回给驱动器进程；</p>
+<p>2）通过自身的块管理器（Block<br>
+Manager）为用户程序中要求缓存的RDD提供内存式存储。RDD是直接缓存在Executor进程内的，因此任务可以在运行时充分利用缓存数据加速运算。</p>
+<h3 id="2-3-Local模式"><a class="header-anchor" href="#2-3-Local模式">¶</a>2.3 Local模式</h3>
+<h4 id="2-3-1-概述"><a class="header-anchor" href="#2-3-1-概述">¶</a>2.3.1 概述</h4>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406205359116.png" class="" title="image-20200406205359116" loading="lazy">
+<h4 id="2-3-2-安装使用"><a class="header-anchor" href="#2-3-2-安装使用">¶</a>2.3.2 安装使用</h4>
+<p>1）上传并解压spark安装包</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">[atguigu@hadoop102 sorfware]$ tar -zxvf spark-2.1.1-bin-hadoop2.7.tgz -C &#x2F;opt&#x2F;module&#x2F;
+[atguigu@hadoop102 module]$ mv spark-2.1.1-bin-hadoop2.7 spark<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>2）官方求PI案例</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">[atguigu@hadoop102 spark]$ bin&#x2F;spark-submit \
+--class org.apache.spark.examples.SparkPi \
+--executor-memory 1G \
+--total-executor-cores 2 \
+.&#x2F;examples&#x2F;jars&#x2F;spark-examples_2.11-2.1.1.jar \
+100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（1）基本语法</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">bin&#x2F;spark-submit \
+--class &lt;main-class&gt;
+--master &lt;master-url&gt; \
+--deploy-mode &lt;deploy-mode&gt; \
+--conf &lt;key&gt;&#x3D;&lt;value&gt; \
+... # other options
+&lt;application-jar&gt; \
+[application-arguments]<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>（2）参数说明：</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">--master 指定Master的地址，默认为Local
+--class: 你的应用的启动类 (如 org.apache.spark.examples.SparkPi)
+--deploy-mode: 是否发布你的驱动到worker节点(cluster) 或者作为一个本地客户端 (client) (default: client)*
+--conf: 任意的Spark配置属性， 格式key&#x3D;value. 如果值包含空格，可以加引号“key&#x3D;value” 
+application-jar: 打包好的应用jar,包含依赖. 这个URL在集群中全局可见。 比如hdfs:&#x2F;&#x2F; 共享存储系统， 如果是 file:&#x2F;&#x2F; path， 那么所有的节点的path都包含同样的jar
+application-arguments: 传给main()方法的参数
+--executor-memory 1G 指定每个executor可用内存为1G
+--total-executor-cores 2 指定每个executor使用的cup核数为2个<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3）结果展示</p>
+<p>该算法是利用蒙特·卡罗算法求PI</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406205526724.png" class="" title="image-20200406205526724" loading="lazy">
+<p>4）准备文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ mkdir input<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在input下创建3个文件1.txt和2.txt，并输入以下内容</p>
+<pre class="line-numbers language-none"><code class="language-none">hello atguigu
+hello spark<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>5）启动spark-shell</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ bin&#x2F;spark-shell<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">Using Spark&#39;s default log4j profile: org&#x2F;apache&#x2F;spark&#x2F;log4j-defaults.properties
+Setting default log level to &quot;WARN&quot;.
+To adjust logging level use sc.setLogLevel(newLevel). For SparkR, use setLogLevel(newLevel).
+18&#x2F;09&#x2F;29 08:50:52 WARN NativeCodeLoader: Unable to load native-hadoop library for your platform... using builtin-java classes where applicable
+18&#x2F;09&#x2F;29 08:50:58 WARN ObjectStore: Failed to get database global_temp, returning NoSuchObjectException
+Spark context Web UI available at http:&#x2F;&#x2F;192.168.9.102:4040
+Spark context available as &#39;sc&#39; (master &#x3D; local[*], app id &#x3D; local-1538182253312).
+Spark session available as &#39;spark&#39;.
+Welcome to
+      ____              __
+     &#x2F; __&#x2F;__  ___ _____&#x2F; &#x2F;__
+    _\ \&#x2F; _ \&#x2F; _ &#96;&#x2F; __&#x2F;  &#39;_&#x2F;
+   &#x2F;___&#x2F; .__&#x2F;\_,_&#x2F;_&#x2F; &#x2F;_&#x2F;\_\   version 2.1.1
+      &#x2F;_&#x2F;
+         
+Using Scala version 2.11.8 (Java HotSpot(TM) 64-Bit Server VM, Java 1.8.0_144)
+Type in expressions to have them evaluated.
+Type :help for more information.
+
+scala&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>开启另一个CRD窗口</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">[atguigu@hadoop102 spark]$ jps
+3627 SparkSubmit
+4047 Jps<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>可登录hadoop102:4040查看程序运行</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210034811.png" class="" title="image-20200406210034811" loading="lazy">
+<p>6）运行WordCount程序</p>
+<pre class="line-numbers language-shell" data-language="shell"><code class="language-shell">scala&gt;sc.textFile(&quot;input&quot;).flatMap(_.split(&quot; &quot;)).map((_,1)).reduceByKey(_+_).collect
+res0: Array[(String, Int)] &#x3D; Array((hadoop,6), (oozie,3), (spark,3), (hive,3), (atguigu,3), (hbase,6))
+
+scala&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>可登录hadoop102:4040查看程序运行</strong></p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210121389.png" class="" title="image-20200406210121389" loading="lazy">
+<p>7）WordCount程序分析</p>
+<p>提交任务分析：</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210204418.png" class="" title="image-20200406210204418" loading="lazy">
+<p>数据流分析：</p>
+<p>textFile(“input”)：读取本地文件input文件夹数据；</p>
+<p>flatMap(_.split(&quot; &quot;))：压平操作，按照空格分割符将一行数据映射成一个个单词；</p>
+<p>map((_,1))：对每一个元素操作，将单词映射为元组；</p>
+<p>reduceByKey(<em>+</em>)：按照key将值进行聚合，相加；</p>
+<p>collect：将数据收集到Driver端展示。</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210334107.png" class="" title="image-20200406210334107" loading="lazy">
+<h3 id="2-4-Standalone模式"><a class="header-anchor" href="#2-4-Standalone模式">¶</a>2.4 Standalone模式</h3>
+<h4 id="2-4-1-概述"><a class="header-anchor" href="#2-4-1-概述">¶</a>2.4.1 概述</h4>
+<p>构建一个由Master+Slave构成的Spark集群，Spark运行在集群中。</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210406373.png" class="" title="image-20200406210406373" loading="lazy">
+<h4 id="2-4-2-安装使用"><a class="header-anchor" href="#2-4-2-安装使用">¶</a>2.4.2 安装使用</h4>
+<p>1）进入spark安装目录下的conf文件夹</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 module]$ cd spark&#x2F;conf&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>2）修改配置文件名称</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ mv slaves.template slaves
+[atguigu@hadoop102 conf]$ mv spark-env.sh.template spark-env.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>3）修改slave文件，添加work节点：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ vim slaves
+
+hadoop102
+hadoop103
+hadoop104<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>4）修改spark-env.sh文件，添加如下配置：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ vim spark-env.sh
+
+SPARK_MASTER_HOST&#x3D;hadoop102
+SPARK_MASTER_PORT&#x3D;7077<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>5）分发spark包</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 module]$ xsync spark&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>6）启动</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ sbin&#x2F;start-all.sh
+[atguigu@hadoop102 spark]$ util.sh 
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;atguigu@hadoop102&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+3330 Jps
+3238 Worker
+3163 Master
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;atguigu@hadoop103&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+2966 Jps
+2908 Worker
+&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;atguigu@hadoop104&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;
+2978 Worker
+3036 Jps<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>网页查看：hadoop102:8080</p>
+<p>注意：如果遇到 “JAVA_HOME not set”<br>
+异常，<a target="_blank" rel="noopener" href="http://xn--sbinspark-config-br9y85ij26aqxo6p4bvu3hu8b.sh">可以在sbin目录下的spark-config.sh</a> 文件中加入如下配置：</p>
+<pre class="line-numbers language-none"><code class="language-none">export JAVA_HOME&#x3D;XXXX<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>7）官方求PI案例</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ bin&#x2F;spark-submit \
+--class org.apache.spark.examples.SparkPi \
+--master spark:&#x2F;&#x2F;hadoop102:7077 \
+--executor-memory 1G \
+--total-executor-cores 2 \
+.&#x2F;examples&#x2F;jars&#x2F;spark-examples_2.11-2.1.1.jar \
+100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210537566.png" class="" title="image-20200406210537566" loading="lazy">
+<p>8）启动spark shell</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;opt&#x2F;module&#x2F;spark&#x2F;bin&#x2F;spark-shell \
+--master spark:&#x2F;&#x2F;hadoop102:7077 \
+--executor-memory 1g \
+--total-executor-cores 2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>参数：–master spark://hadoop102:7077指定要连接的集群的master</p>
+<p>执行WordCount程序</p>
+<pre class="line-numbers language-none"><code class="language-none">scala&gt;sc.textFile(&quot;input&quot;).flatMap(_.split(&quot; &quot;)).map((_,1)).reduceByKey(_+_).collect
+res0: Array[(String, Int)] &#x3D; Array((hadoop,6), (oozie,3), (spark,3), (hive,3), (atguigu,3), (hbase,6))
+
+scala&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="2-4-3-JobHistoryServer配置"><a class="header-anchor" href="#2-4-3-JobHistoryServer配置">¶</a>2.4.3 JobHistoryServer配置</h4>
+<p>1）修改spark-default.conf.template名称</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ mv spark-defaults.conf.template spark-defaults.conf<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>2）修改spark-default.conf文件，开启Log：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ vi spark-defaults.conf
+spark.eventLog.enabled           true
+spark.eventLog.dir               hdfs:&#x2F;&#x2F;hadoop102:9000&#x2F;directory<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>注意：HDFS上的目录需要提前存在。</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ hadoop fs –mkdir &#x2F;directory<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>3）修改spark-env.sh文件，添加如下配置：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ vi spark-env.sh
+
+export SPARK_HISTORY_OPTS&#x3D;&quot;-Dspark.history.ui.port&#x3D;18080 
+-Dspark.history.retainedApplications&#x3D;30 
+-Dspark.history.fs.logDirectory&#x3D;hdfs:&#x2F;&#x2F;hadoop102:9000&#x2F;directory&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>参数描述：</p>
+<p>spark.eventLog.dir：Application在运行过程中所有的信息均记录在该属性指定的路径下；</p>
+<p>spark.history.ui.port=18080  WEBUI访问的端口号为18080</p>
+<p>spark.history.fs.logDirectory=hdfs://hadoop102:9000/directory<br>
+配置了该属性后，在start-history-server.sh时就无需再显式的指定路径，Spark<br>
+History Server页面只展示该指定路径下的信息</p>
+<p>spark.history.retainedApplications=30指定保存Application历史记录的个数，如果超过这个值，旧的应用程序信息将被删除，这个是内存中的应用数，而不是页面上显示的应用数。</p>
+<p>4）分发配置文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ xsync spark-defaults.conf
+[atguigu@hadoop102 conf]$ xsync spark-env.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>5）启动历史服务</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ sbin&#x2F;start-history-server.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>6）再次执行任务</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ bin&#x2F;spark-submit \
+--class org.apache.spark.examples.SparkPi \
+--master spark:&#x2F;&#x2F;hadoop102:7077 \
+--executor-memory 1G \
+--total-executor-cores 2 \
+.&#x2F;examples&#x2F;jars&#x2F;spark-examples_2.11-2.1.1.jar \
+100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>7）查看历史服务</p>
+<p>hadoop102:18080</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210746327.png" class="" title="image-20200406210746327" loading="lazy">
+<h4 id="2-4-4-HA配置"><a class="header-anchor" href="#2-4-4-HA配置">¶</a>2.4.4 HA配置</h4>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406210839001.png" class="" title="image-20200406210839001" loading="lazy">
+<p>图1 HA架构图</p>
+<p>1）zookeeper正常安装并启动</p>
+<p>2）修改spark-env.sh文件添加如下配置：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ vi spark-env.sh
+
+注释掉如下内容：
+#SPARK_MASTER_HOST&#x3D;hadoop102
+#SPARK_MASTER_PORT&#x3D;7077
+添加上如下内容：
+export SPARK_DAEMON_JAVA_OPTS&#x3D;&quot;
+-Dspark.deploy.recoveryMode&#x3D;ZOOKEEPER 
+-Dspark.deploy.zookeeper.url&#x3D;hadoop102,hadoop103,hadoop104 
+-Dspark.deploy.zookeeper.dir&#x3D;&#x2F;spark&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3）分发配置文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ xsync spark-env.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>4）在hadoop102上启动全部节点</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ sbin&#x2F;start-all.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>5）在hadoop103上单独启动master节点</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop103 spark]$ sbin&#x2F;start-master.sh<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>6）spark HA集群访问</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;opt&#x2F;module&#x2F;spark&#x2F;bin&#x2F;spark-shell \
+--master spark:&#x2F;&#x2F;hadoop102:7077,hadoop103:7077 \
+--executor-memory 2g \
+--total-executor-cores 2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="2-5-Yarn模式（重点）"><a class="header-anchor" href="#2-5-Yarn模式（重点）">¶</a>2.5 Yarn模式（重点）</h3>
+<h4 id="2-5-1-概述"><a class="header-anchor" href="#2-5-1-概述">¶</a>2.5.1 概述</h4>
+<p>Spark客户端直接连接Yarn，不需要额外构建Spark集群。有yarn-client和yarn-cluster两种模式，主要区别在于：Driver程序的运行节点。</p>
+<p>yarn-client：Driver程序运行在客户端，适用于交互、调试，希望立即看到app的输出</p>
+<p>yarn-cluster：Driver程序运行在由RM（ResourceManager）启动的AP（APPMaster）适用于生产环境。</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211114101.png" class="" title="image-20200406211114101" loading="lazy">
+<h4 id="2-5-2-安装使用"><a class="header-anchor" href="#2-5-2-安装使用">¶</a>2.5.2 安装使用</h4>
+<p>1）修改hadoop配置文件yarn-site.xml,添加如下内容：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 hadoop]$ vi yarn-site.xml
+        &lt;!--是否启动一个线程检查每个任务正使用的物理内存量，如果任务超出分配值，则直接将其杀掉，默认是true --&gt;
+        &lt;property&gt;
+                &lt;name&gt;yarn.nodemanager.pmem-check-enabled&lt;&#x2F;name&gt;
+                &lt;value&gt;false&lt;&#x2F;value&gt;
+        &lt;&#x2F;property&gt;
+        &lt;!--是否启动一个线程检查每个任务正使用的虚拟内存量，如果任务超出分配值，则直接将其杀掉，默认是true --&gt;
+        &lt;property&gt;
+                &lt;name&gt;yarn.nodemanager.vmem-check-enabled&lt;&#x2F;name&gt;
+                &lt;value&gt;false&lt;&#x2F;value&gt;
+        &lt;&#x2F;property&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>2）<a target="_blank" rel="noopener" href="http://xn--spark-env-z89nz78p.sh">修改spark-env.sh</a>，添加如下配置：</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ vi spark-env.sh
+
+YARN_CONF_DIR&#x3D;&#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2&#x2F;etc&#x2F;hadoop<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>3）分发配置文件</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 conf]$ xsync &#x2F;opt&#x2F;module&#x2F;hadoop-2.7.2&#x2F;etc&#x2F;hadoop&#x2F;yarn-site.xml
+[atguigu@hadoop102 conf]$ xsync spark-env.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>4）执行一个程序</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ bin&#x2F;spark-submit \
+--class org.apache.spark.examples.SparkPi \
+--master yarn \
+--deploy-mode client \
+.&#x2F;examples&#x2F;jars&#x2F;spark-examples_2.11-2.1.1.jar \
+100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>注意：在提交任务之前需启动HDFS以及YARN集群。</p>
+<h4 id="2-5-3-日志查看"><a class="header-anchor" href="#2-5-3-日志查看">¶</a>2.5.3 日志查看</h4>
+<p>1）修改配置文件spark-defaults.conf</p>
+<p>添加如下内容：</p>
+<pre class="line-numbers language-none"><code class="language-none">spark.yarn.historyServer.address&#x3D;hadoop102:18080
+spark.history.ui.port&#x3D;18080<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>2）重启spark历史服务</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ sbin&#x2F;stop-history-server.sh 
+stopping org.apache.spark.deploy.history.HistoryServer
+[atguigu@hadoop102 spark]$ sbin&#x2F;start-history-server.sh 
+starting org.apache.spark.deploy.history.HistoryServer, logging to &#x2F;opt&#x2F;module&#x2F;spark&#x2F;logs&#x2F;spark-atguigu-org.apache.spark.deploy.history.HistoryServer-1-hadoop102.out<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3）提交任务到Yarn执行</p>
+<pre class="line-numbers language-none"><code class="language-none">[atguigu@hadoop102 spark]$ bin&#x2F;spark-submit \
+--class org.apache.spark.examples.SparkPi \
+--master yarn \
+--deploy-mode client \
+.&#x2F;examples&#x2F;jars&#x2F;spark-examples_2.11-2.1.1.jar \
+100<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>4）Web页面查看日志</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211253074.png" class="" title="image-20200406211253074" loading="lazy">
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211311516.png" class="" title="image-20200406211311516" loading="lazy">
+<h3 id="2-6-Mesos模式-了解"><a class="header-anchor" href="#2-6-Mesos模式-了解">¶</a>2.6 Mesos模式(了解)</h3>
+<p>Spark客户端直接连接Mesos；不需要额外构建Spark集群。国内应用比较少，更多的是运用yarn调度。</p>
+<h3 id="2-7-几种模式对比"><a class="header-anchor" href="#2-7-几种模式对比">¶</a>2.7 几种模式对比</h3>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>Spark安装机器数</th>
+<th>需启动的进程</th>
+<th>所属者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Local</td>
+<td>1</td>
+<td>无</td>
+<td>Spark</td>
+</tr>
+<tr>
+<td>Standalone</td>
+<td>3</td>
+<td>Master及Worker</td>
+<td>Spark</td>
+</tr>
+<tr>
+<td>Yarn</td>
+<td>1</td>
+<td>Yarn及HDFS</td>
+<td>Hadoop</td>
+</tr>
+</tbody>
+</table>
+<h2 id="第3章-案例实操"><a class="header-anchor" href="#第3章-案例实操">¶</a>第3章 案例实操</h2>
+<p>==============</p>
+<p>Spark<br>
+Shell仅在测试和验证我们的程序时使用的较多，在生产环境中，通常会在IDE中编制程序，然后打成jar包，然后提交到集群，最常用的是创建一个Maven项目，利用Maven来管理jar包的依赖。</p>
+<h3 id="3-1-编写WordCount程序"><a class="header-anchor" href="#3-1-编写WordCount程序">¶</a>3.1 编写WordCount程序</h3>
+<p>1）创建一个Maven项目WordCount并导入依赖</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;dependencies&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.apache.spark&lt;&#x2F;groupId&gt;
+        &lt;artifactId&gt;spark-core_2.11&lt;&#x2F;artifactId&gt;
+        &lt;version&gt;2.1.1&lt;&#x2F;version&gt;
+    &lt;&#x2F;dependency&gt;
+&lt;&#x2F;dependencies&gt;
+&lt;build&gt;
+        &lt;finalName&gt;WordCount&lt;&#x2F;finalName&gt;
+        &lt;plugins&gt;
+&lt;plugin&gt;
+                &lt;groupId&gt;net.alchim31.maven&lt;&#x2F;groupId&gt;
+&lt;artifactId&gt;scala-maven-plugin&lt;&#x2F;artifactId&gt;
+                &lt;version&gt;3.2.2&lt;&#x2F;version&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                       &lt;goals&gt;
+                          &lt;goal&gt;compile&lt;&#x2F;goal&gt;
+                          &lt;goal&gt;testCompile&lt;&#x2F;goal&gt;
+                       &lt;&#x2F;goals&gt;
+                    &lt;&#x2F;execution&gt;
+                 &lt;&#x2F;executions&gt;
+            &lt;&#x2F;plugin&gt;
+        &lt;&#x2F;plugins&gt;
+&lt;&#x2F;build&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>2）编写代码</p>
+<pre class="line-numbers language-none"><code class="language-none">package com.atguigu
+
+import org.apache.spark.&#123;SparkConf, SparkContext&#125;
+
+object WordCount&#123;
+
+  def main(args: Array[String]): Unit &#x3D; &#123;
+
+&#x2F;&#x2F;1.创建SparkConf并设置App名称
+    val conf &#x3D; new SparkConf().setAppName(&quot;WC&quot;)
+
+&#x2F;&#x2F;2.创建SparkContext，该对象是提交Spark App的入口
+    val sc &#x3D; new SparkContext(conf)
+
+    &#x2F;&#x2F;3.使用sc创建RDD并执行相应的transformation和action
+    sc.textFile(args(0)).flatMap(_.split(&quot; &quot;)).map((_, 1)).reduceByKey(_+_, 1).sortBy(_._2, false).saveAsTextFile(args(1))
+
+&#x2F;&#x2F;4.关闭连接
+    sc.stop()
+  &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>3）打包插件</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;plugin&gt;
+                &lt;groupId&gt;org.apache.maven.plugins&lt;&#x2F;groupId&gt;
+                &lt;artifactId&gt;maven-assembly-plugin&lt;&#x2F;artifactId&gt;
+                &lt;version&gt;3.0.0&lt;&#x2F;version&gt;
+                &lt;configuration&gt;
+                    &lt;archive&gt;
+                        &lt;manifest&gt;
+                            &lt;mainClass&gt;WordCount&lt;&#x2F;mainClass&gt;
+                        &lt;&#x2F;manifest&gt;
+                    &lt;&#x2F;archive&gt;
+                    &lt;descriptorRefs&gt;
+                        &lt;descriptorRef&gt;jar-with-dependencies&lt;&#x2F;descriptorRef&gt;
+                    &lt;&#x2F;descriptorRefs&gt;
+                &lt;&#x2F;configuration&gt;
+                &lt;executions&gt;
+                    &lt;execution&gt;
+                        &lt;id&gt;make-assembly&lt;&#x2F;id&gt;
+                        &lt;phase&gt;package&lt;&#x2F;phase&gt;
+                        &lt;goals&gt;
+                            &lt;goal&gt;single&lt;&#x2F;goal&gt;
+                        &lt;&#x2F;goals&gt;
+                    &lt;&#x2F;execution&gt;
+                &lt;&#x2F;executions&gt;
+      &lt;&#x2F;plugin&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>4）打包到集群测试</p>
+<pre class="line-numbers language-none"><code class="language-none">bin&#x2F;spark-submit \
+--class WordCount \
+--master spark:&#x2F;&#x2F;hadoop102:7077 \
+WordCount.jar \
+&#x2F;word.txt \
+&#x2F;out<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="3-2-本地调试"><a class="header-anchor" href="#3-2-本地调试">¶</a>3.2 本地调试</h3>
+<p>本地Spark程序调试需要使用local提交模式，即将本机当做运行环境，Master和Worker都为本机。运行时直接加断点调试即可。如下：</p>
+<p>创建SparkConf的时候设置额外属性，表明本地执行：</p>
+<pre class="line-numbers language-none"><code class="language-none">val conf &#x3D; new SparkConf().setAppName(&quot;WC&quot;).setMaster(&quot;local[*]&quot;)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>如果本机操作系统是windows，如果在程序中使用了hadoop相关的东西，比如写入文件到HDFS，则会遇到如下异常：</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211447253.png" class="" title="image-20200406211447253" loading="lazy">
+<p>出现这个问题的原因，并不是程序的错误，而是用到了hadoop相关的服务，解决办法是将附加里面的hadoop-common-bin-2.7.3-x64.zip解压到任意目录。</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211516290.png" class="" title="image-20200406211516290" loading="lazy">
+<p>在IDEA中配置Run Configuration，添加HADOOP_HOME变量</p>
+<img src="/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/image-20200406211538088.png" class="" title="image-20200406211538088" loading="lazy">
+</div><div id="reward-container"><span class="hty-icon-button button-glow" id="reward-button" title="打赏" onclick="var qr = document.getElementById(&quot;qr&quot;); qr.style.display = (qr.style.display === &quot;none&quot;) ? &quot;block&quot; : &quot;none&quot;;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-hand-coin-line"></use></svg></span><div id="reward-comment">I'm so cute. Please give me money.</div><div id="qr" style="display:none;"><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/alipay-qrcode.jpg" alt="支付宝" title="支付宝"></a><div><span style="color:#00A3EE"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-alipay-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/qqpay-qrcode.png" alt="QQ 支付" title="QQ 支付"></a><div><span style="color:#12B7F5"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-qq-line"></use></svg></span></div></div><div style="display:inline-block"><a target="_blank" rel="noopener" href="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg"><img loading="lazy" src="https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/donate/wechatpay-qrcode.jpg" alt="微信支付" title="微信支付"></a><div><span style="color:#2DC100"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-wechat-pay-line"></use></svg></span></div></div></div></div><ul class="post-copyright"><li class="post-copyright-author"><strong>本文作者：</strong>momo</li><li class="post-copyright-link"><strong>本文链接：</strong><a href="https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/" title="Spark基础解析">https://ppxiaodi.gitee.io/2020/12/12/CollectionNote/big/spark/01_Spark%E5%9F%BA%E7%A1%80%E8%A7%A3%E6%9E%90/</a></li><li class="post-copyright-license"><strong>版权声明：</strong>本博客所有文章除特别声明外，均默认采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh" target="_blank" rel="noopener" title="CC BY-NC-SA 4.0 "><svg class="icon"><use xlink:href="#icon-creative-commons-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-by-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-nc-line"></use></svg><svg class="icon"><use xlink:href="#icon-creative-commons-sa-line"></use></svg></a> 许可协议。</li></ul></section></article><div class="post-nav"><div class="post-nav-item"><a class="post-nav-prev" href="/2020/12/12/CollectionNote/big/%E9%85%8D%E7%BD%AE%E6%96%87%E4%BB%B6%E5%92%8C%E7%AB%AF%E5%8F%A3/" rel="prev" title="配置文件和端口"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-left-s-line"></use></svg><span class="post-nav-text">配置文件和端口</span></a></div><div class="post-nav-item"><a class="post-nav-next" href="/2020/12/12/CollectionNote/big/spark/02_SparkCore/" rel="next" title="SparkCore"><span class="post-nav-text">SparkCore</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div><div class="hty-card" id="comment"><div class="comment-tooltip text-center"><span>要不要和我说些什么？</span><br></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> momo</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v5.2.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><a class="popup-trigger hty-icon-button icon-search" id="search" href="javascript:;" title="搜索"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-search-line"></use></svg></span></a><script>window.addEventListener("DOMContentLoaded", () => {
+  // Handle and trigger popup window
+  document.querySelector(".popup-trigger").addEventListener("click", () => {
+    document.querySelector(".popup").classList.add("show");
+    setTimeout(() => {
+      document.querySelector(".search-input").focus();
+    }, 100);
+  });
+
+  // Monitor main search box
+  const onPopupClose = () => {
+    document.querySelector(".popup").classList.remove("show");
+  };
+
+  document.querySelector(".popup-btn-close").addEventListener("click", () => {
+    onPopupClose();
+  });
+
+  window.addEventListener("keyup", event => {
+    if (event.key === "Escape") {
+      onPopupClose();
+    }
+  });
+});
+</script><script src="/js/search/local-search.js" defer></script><div class="popup search-popup"><div class="search-header"><span class="popup-btn-close close-icon hty-icon-button"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-close-line"></use></svg></span></div><div class="search-input-container"><input class="search-input" id="local-search-input" type="text" placeholder="搜索..." value=""></div><div id="local-search-result"></div></div></div></body></html>
